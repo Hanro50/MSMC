@@ -1,0 +1,66 @@
+/**
+ * The Oauth2 details needed to log you in. 
+ * 
+ * Resources
+ * 1) https://docs.microsoft.com/en-us/graph/auth-register-app-v2
+ * 2) https://docs.microsoft.com/en-us/graph/auth-v2-user#1-register-your-app
+ * 3) https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps
+ * 
+ * 
+ * Recommendations: 
+ * 
+ * 1) Use "Mobile and desktop applications" as your type setting and make sure to set it up to only use "Personal Microsoft accounts only". 
+ * You're not a university!
+ * 
+ * 2) set the redirect to "http://localhost/...", With localhost specifically Microsoft does not check port numbers. 
+ * This means that  http://localhost:1/... to http://localhost:65535/... are all the same redirect to MS. (http://localhost/... == http://localhost:80/... btw)
+ * This app does not allow you to set the port manually, due to the extreme risk of unforseen bugs popping up. 
+ * 
+ * 3) If you set the ridirect to, for example, "http://localhost/Rainbow/Puppy/Unicorns/hl3/confirmed" then the variable {redirect} needs to equal "Rainbow/Puppy/Unicorns/hl3/confirmed".
+ * 
+ * 4) Basically the redirect field is equal to your redirect URL you gave microsoft without the "http://localhost/" part. 
+ * Please keep this in mind or you'll get weird errors as a mismatch here will still work...sort of. 
+ */
+interface MSToken {
+    client_id: string,
+    clientSecret?: string,
+    redirect: string
+}
+
+/**
+ * The callback given on a successful login!
+ */
+interface callback {
+    "access_token": string, //Your classic Mojang auth token. You can do anything with this that you could do with the normal MC login token 
+    profile: { "id": string, "name": string, "skins": [], "capes": [] } //Player profile. Similar to the one you'd normaly get with the mojang login
+}
+
+/**
+ * Update object. Used with the update callback to get some info on the login process
+ * 
+ * types: 
+ * "Loading" 
+ * This gives input with regards to how far along the login process is
+ * 
+ * "Rejection" 
+ * This is given with a fetch error. You are given the fetch item as a data object. 
+ * 
+ * "Error"
+ * This is given with a normal MC account error and will give you some user readable feedback. 
+ * 
+ * 
+ */
+interface update {
+    type: string, // Either "Loading" , "Rejection" or "Error". 
+    data: string | Response, // Some information about the call. Like the component that's loading or the cause of the error. 
+    percent?: Number // Used to show how far along the object is in terms of loading
+}
+
+/**
+ * @param token Your MS Login token. Mainly your client ID, client secret (optional  | Depends how azure is set up) and a redirect (Do not include http://localhost:<port>/ as that's added for you!)
+ * @param callback The callback that is fired on a successful login. It contains a mojang access token and a user profile
+ * @param updates A callback that one can hook into to get updates on the login process
+ * @returns The URL needed to log in your user. You need to send this to a web browser or something similar to that!
+ */
+
+export declare function MSLogin(token: MSToken, callback: (info: callback) => void, updates?: (info: update) => void): Promise<string>;
