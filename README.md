@@ -80,7 +80,7 @@ An optional callback that one can hook into to get updates on the login process
  
 ```
 interface update {
-    type: string, // Either "Loading" , "Rejection" or "Error".
+    type: string, // Either "Starting", "Loading" , "Rejection" or "Error".
     data: string | Response, // Some information about the call. Like the component that's loading or the cause of the error. 
     percent?: Number // Used to show how far along the object is in terms of loading
 }
@@ -91,6 +91,10 @@ Possible values for the 'type' parameter:
  <th>Value</th>
  <th>Cause</th>
   </tr>
+      <tr>
+ <td>"Starting"</td>
+  <td>This is fired once when the whole loading process is started. This is mainly for setting up loading bars and stuff like that. </td>
+      <tr>
   <tr>
  <td>"Loading" </td>
  <td>This gives input with regards to how far along the login process is </td>
@@ -102,6 +106,6 @@ Possible values for the 'type' parameter:
    <tr>
  <td>"Error"</td>
   <td>This is given with a normal MC account error and will give you some user readable feedback. </td>
-      <tr>
+      </tr>
    </table>
  
