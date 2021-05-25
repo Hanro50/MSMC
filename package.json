@@ -1,0 +1,21 @@
+{
+  "name": "msmc",
+  "version": "1.0.0",
+  "description": "A bare bones login library for Minecraft based projects to authenticate individuals with a Microsoft account.",
+  "license": "MIT",
+  "main": "microsoft.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Hanro50/MSMC.git"
+  },
+  "types": "types/microsoft.d.ts",
+  "optionalDependencies": {
+    "node-fetch": "^2.6.1"
+  },
+  "author": "Hanro50 (https://github.com/Hanro50)",
+  "bugs": {
+    "url": "https://github.com/Hanro50/MSMC/issues"
+  },
+  "dependencies": {},
+  "homepage": "https://github.com/Hanro50/MSMC/blob/main/README.md"
+}
