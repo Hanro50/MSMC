@@ -19,7 +19,7 @@ require('./microsoft').MSLogin({ client_id: "{client ID}", redirect: "{redirect}
  token => Basic MS token info<br>
  callback => The callback that is fired on a successful login. It contains a mojang access token and a user profile<br>
  updates => A callback that one can hook into to get updates on the login process<br>
- returns => The URL needed to log in your user. You need to send this to a web browser or something similar to that!<br>
+ returns => The URL needed to log in your user in the form of a promise. You need to send this to a web browser or something similar to that!<br>
  
 `MSLogin(token: MSToken, callback: (info: callback) => void, updates?: (info: update) => void): Promise<string>`
 
