@@ -8,7 +8,7 @@
     "type": "git",
     "url": "git://github.com/Hanro50/MSMC.git"
   },
-  "types": "types/microsoft.d.ts",
+  "types": "microsoft.d.ts",
   "optionalDependencies": {
     "node-fetch": "^2.6.1"
   },
