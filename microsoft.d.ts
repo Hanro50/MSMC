@@ -35,6 +35,8 @@ interface callback {
     profile: { "id": string, "name": string, "skins": [], "capes": [] } //Player profile. Similar to the one you'd normaly get with the mojang login
 }
 
+
+
 /**
  * Update object. Used with the update callback to get some info on the login process
  * 
@@ -43,7 +45,7 @@ interface callback {
  * This gives input with regards to how far along the login process is
  * 
  * "Rejection" 
- * This is given with a fetch error. You are given the fetch item as a data object. 
+ * This is given with a fetch error. You are given the fetch item as a data object.
  * 
  * "Error"
  * This is given with a normal MC account error and will give you some user readable feedback. 
@@ -51,8 +53,19 @@ interface callback {
  * "Starting"
  * This is fired once when the whole loading process is started. This is mainly for setting up loading bars and stuff like that
  */
+
+enum updateTypes {
+    /** This gives input with regards to how far along the login process is */
+    Loading = "Loading",
+    /** This is given with a fetch error. You are given the fetch item as a data object.  */
+    Rejection = "Rejection",
+    /**This is given with a normal MC account error and will give you some user readable feedback.  */
+    Error = "Error",
+    /**This is fired once when the whole loading process is started. This is mainly for setting up loading bars and stuff like that */
+    Starting = "Starting"
+}
 interface update {
-    type: string, // Either "Loading" , "Rejection" or "Error". 
+    type: updateTypes, // Either "Starting","Loading" , "Rejection" or "Error". 
     data: string | Response, // Some information about the call. Like the component that's loading or the cause of the error. 
     percent?: Number // Used to show how far along the object is in terms of loading
 }
