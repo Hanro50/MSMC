@@ -43,12 +43,12 @@ async function MSCallBack(Params, token, callback, updates = () => { }) {
     }
 
     function error(reason) {
-        updates({ type: "error", data: reason })
+        updates({ type: "Error", data: reason })
     }
 
     function webCheck(response) {
         if (response.status > 400) {
-            updates({ type: "Rejection", data: response })
+            updates({ type: "Rejection", response: response })
         }
     }
 
