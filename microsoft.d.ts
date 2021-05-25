@@ -66,8 +66,9 @@ enum updateTypes {
 }
 interface update {
     type: updateTypes, // Either "Starting","Loading" , "Rejection" or "Error". 
-    data: string | Response, // Some information about the call. Like the component that's loading or the cause of the error. 
-    percent?: Number // Used to show how far along the object is in terms of loading
+    data: string, // Some information about the call. Like the component that's loading or the cause of the error. 
+    response: Response, //used by the rejection type
+    percent?: number // Used to show how far along the object is in terms of loading
 }
 
 /**
