@@ -48,7 +48,8 @@ interface callback {
  * "Error"
  * This is given with a normal MC account error and will give you some user readable feedback. 
  * 
- * 
+ * "Starting"
+ * This is fired once when the whole loading process is started. This is mainly for setting up loading bars and stuff like that
  */
 interface update {
     type: string, // Either "Loading" , "Rejection" or "Error". 

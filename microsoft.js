@@ -34,6 +34,7 @@ const FETCH = FETCHGet();
  * @returns 
  */
 async function MSCallBack(Params, token, callback, updates = () => { }) {
+    updates({ type: "Starting" });
     const code = Params.get('code');
     console.log(Params); //debug
     var percent = 100 / 8;
