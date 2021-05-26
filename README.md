@@ -1,6 +1,9 @@
 # MSMC
 A bare bones login library for Minecraft based projects to authenticate individuals with a Microsoft account. 
 
+# credit
+Based off the Oauth2 flow outline on <a href="https://wiki.vg/Microsoft_Authentication_Scheme"> this site</a>
+
 # Example 
 ```
 require('./microsoft').MSLogin({ client_id: "{client ID}", redirect: "{redirect}" },
