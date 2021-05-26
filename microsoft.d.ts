@@ -54,7 +54,7 @@ interface callback {
  * This is fired once when the whole loading process is started. This is mainly for setting up loading bars and stuff like that
  */
 
-enum updateTypes {
+declare enum updateTypes {
     /** This gives input with regards to how far along the login process is */
     Loading = "Loading",
     /** This is given with a fetch error. You are given the fetch item as a data object.  */
