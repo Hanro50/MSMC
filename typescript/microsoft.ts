@@ -190,7 +190,7 @@ async function MSCallBack(Params: URLSearchParams, token : MSToken, callback : (
                 reason = "The account doesn't have an Xbox account."; break;
             }
             case "2148916238": {
-                reason = "The account is a child (under 18) and cannot proceed unless the account is added to a Family by an adult"; break;
+                reason = "The account is a child (under 18) and cannot proceed unless the account is added to a Family by an adult (FIX ME: This error should in theory never happen if the launcher's oauth token is set up correctly)"; break;
             }
         }
         return error(reason);
