@@ -31,10 +31,10 @@ End license text.*/
  * 4) Basically the redirect field is equal to your redirect URL you gave microsoft without the "http://localhost/" part. 
  * Please keep this in mind or you'll get weird errors as a mismatch here will still work...sort of. 
  */
-interface MSToken {
+export interface MSToken {
     client_id: string,
     clientSecret?: string,
-    redirect: string
+    redirect?: string
 }
 
 /**
