@@ -112,3 +112,4 @@ Possible values for the 'type' parameter:
       </tr>
    </table>
  
+###### This project is written in JavaScript first and then translated into TypeScript. I don't like the javascript the typescript compiler outputs and not having a typescript version might be a deal breaker for some as there could be unforseen errors in my types files since I am merely human. 
