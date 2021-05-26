@@ -94,7 +94,7 @@ function FETCHGet() {
         } catch {
             //And the user no longer has a required dependency - If someone wants to. I'd be open for a wrapper to work with request.js 
 
-            console.error("No version of fetch is a available in this enviroment!")
+            //console.error("No version of fetch is a available in this enviroment!")
         }
     }
 }
@@ -109,7 +109,7 @@ async function MSCallBack(Params: URLSearchParams, token : MSToken, callback : (
     
     updates({ type: updateTypes.Starting });
     const code = Params.get('code');
-    console.log(Params); //debug
+    //console.log(Params); //debug
     var percent = 100 / 8;
     function loadBar(number : number, asset : string) {
         updates({ type: updateTypes.Loading, data: asset, percent: number })
@@ -135,7 +135,7 @@ async function MSCallBack(Params: URLSearchParams, token : MSToken, callback : (
             (token.clientSecret ? "&client_secret=" + token.clientSecret : "")
         , headers: { "Content-Type": "application/x-www-form-urlencoded" }
     })).json();
-    console.log(MS); //debug
+    //console.log(MS); //debug
     webCheck(MS);
 
     loadBar(percent * 2, "Logging into Xbox Live")
@@ -152,11 +152,11 @@ async function MSCallBack(Params: URLSearchParams, token : MSToken, callback : (
             })
         , headers: { "Content-Type": "application/json", 'Accept': 'application/json' }
     })
-    console.log(rxboxlive); //debug
+    //console.log(rxboxlive); //debug
     webCheck(rxboxlive);
     var xboxtoken = await (rxboxlive).json();
 
-    console.log(token); //debug
+    //console.log(token); //debug
 
     var XBLToken = xboxtoken.Token;
     var UserHash = xboxtoken.DisplayClaims.xui[0].uhs;
@@ -177,10 +177,10 @@ async function MSCallBack(Params: URLSearchParams, token : MSToken, callback : (
     })
 
     webCheck(rxsts);
-    console.log(rxsts) //debug
+    //console.log(rxsts) //debug
     var XSTS = await (rxsts).json();
 
-    console.log(XSTS);
+    //console.log(XSTS);
     loadBar(percent * 4, "Checking for errors")
 
     if (XSTS.XErr) {
@@ -208,13 +208,13 @@ async function MSCallBack(Params: URLSearchParams, token : MSToken, callback : (
 
     loadBar(percent * 6, "Checking game ownership")
     var MCauth = await rlogin_with_xbox.json();
-    console.log(MCauth) //debug
+    //console.log(MCauth) //debug
     var rmcstore = await FETCH("https://api.minecraftservices.com/entitlements/mcstore", {
         headers: { "Content-Type": "application/json", 'Accept': 'application/json', 'Authorization': "Bearer " + MCauth.access_token }
     })
 
     var MCPurchaseCheck = await rmcstore.json();
-    console.log(MCPurchaseCheck) //debug
+    //console.log(MCPurchaseCheck) //debug
     if (MCPurchaseCheck.items.length < 1) {
         return error("You do not seem to own minecraft.");
     }
@@ -225,7 +225,7 @@ async function MSCallBack(Params: URLSearchParams, token : MSToken, callback : (
     })
 
     var profile = await r998.json();
-    console.log(profile) //debug
+    //console.log(profile) //debug
     if (profile.error) {
         return error("You do not seem to have a minecraft account.");
     }
@@ -250,8 +250,8 @@ function setCallback(callback: (URL: URLSearchParams, serv: Server) => void) {
         res.writeHead(200, { 'Content-Type': 'text/plain' });
         res.end('Thank you!');
         app.close();
-        console.log(req.url);
-        console.log(req.url.substr(req.url.indexOf("?") + 1))
+        //console.log(req.url);
+        //console.log(req.url.substr(req.url.indexOf("?") + 1))
         if (req.url.includes("?")) {
             const urlParams = new URLSearchParams(req.url.substr(req.url.indexOf("?") + 1));
             callback(urlParams, app);

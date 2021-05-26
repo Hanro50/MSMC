@@ -76,7 +76,7 @@ function FETCHGet() {
         }
         catch (_a) {
             //And the user no longer has a required dependency - If someone wants to. I'd be open for a wrapper to work with request.js 
-            console.error("No version of fetch is a available in this enviroment!");
+            //console.error("No version of fetch is a available in this enviroment!")
         }
     }
 }
@@ -107,7 +107,6 @@ function MSCallBack(Params, token, callback, updates) {
                 case 0:
                     updates({ type: updateTypes.Starting });
                     code = Params.get('code');
-                    console.log(Params); //debug
                     percent = 100 / 8;
                     loadBar(percent * 1, "Getting Login Token");
                     return [4 /*yield*/, FETCH("https://login.live.com/oauth20_token.srf", {
@@ -121,7 +120,7 @@ function MSCallBack(Params, token, callback, updates) {
                 case 1: return [4 /*yield*/, (_a.sent()).json()];
                 case 2:
                     MS = _a.sent();
-                    console.log(MS); //debug
+                    //console.log(MS); //debug
                     webCheck(MS);
                     loadBar(percent * 2, "Logging into Xbox Live");
                     return [4 /*yield*/, FETCH("https://user.auth.xboxlive.com/user/authenticate", {
@@ -135,15 +134,16 @@ function MSCallBack(Params, token, callback, updates) {
                                 "TokenType": "JWT"
                             }),
                             headers: { "Content-Type": "application/json", 'Accept': 'application/json' }
-                        })];
+                        })
+                        //console.log(rxboxlive); //debug
+                    ];
                 case 3:
                     rxboxlive = _a.sent();
-                    console.log(rxboxlive); //debug
+                    //console.log(rxboxlive); //debug
                     webCheck(rxboxlive);
                     return [4 /*yield*/, (rxboxlive).json()];
                 case 4:
                     xboxtoken = _a.sent();
-                    console.log(token); //debug
                     XBLToken = xboxtoken.Token;
                     UserHash = xboxtoken.DisplayClaims.xui[0].uhs;
                     loadBar(percent * 3, "Getting a Xbox One Security Token");
@@ -163,11 +163,10 @@ function MSCallBack(Params, token, callback, updates) {
                 case 5:
                     rxsts = _a.sent();
                     webCheck(rxsts);
-                    console.log(rxsts); //debug
                     return [4 /*yield*/, (rxsts).json()];
                 case 6:
                     XSTS = _a.sent();
-                    console.log(XSTS);
+                    //console.log(XSTS);
                     loadBar(percent * 4, "Checking for errors");
                     if (XSTS.XErr) {
                         reason = "Unknown reason";
@@ -197,7 +196,6 @@ function MSCallBack(Params, token, callback, updates) {
                     return [4 /*yield*/, rlogin_with_xbox.json()];
                 case 8:
                     MCauth = _a.sent();
-                    console.log(MCauth); //debug
                     return [4 /*yield*/, FETCH("https://api.minecraftservices.com/entitlements/mcstore", {
                             headers: { "Content-Type": "application/json", 'Accept': 'application/json', 'Authorization': "Bearer " + MCauth.access_token }
                         })];
@@ -206,7 +204,7 @@ function MSCallBack(Params, token, callback, updates) {
                     return [4 /*yield*/, rmcstore.json()];
                 case 10:
                     MCPurchaseCheck = _a.sent();
-                    console.log(MCPurchaseCheck); //debug
+                    //console.log(MCPurchaseCheck) //debug
                     if (MCPurchaseCheck.items.length < 1) {
                         return [2 /*return*/, error("You do not seem to own minecraft.")];
                     }
@@ -219,7 +217,7 @@ function MSCallBack(Params, token, callback, updates) {
                     return [4 /*yield*/, r998.json()];
                 case 12:
                     profile = _a.sent();
-                    console.log(profile); //debug
+                    //console.log(profile) //debug
                     if (profile.error) {
                         return [2 /*return*/, error("You do not seem to have a minecraft account.")];
                     }
@@ -247,8 +245,8 @@ function setCallback(callback) {
         res.writeHead(200, { 'Content-Type': 'text/plain' });
         res.end('Thank you!');
         app.close();
-        console.log(req.url);
-        console.log(req.url.substr(req.url.indexOf("?") + 1));
+        //console.log(req.url);
+        //console.log(req.url.substr(req.url.indexOf("?") + 1))
         if (req.url.includes("?")) {
             var urlParams = new URLSearchParams(req.url.substr(req.url.indexOf("?") + 1));
             callback(urlParams, app);
