@@ -1,3 +1,14 @@
+declare enum Prompt {
+    /**will force the user to enter their credentials on that request, negating single-sign on. */
+    login = "login",
+    /**is the opposite - it will ensure that the user isn't presented with any interactive prompt whatsoever. If the request can't be completed silently via single-sign on, the Microsoft identity platform will return an interaction_required error.  */
+    none = "none",
+    /**will trigger the OAuth consent dialog after the user signs in, asking the user to grant permissions to the app.*/
+    consent = "consent",
+    /**will interrupt single sign-on providing account selection experience listing all the accounts either in session or any remembered account or an option to choose to use a different account altogether.*/
+    select_account = "select_account"
+}
+
 /**
  * The Oauth2 details needed to log you in. 
  * 
@@ -24,7 +35,8 @@
 interface MSToken {
     client_id: string,
     clientSecret?: string,
-    redirect?: string
+    redirect?: string,
+    prompt?:Prompt
 }
 
 /**
@@ -79,6 +91,7 @@ interface WindowSettings {
     parent?: Window, //The main window object that will be manipulated (If blank then the global global.window object will be used!)
     closeAfter?: boolean //Should the window be closed afterwards? (Will be ignored if 'parent' is undefined!)
     trueRedirect?: boolean //The true redirect fired when the login procedure begins! ("will be ignored if closeAfter is true and 'parent' is defined")
+
 }
 
 /**

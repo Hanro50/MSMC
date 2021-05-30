@@ -20,9 +20,13 @@ function FETCHGet() {
             //node context (Electron)
             return require("node-fetch")
         } catch {
-            //And the user no longer has a required dependency - If someone wants to. I'd be open for a wrapper to work with request.js 
-
-            //console.error("No version of fetch is a available in this enviroment!")
+            try {
+                return ("electron-fetch");
+            } catch {
+                //And the user no longer has a required dependency - If someone wants to. I'd be open for a wrapper to work with request.js 
+                console.error("No version of fetch is a available in this enviroment!")
+                console.error("Possible packages to fill this dependency are 'electron-fetch' and 'node-fetch' (Recommended) ")
+            }
         }
     }
 }
@@ -197,6 +201,16 @@ function setCallback(callback) {
 }
 
 
+if (typeof module == "undefined") {
+    console.log("Loading in on browser mode!\nUse getMSMC() to access sub functions.")
+    module = {};
+    module.exports = {};
+
+    function getMSMC() {
+        return module.exports;
+    }
+}
+
 
 module.exports.MSLogin = function (token, callback, updates) {
 
@@ -214,11 +228,17 @@ module.exports.MSLogin = function (token, callback, updates) {
 }
 
 module.exports.CreateLink = function (token) {
+
+
+
+    console.log(token
+    )
     return "https://login.live.com/oauth20_authorize.srf" +
         "?client_id=" + token.client_id +
         "&response_type=code" +
         "&redirect_uri=" + encodeURIComponent(token.redirect) +
-        "&scope=XboxLive.signin%20offline_access"
+        "&scope=XboxLive.signin%20offline_access" +
+        (token.prompt ? "&prompt=" + token.prompt : "")
 }
 /**
  * 
@@ -233,16 +253,15 @@ module.exports.WindowLogin = function (token, win, callback, updates) {
 
     const closeOnExit = win.parent || win.popup ? win.closeAfter : false;
     /**@type {Window} */
-    const main = win.parent ? win.parent : window
-    /**@type {Window} */
-    const mainWin = win.popup ? main.open() : main;
+    const main = () => win.parent ? win.parent : (typeof window != "undefined" ? window : null)
 
-    if (!mainWin) {
-        console.error("Popup blocked!")
-        return;
-    }
-
-    function loadchange(loc) {
+    /**
+     * 
+     * @param {Window} mainWin 
+    
+     * @returns 
+     */
+    function loadchange(mainWin, loc = mainWin.location.href) {
 
 
         if (loc.startsWith(token.redirect)) {
@@ -252,39 +271,98 @@ module.exports.WindowLogin = function (token, win, callback, updates) {
                 try {
                     console.error("close window!")
                     mainWin.close();
+
                 } catch {
                     console.error("Failed to close window!")
                 }
             } else if (win.trueRedirect) {
-                mainWin.location = win.trueRedirect;
+                if ("location" in mainWin) {
+                    mainWin.location.href = win.trueRedirect;
+
+                } else {
+                    mainWin.loadURL(win.trueRedirect)
+                }
             }
             MSCallBack(urlParams, token, callback, updates);
+            return true;
         }
+        return false;
 
     }
 
-    mainWin.onhashchange = () => {
-        console.error("load login!")
-        var loc = mainWin.location.toString();
-        loadchange(loc);
-    }
-    console.error("Silent login!")
-    //Silent login!
-    mainWin.fetch(redirect).then(r => {
-        console.error("Fetch")
-        console.log(r)
-        if (r.url) {
-            loadchange(r.url);
+
+    /**@type {Window} */
+    var mainWin;
+    if (win.popup) {
+        if (typeof nw != "undefined") {
+            //NW.js
+            nw.Window.open(redirect, {}, function (new_win) {
+                new_win.on('loaded', function () {
+                    console.log('loaded')
+                    loadchange(new_win.window)
+
+                });
+
+            })
+            return;
+        } else {
+
+            try {
+                const { BrowserWindow } = require('electron');
+                const mainWindow = new BrowserWindow({
+                    width: 800,
+                    height: 600
+                })
+                mainWindow.loadURL(redirect);
+                const contents = mainWindow.webContents;
+                contents.on('did-finish-load', () => {
+
+                    loadchange(mainWindow, contents.getURL())
+                })
+
+
+                return;
+            } catch (e) {
+                if (!main()) {
+                    console.trace(e);
+                    return;
+                }
+                //Unknown framework! or Electron front end
+                mainWin = main().open("", "MSLogin", 'height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes')
+            }
         }
+    } else
+        mainWin = main();
+
+    if (!mainWin) {
+        console.error("Popup blocked!")
+        return;
+    }
+
+
+
+
+    console.log(mainWin)
+    try {
         mainWin.location = redirect;
-    })
+        console.log(mainWin)
+        var inter = setInterval(() => {
+            if (loadchange(mainWin) || mainWin.closed) {
+                clearInterval(inter);
+            }
+        }, 1000);
+    } catch {
+        console.error("Seems you're running in a commercial browser or within a framework with the same limitations as a commercial browser. This will not work!")
+    }
+
     //mainWin.location.replace(redirect);
 }
 
-module.exports.FastLaunch = function (win, callback, updates) {
+module.exports.FastLaunch = function (win, callback, updates, prompt) {
     const token = {
         client_id: "00000000402b5328",
-        redirect: "https://login.live.com/oauth20_desktop.srf"
+        redirect: "https://login.live.com/oauth20_desktop.srf",
+        prompt: prompt
     }
     this.WindowLogin(token, win, callback, updates)
 }
