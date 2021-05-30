@@ -1,9 +1,11 @@
 # Experimental code:
-Documentation needs to be updated
-Modules need to be backported to typescript/typescript needs to be removed
-A whole lot of QnA testing
+### Todo: 
+1)Documentation needs to be updated
+2)Modules need to be backported to typescript/typescript needs to be removed
+3)A whole lot of QnA testing
 
-What this version allows you to do compared to the normal branch is that it add support for tighter integration between the browser window and this library. Allowing one to skip the need for an http server. It also allows us to use a microsoft login 
+### abridged description
+What this version allows you to do compared to the normal branch is that it adds support for tighter integration between the browser window and this library. Allowing one to skip the need for an http server. It also allows us to use a microsoft login 
 
 This code is fairly experimental and might undergo change. Let me know of any bugs!
 
