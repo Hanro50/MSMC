@@ -129,4 +129,4 @@ export declare function WindowLogin(token: MSToken, win: WindowSettings, callbac
  * @param callback The callback that is fired on a successful login. It contains a mojang access token and a user profile
  * @param updates A callback that one can hook into to get updates on the login process
  */
-export declare function FastLaunch(win: WindowSettings, callback: (info: callback) => void, updates?: (info: update) => void): void;
+export declare function FastLaunch(win: WindowSettings, callback: (info: callback) => void, updates?: (info: update) => void, prompt?:Prompt): void;
