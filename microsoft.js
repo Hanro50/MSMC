@@ -26,8 +26,7 @@ function FETCHGet() {
         }
     }
 }
-/** We need an http server of some description to get the callback */
-const http = require('http');
+
 const FETCH = FETCHGet();
 /**
  * @param {URLSearchParams} Params 
@@ -169,6 +168,12 @@ var app;
 */
 function setCallback(callback) {
     try {
+        /** We need an http server of some description to get the callback */
+        const http = require('http');
+    } catch {
+        console.error("Dependency error! I need an http server for this method!")
+    }
+    try {
         if (app) {
             app.close();
         }
@@ -197,15 +202,87 @@ module.exports.MSLogin = function (token, callback, updates) {
     return new Promise(
         resolve => app.addListener('listening',
             () => {
-                token.redirect = "http%3A%2F%2Flocalhost%3A" + (app.address().port) + "%2F" + (token.redirect ? encodeURIComponent(token.redirect) : "");
+                token.redirect = "http://localhost:" + (app.address().port) + "/" + (token.redirect ? token.redirect : "");
                 resolve(
-                    "https://login.live.com/oauth20_authorize.srf" +
-                    "?client_id=" + token.client_id +
-                    "&response_type=code" +
-                    "&redirect_uri=" + token.redirect +
-                    "&scope=XboxLive.signin%20offline_access"
+                    this.CreateLink(token)
                 )
             }
         )
     )
+}
+
+module.exports.CreateLink = function (token) {
+    return "https://login.live.com/oauth20_authorize.srf" +
+        "?client_id=" + token.client_id +
+        "&response_type=code" +
+        "&redirect_uri=" + encodeURIComponent(token.redirect) +
+        "&scope=XboxLive.signin%20offline_access"
+}
+/**
+ * 
+ * @param {*} token 
+ * @param {{win:Window}} win 
+ * @param {*} callback 
+ * @param {*} updates 
+ */
+module.exports.WindowLogin = function (token, win, callback, updates) {
+  
+    var redirect = this.CreateLink(token);
+   
+    const closeOnExit = win.parent || win.popup ? win.closeAfter : false;
+    /**@type {Window} */
+    const main = win.parent ? win.parent : window
+    /**@type {Window} */
+   const mainWin = win.popup ? main.open() : main;
+
+    if (!mainWin) {
+        console.error("Popup blocked!")
+        return;
+    }
+
+    function loadchange(loc) {
+
+
+        if (loc.startsWith(token.redirect)) {
+            const urlParams = new URLSearchParams(loc.substr(loc.indexOf("?") + 1));
+           
+            if (closeOnExit) {
+                try {
+                    console.error("close window!")
+                    mainWin.close();
+                } catch {
+                    console.error("Failed to close window!")
+                }
+            }else if (win.trueRedirect){
+                mainWin.location =win.trueRedirect; 
+            }
+            MSCallBack(urlParams, token, callback, updates);
+        }
+
+    }
+
+    mainWin.onhashchange = () => {
+        console.error("load login!")
+        var loc = mainWin.location.toString();
+        loadchange(loc);
+    }
+    console.error("Silent login!")
+    //Silent login!
+    mainWin.fetch(redirect).then(r => {
+        console.error("Fetch")
+        console.log(r)
+        if (r.url) {
+            loadchange(r.url);
+        }
+        mainWin.location = redirect;
+    })
+    //mainWin.location.replace(redirect);
+}
+
+module.exports.FastLaunch = function (win, callback, updates) {
+    const token = {
+        client_id: "00000000402b5328",
+        redirect: "https://login.live.com/oauth20_desktop.srf"
+    }
+    this.WindowLogin(token, win, callback, updates)
 }

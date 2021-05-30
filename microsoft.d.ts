@@ -24,7 +24,7 @@
 interface MSToken {
     client_id: string,
     clientSecret?: string,
-    redirect: string
+    redirect?: string
 }
 
 /**
@@ -72,6 +72,17 @@ interface update {
 }
 
 /**
+ * This is for window based applications
+ */
+interface WindowSettings {
+    popup?: boolean, //Should the app try to generate a popup? (This might cause some irregular results. Electron blocks popups by default!)
+    parent?: Window, //The main window object that will be manipulated (If blank then the global global.window object will be used!)
+    closeAfter?: boolean //Should the window be closed afterwards? (Will be ignored if 'parent' is undefined!)
+    trueRedirect?: boolean //The true redirect fired when the login procedure begins! ("will be ignored if closeAfter is true and 'parent' is defined")
+}
+
+/**
+ * RECOMMENDED!!!!
  * @param token Your MS Login token. Mainly your client ID, client secret (optional  | Depends how azure is set up) and a redirect (Do not include http://localhost:<port>/ as that's added for you!)
  * @param callback The callback that is fired on a successful login. It contains a mojang access token and a user profile
  * @param updates A callback that one can hook into to get updates on the login process
@@ -79,3 +90,30 @@ interface update {
  */
 
 export declare function MSLogin(token: MSToken, callback: (info: callback) => void, updates?: (info: update) => void): Promise<string>;
+/**
+ * EXPERIMENTAL!!
+ * Notice: This function does not process the redirect you provide unlike the classic MSLogin function!!
+ * @param token Your MS Login token. Mainly your client ID, client secret (optional  | Depends how azure is set up) and a redirect 
+ * @returns The URL needed to log in your user. You need to send this to a web browser or something similar to that!
+ */
+export declare function CreateLink(token: MSToken, ProcessRedirect: boolean): string;
+/**
+ * EXPERIMENTAL!!
+ * @param token Your MS Login token. Mainly your client ID, client secret (optional  | Depends how azure is set up) and a redirect (This should match the redirect you want 100%)
+ * @param win see WindowSettings
+ * @param callback The callback that is fired on a successful login. It contains a mojang access token and a user profile
+ * @param updates A callback that one can hook into to get updates on the login process
+ * @returns The URL needed to log in your user. You need to send this to a web browser or something similar to that!
+ */
+
+export declare function WindowLogin(token: MSToken, win: WindowSettings, callback: (info: callback) => void, updates?: (info: update) => void): void;
+
+
+/**
+ * EXPERIMENTAL!!
+ * This is the same as WindowLogin, but it uses the native mojang login!
+ * @param win see WindowSettings
+ * @param callback The callback that is fired on a successful login. It contains a mojang access token and a user profile
+ * @param updates A callback that one can hook into to get updates on the login process
+ */
+export declare function FastLaunch(win: WindowSettings, callback: (info: callback) => void, updates?: (info: update) => void): void;
