@@ -167,11 +167,13 @@ var app;
 * This is needed for the oauth 2 callback
 */
 function setCallback(callback) {
+    var http
     try {
         /** We need an http server of some description to get the callback */
-        const http = require('http');
+        http = require('http');
     } catch {
-        console.error("Dependency error! I need an http server for this method!")
+        console.error("Dependency error! I need to spin up an http server for this method!")
+        return;
     }
     try {
         if (app) {
@@ -226,14 +228,14 @@ module.exports.CreateLink = function (token) {
  * @param {*} updates 
  */
 module.exports.WindowLogin = function (token, win, callback, updates) {
-  
+
     var redirect = this.CreateLink(token);
-   
+
     const closeOnExit = win.parent || win.popup ? win.closeAfter : false;
     /**@type {Window} */
     const main = win.parent ? win.parent : window
     /**@type {Window} */
-   const mainWin = win.popup ? main.open() : main;
+    const mainWin = win.popup ? main.open() : main;
 
     if (!mainWin) {
         console.error("Popup blocked!")
@@ -245,7 +247,7 @@ module.exports.WindowLogin = function (token, win, callback, updates) {
 
         if (loc.startsWith(token.redirect)) {
             const urlParams = new URLSearchParams(loc.substr(loc.indexOf("?") + 1));
-           
+
             if (closeOnExit) {
                 try {
                     console.error("close window!")
@@ -253,8 +255,8 @@ module.exports.WindowLogin = function (token, win, callback, updates) {
                 } catch {
                     console.error("Failed to close window!")
                 }
-            }else if (win.trueRedirect){
-                mainWin.location =win.trueRedirect; 
+            } else if (win.trueRedirect) {
+                mainWin.location = win.trueRedirect;
             }
             MSCallBack(urlParams, token, callback, updates);
         }
