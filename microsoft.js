@@ -33,7 +33,7 @@ const FETCH = FETCHGet();
  * @param {URLSearchParams} Params 
  * @returns 
  */
-async function MSCallBack(Params, token, callback, updates = () => { }) {
+async function MSCallBack(Params, MStoken, callback, updates = () => { }) {
     updates({ type: "Starting" });
     const code = Params.get('code');
     //console.log(Params); //debug
@@ -55,11 +55,11 @@ async function MSCallBack(Params, token, callback, updates = () => { }) {
     loadBar(percent * 1, "Getting Login Token")
     var MS = await (await FETCH("https://login.live.com/oauth20_token.srf", {
         method: "post", body:
-            "client_id=" + token.client_id +
+            "client_id=" + MStoken.client_id +
             "&code=" + code +
             "&grant_type=authorization_code" +
-            "&redirect_uri=" + token.redirect +
-            (token.clientSecret ? "&client_secret=" + token.clientSecret : "")
+            "&redirect_uri=" + MStoken.redirect +
+            (MStoken.clientSecret ? "&client_secret=" + MStoken.clientSecret : "")
         , headers: { "Content-Type": "application/x-www-form-urlencoded" }
     })).json();
     //console.log(MS); //debug
