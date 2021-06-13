@@ -4,11 +4,9 @@ A bare bones login library for Minecraft based projects to authenticate individu
 # credit
 Based off the Oauth2 flow outline on <a href="https://wiki.vg/Microsoft_Authentication_Scheme"> this site</a>
 
-# Electron code sample
-
-
-# Example 
-This is a code sample for electron. It should be added to your main.js file This will launch a popup for allowing a user to log in as soon as possible. The method Fastlaunch actually emulates the vanilla minecraft launcher. This means that we can use mojangs own client ID to login. Inline login windows should use the older method. 
+# Examples 
+### Electron code sample
+This is a code sample for electron. It should be added to your main.js file. This will launch a popup that allows a user to log in with their microsoft account as soon as possible. Fastlaunch actually emulates the vanilla minecraft launcher, meaning that we can use mojangs own client ID to login. Inline login windows should use the older method. 
 ```
 app.whenReady().then(() => {
   ...
@@ -31,16 +29,49 @@ app.whenReady().then(() => {
  ...
 })
 ```
+### NV.js code support coming soon
+
 # Docs 
- ## Function
+ ## Functions
+ 
+ An override to manually define which version of fetch should be used. Useful for if you have multiple versions of fetch available and want to use a specific variant<br>
+fetchIn => A version of fetch <br>
+
+`setFetch(fetchIn: any): void`<br>
+
  token => Basic MS token info<br>
  callback => The callback that is fired on a successful login. It contains a mojang access token and a user profile<br>
  updates => A callback that one can hook into to get updates on the login process<br>
  returns => The URL needed to log in your user in the form of a promise. You need to send this to a web browser or something similar to that!<br>
- 
-`MSLogin(token: MSToken, callback: (info: callback) => void, updates?: (info: update) => void): Promise<string>`
+  (RECOMMENDED) <br>
+`MSLogin(token: MSToken, callback: (info: callback) => void, updates?: (info: update) => void): Promise<string>`<br>
 
-### token: MSToken: 
+
+
+code => The code gotten from a successful login <br>
+MStoken  => The MS token object <br>
+callback  => The callback that is fired on a successful login. It contains a mojang access token and a user profile<br>
+updates  => The URL needed to log in your user. You need to send this to a web browser or something similar to that!<br>
+
+`MSCallBack(code: string, MStoken: MSToken, callback: (info: callback) => void, updates?: (info: update) => void): Promise<void>;`<br>
+
+
+Use with electron to get a electron version of fast launch <br>
+returns => <br>
+{ <br>
+&nbsp;&nbsp;&nbsp;&nbsp;callback => The callback that is fired on a successful login. It contains a mojang access token and a user profile<br>
+&nbsp;&nbsp;&nbsp;&nbsp;updates => A callback that one can hook into to get updates on the login process<br>
+&nbsp;&nbsp;&nbsp;&nbsp;prompt => See <a href="https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-auth-code-flow#request-an-authorization-code">Microsofts docs</a> for more information<br>
+&nbsp;&nbsp;&nbsp;&nbsp;`FastLaunch: (callback: (info: callback) => void, updates?: (info: update) => void,prompt:string)=>void` <br>
+}<br>
+`getElectron()`
+
+
+
+
+
+
+## token: MSToken: 
  The Oauth2 details needed to log you in. 
   
   Resources
@@ -63,12 +94,13 @@ app.whenReady().then(() => {
   4) Basically the redirect field is equal to your redirect URL you gave microsoft without the "http://localhost/" part. 
   Please keep this in mind or you'll get weird errors as a mismatch here will still work...sort of. 
  
-
+ ## interfaces
 ```
 interface MSToken {
     client_id: string,
     clientSecret?: string,
-    redirect: string
+    redirect?: string,
+    prompt?: "login" | "none" | "consent" | "select_account"
 }
 ```
  ### callback: (info: callback) => void :
