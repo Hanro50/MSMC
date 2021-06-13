@@ -1,15 +1,9 @@
 
 /*Copyright 2021 Hanro50
-
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
 End license text.*/
-
-
 //This could be running in a hybrid browser context (NW.js) or node context (Electron)
 function FETCHGet() {
     if (typeof fetch === "function") {
@@ -28,14 +22,20 @@ function FETCHGet() {
 }
 /** We need an http server of some description to get the callback */
 const http = require('http');
-const FETCH = FETCHGet();
+var FETCH = FETCHGet();
+
+module.exports.setFetch = (fetchIn)=>{
+    FETCH = fetchIn;
+}
+
+
 /**
  * @param {URLSearchParams} Params 
  * @returns 
  */
-async function MSCallBack(Params, MStoken, callback, updates = () => { }) {
+module.exports.MSCallBack = async function (code, MStoken, callback, updates = () => { }) {
     updates({ type: "Starting" });
-    const code = Params.get('code');
+
     //console.log(Params); //debug
     var percent = 100 / 8;
     function loadBar(number, asset) {
@@ -188,16 +188,12 @@ function setCallback(callback) {
     });
     return app.listen();
 }
-
-
-
 module.exports.MSLogin = function (token, callback, updates) {
-
-    setCallback((Params) => MSCallBack(Params, token, callback, updates))
+    setCallback((Params) => this.MSCallBack(Params.get('code'), token, callback, updates))
     return new Promise(
         resolve => app.addListener('listening',
             () => {
-                if (String( token.redirect).startsWith("/")){
+                if (String(token.redirect).startsWith("/")) {
                     token.redirect = String(token.redirect).substr(1);
                 }
                 token.redirect = "http%3A%2F%2Flocalhost%3A" + (app.address().port) + "%2F" + (token.redirect ? encodeURIComponent(token.redirect) : "");

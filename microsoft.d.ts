@@ -79,3 +79,17 @@ interface update {
  */
 
 export declare function MSLogin(token: MSToken, callback: (info: callback) => void, updates?: (info: update) => void): Promise<string>;
+/**
+ * 
+ * @param code The code gotten from a successful login 
+ * @param MStoken The MS token object 
+ * @param callback The callback that is fired on a successful login. It contains a mojang access token and a user profile
+ * @param updates The URL needed to log in your user. You need to send this to a web browser or something similar to that!
+ */
+export declare async function MSCallBack(code: string, MStoken: MSToken, callback: (info: callback) => void, updates?: (info: update) => void): Promise<void>;
+
+/**
+ * An override to manually define which version of fetch should be used 
+ * @param fetchIn A version of fetch 
+ */
+export declare function setFetch(fetchIn: any): void;
