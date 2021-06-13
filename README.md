@@ -4,17 +4,31 @@ A bare bones login library for Minecraft based projects to authenticate individu
 # credit
 Based off the Oauth2 flow outline on <a href="https://wiki.vg/Microsoft_Authentication_Scheme"> this site</a>
 
+# Electron code sample
+
+
 # Example 
+This is a code sample for electron. It should be added to your main.js file This will launch a popup for allowing a user to log in as soon as possible. The method Fastlaunch actually emulates the vanilla minecraft launcher. This means that we can use mojangs own client ID to login. Inline login windows should use the older method.  
 ```
-require('./microsoft').MSLogin({ client_id: "{client ID}", redirect: "{redirect}" },
+app.whenReady().then(() => {
+  ...
+  require("./MSLogin/microsoft").getElectron().FastLaunch(
     (call) => {
-        console.log(call) // will fire when a successful login has been processed
+      //The function called when the login has been a success
+      console.log("")
+      console.log("CallBack!!!!!")
+      console.log(call)
+      console.log("")
     },
     (update) => {
-        console.log(update) // will fire periodically to give you updates about the state of the login
-    }
-).then((link) => {
-    console.log(link) // The login link
+      //A hook for catching loading bar events and errors
+      console.log("")
+      console.log("CallBack!!!!!")
+      console.log(update)
+      console.log("")
+    }, 'login'
+  )
+ ...
 })
 ```
 # Docs 
@@ -112,4 +126,6 @@ Possible values for the 'type' parameter:
       </tr>
    </table>
  
+
+
 ###### This project is written in JavaScript first and then translated into TypeScript. I don't like the javascript the typescript compiler outputs and not having a typescript version might be a deal breaker for some as there could be unforseen errors in my types files since I am merely human. 
