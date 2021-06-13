@@ -8,7 +8,7 @@ Based off the Oauth2 flow outline on <a href="https://wiki.vg/Microsoft_Authenti
 
 
 # Example 
-This is a code sample for electron. It should be added to your main.js file This will launch a popup for allowing a user to log in as soon as possible. The method Fastlaunch actually emulates the vanilla minecraft launcher. This means that we can use mojangs own client ID to login. Inline login windows should use the older method.  
+This is a code sample for electron. It should be added to your main.js file This will launch a popup for allowing a user to log in as soon as possible. The method Fastlaunch actually emulates the vanilla minecraft launcher. This means that we can use mojangs own client ID to login. Inline login windows should use the older method. 
 ```
 app.whenReady().then(() => {
   ...
