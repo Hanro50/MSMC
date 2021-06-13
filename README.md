@@ -1,14 +1,3 @@
-# Experimental code:
-### Todo: 
-1) Documentation needs to be updated<br>
-2) Modules need to be backported to typescript/typescript needs to be removed<br>
-3) A whole lot of testing<br>
-
-### abridged description
-What this version allows you to do compared to the normal branch is that it adds support for tighter integration between the browser window and this library. Allowing one to skip the need for an http server. It also allows us to use a microsoft login 
-
-This code is fairly experimental and might undergo change. Let me know of any bugs!
-
 # MSMC
 A bare bones login library for Minecraft based projects to authenticate individuals with a Microsoft account. 
 

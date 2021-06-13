@@ -1,14 +1,3 @@
-declare enum Prompt {
-    /**will force the user to enter their credentials on that request, negating single-sign on. */
-    login = "login",
-    /**is the opposite - it will ensure that the user isn't presented with any interactive prompt whatsoever. If the request can't be completed silently via single-sign on, the Microsoft identity platform will return an interaction_required error.  */
-    none = "none",
-    /**will trigger the OAuth consent dialog after the user signs in, asking the user to grant permissions to the app.*/
-    consent = "consent",
-    /**will interrupt single sign-on providing account selection experience listing all the accounts either in session or any remembered account or an option to choose to use a different account altogether.*/
-    select_account = "select_account"
-}
-
 /**
  * The Oauth2 details needed to log you in. 
  * 
@@ -36,7 +25,7 @@ interface MSToken {
     client_id: string,
     clientSecret?: string,
     redirect?: string,
-    prompt?:Prompt
+    prompt?: "login" | "none" | "consent" | "select_account"
 }
 
 /**
@@ -84,18 +73,6 @@ interface update {
 }
 
 /**
- * This is for window based applications
- */
-interface WindowSettings {
-    popup?: boolean, //Should the app try to generate a popup? (This might cause some irregular results. Electron blocks popups by default!)
-    parent?: Window, //The main window object that will be manipulated (If blank then the global global.window object will be used!)
-    closeAfter?: boolean //Should the window be closed afterwards? (Will be ignored if 'parent' is undefined!)
-    trueRedirect?: boolean //The true redirect fired when the login procedure begins! ("will be ignored if closeAfter is true and 'parent' is defined")
-
-}
-
-/**
- * RECOMMENDED!!!!
  * @param token Your MS Login token. Mainly your client ID, client secret (optional  | Depends how azure is set up) and a redirect (Do not include http://localhost:<port>/ as that's added for you!)
  * @param callback The callback that is fired on a successful login. It contains a mojang access token and a user profile
  * @param updates A callback that one can hook into to get updates on the login process
@@ -104,29 +81,23 @@ interface WindowSettings {
 
 export declare function MSLogin(token: MSToken, callback: (info: callback) => void, updates?: (info: update) => void): Promise<string>;
 /**
- * EXPERIMENTAL!!
- * Notice: This function does not process the redirect you provide unlike the classic MSLogin function!!
- * @param token Your MS Login token. Mainly your client ID, client secret (optional  | Depends how azure is set up) and a redirect 
- * @returns The URL needed to log in your user. You need to send this to a web browser or something similar to that!
- */
-export declare function CreateLink(token: MSToken, ProcessRedirect: boolean): string;
-/**
- * EXPERIMENTAL!!
- * @param token Your MS Login token. Mainly your client ID, client secret (optional  | Depends how azure is set up) and a redirect (This should match the redirect you want 100%)
- * @param win see WindowSettings
+ * 
+ * @param code The code gotten from a successful login 
+ * @param MStoken The MS token object 
  * @param callback The callback that is fired on a successful login. It contains a mojang access token and a user profile
- * @param updates A callback that one can hook into to get updates on the login process
- * @returns The URL needed to log in your user. You need to send this to a web browser or something similar to that!
+ * @param updates The URL needed to log in your user. You need to send this to a web browser or something similar to that!
  */
-
-export declare function WindowLogin(token: MSToken, win: WindowSettings, callback: (info: callback) => void, updates?: (info: update) => void): void;
-
+export declare async function MSCallBack(code: string, MStoken: MSToken, callback: (info: callback) => void, updates?: (info: update) => void): Promise<void>;
 
 /**
- * EXPERIMENTAL!!
- * This is the same as WindowLogin, but it uses the native mojang login!
- * @param win see WindowSettings
- * @param callback The callback that is fired on a successful login. It contains a mojang access token and a user profile
- * @param updates A callback that one can hook into to get updates on the login process
+ * An override to manually define which version of fetch should be used 
+ * @param fetchIn A version of fetch 
  */
-export declare function FastLaunch(win: WindowSettings, callback: (info: callback) => void, updates?: (info: update) => void): void;
+export declare function setFetch(fetchIn: any): void;
+
+/**
+ * Use with electron to get a electron version of fast launch 
+ */
+export declare function getElectron(): {
+    FastLaunch: (callback: (info: callback) => void, updates?: (info: update) => void,prompt: "login" | "none" | "consent" | "select_account") => void
+};

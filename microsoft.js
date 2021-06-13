@@ -1,15 +1,9 @@
 
 /*Copyright 2021 Hanro50
-
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
 End license text.*/
-
-
 //This could be running in a hybrid browser context (NW.js) or node context (Electron)
 function FETCHGet() {
     if (typeof fetch === "function") {
@@ -20,25 +14,37 @@ function FETCHGet() {
             //node context (Electron)
             return require("node-fetch")
         } catch {
-            try {
-                return ("electron-fetch");
-            } catch {
-                //And the user no longer has a required dependency - If someone wants to. I'd be open for a wrapper to work with request.js 
-                console.error("No version of fetch is a available in this enviroment!")
-                console.error("Possible packages to fill this dependency are 'electron-fetch' and 'node-fetch' (Recommended) ")
-            }
+            //And the user no longer has a required dependency - If someone wants to. I'd be open for a wrapper to work with request.js 
+
+            //console.error("No version of fetch is a available in this enviroment!")
         }
     }
 }
+/** We need an http server of some description to get the callback */
+const http = require('http');
+var FETCH = FETCHGet();
 
-const FETCH = FETCHGet();
+module.exports.setFetch = (fetchIn) => {
+    FETCH = fetchIn;
+}
+
+module.exports.CreateLink = function (token) {
+    console.log(token)
+    return "https://login.live.com/oauth20_authorize.srf" +
+        "?client_id=" + token.client_id +
+        "&response_type=code" +
+        "&redirect_uri=" + encodeURIComponent(token.redirect) +
+        "&scope=XboxLive.signin%20offline_access" +
+        (token.prompt ? "&prompt=" + token.prompt : "")
+}
+
 /**
  * @param {URLSearchParams} Params 
  * @returns 
  */
-async function MSCallBack(Params, token, callback, updates = () => { }) {
+module.exports.MSCallBack = async function (code, MStoken, callback, updates = () => { }) {
     updates({ type: "Starting" });
-    const code = Params.get('code');
+
     //console.log(Params); //debug
     var percent = 100 / 8;
     function loadBar(number, asset) {
@@ -58,11 +64,11 @@ async function MSCallBack(Params, token, callback, updates = () => { }) {
     loadBar(percent * 1, "Getting Login Token")
     var MS = await (await FETCH("https://login.live.com/oauth20_token.srf", {
         method: "post", body:
-            "client_id=" + token.client_id +
+            "client_id=" + MStoken.client_id +
             "&code=" + code +
             "&grant_type=authorization_code" +
-            "&redirect_uri=" + token.redirect +
-            (token.clientSecret ? "&client_secret=" + token.clientSecret : "")
+            "&redirect_uri=" + MStoken.redirect +
+            (MStoken.clientSecret ? "&client_secret=" + MStoken.clientSecret : "")
         , headers: { "Content-Type": "application/x-www-form-urlencoded" }
     })).json();
     //console.log(MS); //debug
@@ -171,14 +177,6 @@ var app;
 * This is needed for the oauth 2 callback
 */
 function setCallback(callback) {
-    var http
-    try {
-        /** We need an http server of some description to get the callback */
-        http = require('http');
-    } catch {
-        console.error("Dependency error! I need to spin up an http server for this method!")
-        return;
-    }
     try {
         if (app) {
             app.close();
@@ -199,170 +197,24 @@ function setCallback(callback) {
     });
     return app.listen();
 }
-
-
-if (typeof module == "undefined") {
-    console.log("Loading in on browser mode!\nUse getMSMC() to access sub functions.")
-    module = {};
-    module.exports = {};
-
-    function getMSMC() {
-        return module.exports;
-    }
-}
-
-
 module.exports.MSLogin = function (token, callback, updates) {
-
-    setCallback((Params) => MSCallBack(Params, token, callback, updates))
+    setCallback((Params) => this.MSCallBack(Params.get('code'), token, callback, updates))
     return new Promise(
         resolve => app.addListener('listening',
             () => {
-                token.redirect = "http://localhost:" + (app.address().port) + "/" + (token.redirect ? token.redirect : "");
+                if (String(token.redirect).startsWith("/")) {
+                    token.redirect = String(token.redirect).substr(1);
+                }
+                token.redirect = "http%3A%2F%2Flocalhost%3A" + (app.address().port) + "%2F" + (token.redirect ? encodeURIComponent(token.redirect) : "");
                 resolve(
                     this.CreateLink(token)
+
                 )
             }
         )
     )
 }
 
-module.exports.CreateLink = function (token) {
-
-
-
-    console.log(token
-    )
-    return "https://login.live.com/oauth20_authorize.srf" +
-        "?client_id=" + token.client_id +
-        "&response_type=code" +
-        "&redirect_uri=" + encodeURIComponent(token.redirect) +
-        "&scope=XboxLive.signin%20offline_access" +
-        (token.prompt ? "&prompt=" + token.prompt : "")
-}
-/**
- * 
- * @param {*} token 
- * @param {{win:Window}} win 
- * @param {*} callback 
- * @param {*} updates 
- */
-module.exports.WindowLogin = function (token, win, callback, updates) {
-
-    var redirect = this.CreateLink(token);
-
-    const closeOnExit = win.parent || win.popup ? win.closeAfter : false;
-    /**@type {Window} */
-    const main = () => win.parent ? win.parent : (typeof window != "undefined" ? window : null)
-
-    /**
-     * 
-     * @param {Window} mainWin 
-    
-     * @returns 
-     */
-    function loadchange(mainWin, loc = mainWin.location.href) {
-
-
-        if (loc.startsWith(token.redirect)) {
-            const urlParams = new URLSearchParams(loc.substr(loc.indexOf("?") + 1));
-
-            if (closeOnExit) {
-                try {
-                    console.error("close window!")
-                    mainWin.close();
-
-                } catch {
-                    console.error("Failed to close window!")
-                }
-            } else if (win.trueRedirect) {
-                if ("location" in mainWin) {
-                    mainWin.location.href = win.trueRedirect;
-
-                } else {
-                    mainWin.loadURL(win.trueRedirect)
-                }
-            }
-            MSCallBack(urlParams, token, callback, updates);
-            return true;
-        }
-        return false;
-
-    }
-
-
-    /**@type {Window} */
-    var mainWin;
-    if (win.popup) {
-        if (typeof nw != "undefined") {
-            //NW.js
-            nw.Window.open(redirect, {}, function (new_win) {
-                new_win.on('loaded', function () {
-                    console.log('loaded')
-                    loadchange(new_win.window)
-
-                });
-
-            })
-            return;
-        } else {
-
-            try {
-                const { BrowserWindow } = require('electron');
-                const mainWindow = new BrowserWindow({
-                    width: 800,
-                    height: 600
-                })
-                mainWindow.loadURL(redirect);
-                const contents = mainWindow.webContents;
-                contents.on('did-finish-load', () => {
-
-                    loadchange(mainWindow, contents.getURL())
-                })
-
-
-                return;
-            } catch (e) {
-                if (!main()) {
-                    console.trace(e);
-                    return;
-                }
-                //Unknown framework! or Electron front end
-                mainWin = main().open("", "MSLogin", 'height=500,width=500,left=100,top=100,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes')
-            }
-        }
-    } else
-        mainWin = main();
-
-    if (!mainWin) {
-        console.error("Popup blocked!")
-        return;
-    }
-
-
-
-
-    console.log(mainWin)
-    try {
-        mainWin.location = redirect;
-        console.log(mainWin)
-        var inter = setInterval(() => {
-            if (loadchange(mainWin) || mainWin.closed) {
-                clearInterval(inter);
-            }
-        }, 1000);
-    } catch {
-        console.error("Seems you're running in a commercial browser or within a framework with the same limitations as a commercial browser. This will not work!")
-    }
-
-    //mainWin.location.replace(redirect);
-}
-
-module.exports.FastLaunch = function (win, callback, updates, prompt) {
-    const token = {
-        client_id: "00000000402b5328",
-        redirect: "https://login.live.com/oauth20_desktop.srf",
-        prompt: prompt
-    }
-    this.WindowLogin(token, win, callback, updates)
+module.exports.getElectron = ()=>{
+    return require(__dirname+"/electron")
 }
