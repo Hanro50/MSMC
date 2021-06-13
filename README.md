@@ -43,8 +43,10 @@ fetchIn => A version of fetch <br>
  callback => The callback that is fired on a successful login. It contains a mojang access token and a user profile<br>
  updates => A callback that one can hook into to get updates on the login process<br>
  returns => The URL needed to log in your user in the form of a promise. You need to send this to a web browser or something similar to that!<br>
+ 
   (RECOMMENDED) <br>
 `MSLogin(token: MSToken, callback: (info: callback) => void, updates?: (info: update) => void): Promise<string>`<br>
+
 An exposed version of the function that gets called when this library has found a login code. You can use this for custom setups where you do not want to use premade functions provided by the library for yout stuff. 
 code => The code gotten from a successful login <br>
 MStoken  => The MS token object <br>
