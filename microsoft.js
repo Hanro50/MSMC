@@ -197,6 +197,9 @@ module.exports.MSLogin = function (token, callback, updates) {
     return new Promise(
         resolve => app.addListener('listening',
             () => {
+                if (String( token.redirect).startsWith("/")){
+                    token.redirect = String(token.redirect).substr(1);
+                }
                 token.redirect = "http%3A%2F%2Flocalhost%3A" + (app.address().port) + "%2F" + (token.redirect ? encodeURIComponent(token.redirect) : "");
                 resolve(
                     "https://login.live.com/oauth20_authorize.srf" +
