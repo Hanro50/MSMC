@@ -9,8 +9,8 @@ module.exports.FastLaunch = (callback, updates, prompt) => {
     };
     var redirect = MSMC.CreateLink(token);
     const mainWindow = new BrowserWindow({
-        width: 800,
-        height: 600,
+        width: 500,
+        height: 650,
     });
     mainWindow.setMenu(null);
     mainWindow.loadURL(redirect);
