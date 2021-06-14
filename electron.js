@@ -1,30 +1,31 @@
 const MSMC = require(__dirname + "/microsoft");
-const { BrowserWindow } = require('electron');
+const { BrowserWindow } = require("electron");
 
 module.exports.FastLaunch = (callback, updates, prompt) => {
     const token = {
         client_id: "00000000402b5328",
         redirect: "https://login.live.com/oauth20_desktop.srf",
-        prompt: prompt
-    }
+        prompt: prompt,
+    };
     var redirect = MSMC.CreateLink(token);
     const mainWindow = new BrowserWindow({
         width: 800,
-        height: 600
-    })
+        height: 600,
+    });
+    mainWindow.setMenu(null);
     mainWindow.loadURL(redirect);
     const contents = mainWindow.webContents;
-    contents.on('did-finish-load', () => {
+    contents.on("did-finish-load", () => {
         const loc = contents.getURL();
         if (loc.startsWith(token.redirect)) {
-            const urlParams = new URLSearchParams(loc.substr(loc.indexOf("?") + 1)).get('code');
+            const urlParams = new URLSearchParams(loc.substr(loc.indexOf("?") + 1)).get("code");
             try {
-                console.error("close window!")
+                console.error("close window!");
                 mainWindow.close();
             } catch {
-                console.error("Failed to close window!")
+                console.error("Failed to close window!");
             }
             MSMC.MSCallBack(urlParams, token, callback, updates);
         }
-    })
-}
+    });
+};
