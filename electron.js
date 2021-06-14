@@ -1,4 +1,4 @@
-const MSMC = require(__dirname + "/microsoft");
+const MSMC = require("./microsoft");
 const { BrowserWindow } = require("electron");
 
 module.exports.FastLaunch = (callback, updates, prompt) => {
