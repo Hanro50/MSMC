@@ -130,7 +130,7 @@ An optional callback that one can hook into to get updates on the login process
  
 ```
 interface update {
-    type: string, //See table below!
+    type: "Loading" | "Rejection" | "Error" | "Starting" | "Canceled", //See table below!
     /**Some information about the call. Like the component that's loading or the cause of the error. */
     data?: string,
     /**Used by the rejection type.*/
