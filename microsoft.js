@@ -5,23 +5,21 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 End license text.*/
 
 try {
-    var FETCH = require('node-fetch')
+    var FETCH = require("node-fetch");
 } catch (er) {
     try {
-        FETCH = fetch
-    } catch {
-
-    }
+        FETCH = fetch;
+    } catch {}
 }
 
 if (!FETCH) {
-    console.error("Could not automatically determine which version of fetch to use.\nPlease use 'setFetch' to set this property manually");
+    console.warn(
+        "Could not automatically determine which version of fetch to use.\nPlease use 'setFetch' to set this property manually"
+    );
 }
-
 
 /** We need an http server of some description to get the callback */
 const http = require("http");
-
 
 module.exports.setFetch = (fetchIn) => {
     FETCH = fetchIn;
@@ -45,13 +43,14 @@ module.exports.CreateLink = function (token) {
  * @param {URLSearchParams} Params
  * @returns
  */
-module.exports.MSCallBack = async function (code, MStoken, callback, updates = () => { }) {
-
+module.exports.MSCallBack = async function (code, MStoken, callback, updates = () => {}) {
     if (!FETCH) {
-        console.error("Could not automatically determine which version of fetch to use.\nPlease use 'setFetch' to set this property manually");
+        console.error(
+            "Could not automatically determine which version of fetch to use.\nPlease use 'setFetch' to set this property manually"
+        );
         return;
     }
-    if (typeof FETCH !== 'function') {
+    if (typeof FETCH !== "function") {
         console.error("The version of fetch provided is not a function!");
         return;
     }
@@ -214,7 +213,7 @@ function setCallback(callback) {
         if (app) {
             app.close();
         }
-    } catch { }
+    } catch {}
     app = http.createServer((req, res) => {
         res.writeHead(200, { "Content-Type": "text/plain" });
         res.end("Thank you!");
