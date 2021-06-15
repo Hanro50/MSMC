@@ -145,11 +145,6 @@ Possible values for the 'type' parameter:
  <th>Value</th>
  <th>Cause</th>
   </tr>
-      <tr>
- <td>"Starting"</td>
-  <td>This is fired once when the whole loading process is started. This is mainly for setting up loading bars and stuff like that. </td>
-      <tr>
-  <tr>
  <td>"Loading" </td>
  <td>This gives input with regards to how far along the login process is </td>
   </tr>
@@ -161,6 +156,11 @@ Possible values for the 'type' parameter:
  <td>"Error"</td>
   <td>This is given with a normal MC account error and will give you some user readable feedback. </td>
       </tr>
+        <tr>
+ <td>"Starting"</td>
+  <td>This is fired once when the whole loading process is started. This is mainly for setting up loading bars and stuff like that. </td>
+      <tr>
+  <tr>
    <tr>
  <td>"Canceled"</td>
   <td>When the user closes out of a popup (Electron / NV.js / methods that involve a GUI only) . </td>
