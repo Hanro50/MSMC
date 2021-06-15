@@ -5,7 +5,7 @@ A bare bones login library for Minecraft based projects to authenticate individu
 Based off the Oauth2 flow outline on <a href="https://wiki.vg/Microsoft_Authentication_Scheme"> this site</a>
 
 # Examples 
-### Electron code sample
+### Electron code sample:
 This is a code sample for electron. It should be added to your main.js file. This will launch a popup that allows a user to log in with their microsoft account as soon as possible. Fastlaunch actually emulates the vanilla minecraft launcher, meaning that we can use mojangs own client ID to login. Inline login windows should use the older method. 
 ```
 app.whenReady().then(() => {
@@ -24,12 +24,32 @@ app.whenReady().then(() => {
       console.log("CallBack!!!!!")
       console.log(update)
       console.log("")
-    }, 'login'
+    }
   )
  ...
 })
 ```
-### NV.js code support coming soon
+### NW.js code sample:
+It is recommended to run this in NW.js's node context. Basically in a library that is called via a "require" call in a browser thread. 
+```
+require("msmc").getNWjs().FastLaunch(
+    (call) => {
+        //The function called when the login has been a success
+
+        console.log("")
+        console.log("CallBack!!!!!")
+        console.log(call)
+        console.log("")
+    },
+    (update) => {
+        //A hook for catching loading bar events and errors
+        console.log("")
+        console.log("CallBack!!!!!")
+        console.log(update)
+        console.log("")
+    }
+)
+```
 
 # Docs 
  ## Functions
@@ -60,11 +80,11 @@ returns => <br>
 { <br>
 &nbsp;&nbsp;&nbsp;&nbsp;callback => The callback that is fired on a successful login. It contains a mojang access token and a user profile<br>
 &nbsp;&nbsp;&nbsp;&nbsp;updates => A callback that one can hook into to get updates on the login process<br>
-&nbsp;&nbsp;&nbsp;&nbsp;prompt => See <a href="https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-auth-code-flow#request-an-authorization-code">Microsofts docs</a> for more information<br>
-&nbsp;&nbsp;&nbsp;&nbsp;`FastLaunch: (callback: (info: callback) => void, updates?: (info: update) => void,prompt:string)=>void` <br>
+&nbsp;&nbsp;&nbsp;&nbsp;properties => See windowProperties interface for more information<br>
+&nbsp;&nbsp;&nbsp;&nbsp;`FastLaunch: (callback: (info: callback) => void, updates?: (info: update) => void,properties?:windowProperties)=>void` <br>
 }<br>
 
-`getElectron()`<br>
+`getElectron()` or `getNWjs()` <br>
 
 This function will create a login link based on the inputs provided. Note that this function is called internally after the redirect has been formated. Aka after "http://localhost:\<port\>/" is appended to the redirect. This is done to allow us to create the "FastLaunch" methods which don't rely on an internal http server<br>
 
@@ -72,14 +92,16 @@ token  => The MS token object <br>
   
 `CreateLink(token: MSToken):String` <br>
 
-## token: MSToken: 
+
+## interfaces
+### MSToken:
  The Oauth2 details needed to log you in. 
   
   Resources
   1) https://docs.microsoft.com/en-us/graph/auth-register-app-v2
   2) https://docs.microsoft.com/en-us/graph/auth-v2-user#1-register-your-app
   3) https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps
-  
+  4) https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-auth-code-flow#request-an-authorization-code
  
   Recommendations: 
   
@@ -89,13 +111,13 @@ token  => The MS token object <br>
   2) set the redirect to "http://localhost/...", With localhost specifically Microsoft does not check port numbers. 
   This means that  http://localhost:1/... to http://localhost:65535/... are all the same redirect to MS. (http://localhost/... == http://localhost:80/... btw)
   This app does not allow you to set the port manually, due to the extreme risk of unforseen bugs popping up. 
- * 
+ 
   3) If you set the ridirect to, for example, "http://localhost/Rainbow/Puppy/Unicorns/hl3/confirmed" then the variable {redirect} needs to equal "Rainbow/Puppy/Unicorns/hl3/confirmed".
   
   4) Basically the redirect field is equal to your redirect URL you gave microsoft without the "http://localhost/" part. 
   Please keep this in mind or you'll get weird errors as a mismatch here will still work...sort of. 
  
- ## interfaces
+
 ```
 interface MSToken {
     client_id: string,
@@ -104,11 +126,9 @@ interface MSToken {
     prompt?: "login" | "none" | "consent" | "select_account"
 }
 ```
- ### callback: (info: callback) => void :
-  The callback that is fired on a successful login. It contains a mojang access token and a user profile
- 
- Callback object
- ###### The callback given on a successful login!
+
+ ### callback:
+Used in the callback that is fired upon a successfull login
  
  access_token": string => Your classic Mojang auth token. You can do anything with this that you could do with the normal MC login token <br>
  profile: { "id": string, "name": string, "skins": [], "capes": [] } => Player profile. Similar to the one you'd normaly get with the mojang login
@@ -118,15 +138,10 @@ interface callback {
     profile: { "id": string, "name": string, "skins": [], "capes": [] } 
 }
 ```
- * @param updates A callback that one can hook into to get updates on the login process
- * @returns The URL needed to log in your user. You need to send this to a web browser or something similar to that!
 
 
-### updates?: (info: update) => void) 
-An optional callback that one can hook into to get updates on the login process
-
-  Update object
- ###### Used with the update callback to get some info on the login process
+### update:
+Used in the callback that is fired multiple times during the login process to give the user feedback on how far along the login process is
  
 ```
 interface update {
@@ -166,7 +181,18 @@ Possible values for the 'type' parameter:
   <td>When the user closes out of a popup (Electron / NV.js / methods that involve a GUI only) . </td>
       </tr>
    </table>
- 
 
+### windowProperties:
 
-###### This project is written in JavaScript first and then translated into TypeScript. I don't like the javascript the typescript compiler outputs and not having a typescript version might be a deal breaker for some as there could be unforseen errors in my types files since I am merely human. 
+Used witht the gui based fastlaunch options. Window property is set to any to avoid needing both nw.js and electron loaded as dev dependencies<br>
+See <a href="https://www.electronjs.org/docs/api/browser-window#new-browserwindowoptions">this</a> resource for Electron, if you want to know what options are available  <br>
+See <a href="https://nwjs.readthedocs.io/en/latest/References/Manifest%20Format/#window-subfields">this</a> resource for NW.js, if you want to know the available options<br>
+
+```
+windowProperties{
+    prompt: "login" | "none" | "consent" | "select_account",
+    window: any
+}
+```
+
+###### Please report any type file bugs asap
