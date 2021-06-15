@@ -18,7 +18,7 @@
     "electron.js",
     "nwjs.js"
   ],
-  "homepage": "https://github.com/Hanro50/MSMC/blob/main/README.md",
+  "homepage": "https://github.com/Hanro50/MSMC/",
   "optionalDependencies": {
     "node-fetch": "^2.6.1"
   }
