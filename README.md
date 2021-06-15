@@ -147,7 +147,7 @@ Recommendations:
 4. Basically the redirect field is equal to your redirect URL you gave microsoft without the "http://localhost/" part.
    Please keep this in mind or you'll get weird errors as a mismatch here will still work...sort of.
 
-```
+```ts
 interface MSToken {
     client_id: string,
     clientSecret?: string,
@@ -163,7 +163,7 @@ Used in the callback that is fired upon a successfull login
 access_token": string => Your classic Mojang auth token. You can do anything with this that you could do with the normal MC login token <br>
 profile: { "id": string, "name": string, "skins": [], "capes": [] } => Player profile. Similar to the one you'd normaly get with the mojang login
 
-```
+```ts
 interface callback {
     "access_token": string,
     profile: { "id": string, "name": string, "skins": [], "capes": [] }
