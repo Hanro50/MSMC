@@ -1,4 +1,4 @@
-require('./microsoft').MSLogin({ client_id: "376d02f1-be18-4828-bc7e-2c336844f0a9" , redirect:"/login/oauth2/ms"},
+require('./microsoft').MSLogin({ client_id: "<token here>"},
     (call) => {
         //The function called when the login has been a success
         
