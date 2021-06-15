@@ -131,8 +131,12 @@ An optional callback that one can hook into to get updates on the login process
 ```
 interface update {
     type: string, //See table below!
-    data: string | Response, // Some information about the call. Like the component that's loading or the cause of the error. 
-    percent?: Number // Used to show how far along the object is in terms of loading
+    /**Some information about the call. Like the component that's loading or the cause of the error. */
+    data?: string,
+    /**Used by the rejection type.*/
+    response?: Response,
+    /**Used to show how far along the object is in terms of loading*/
+    percent?: number
 }
 ```
 Possible values for the 'type' parameter:
