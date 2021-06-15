@@ -247,5 +247,5 @@ module.exports.MSLogin = function (token, callback, updates) {
 };
 
 module.exports.getElectron = () => {
-    return require("msmc/electron");
+    return require("./electron");
 };
