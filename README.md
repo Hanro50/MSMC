@@ -130,7 +130,7 @@ An optional callback that one can hook into to get updates on the login process
  
 ```
 interface update {
-    type: string, // Either "Starting", "Loading" , "Rejection" or "Error".
+    type: string, //See table below!
     data: string | Response, // Some information about the call. Like the component that's loading or the cause of the error. 
     percent?: Number // Used to show how far along the object is in terms of loading
 }
@@ -156,6 +156,10 @@ Possible values for the 'type' parameter:
    <tr>
  <td>"Error"</td>
   <td>This is given with a normal MC account error and will give you some user readable feedback. </td>
+      </tr>
+   <tr>
+ <td>"Canceled"</td>
+  <td>When the user closes out of a popup (Electron / NV.js / methods that involve a GUI only) . </td>
       </tr>
    </table>
  
