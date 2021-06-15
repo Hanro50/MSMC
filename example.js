@@ -1,4 +1,4 @@
-require('./microsoft').MSLogin({ client_id: "<token here>"},
+require('./microsoft').MSLogin({ client_id: "<client id>"},
     (call) => {
         //The function called when the login has been a success
         
