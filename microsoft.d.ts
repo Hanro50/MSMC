@@ -21,7 +21,7 @@
  * 4) Basically the redirect field is equal to your redirect URL you gave microsoft without the "http://localhost/" part. 
  * Please keep this in mind or you'll get weird errors as a mismatch here will still work...sort of. 
  */
-interface MSToken {
+ interface MSToken {
     client_id: string,
     clientSecret?: string,
     redirect?: string,
@@ -37,7 +37,6 @@ interface callback {
 /**The object returned to give you information about how the login process is progressing */
 interface update {
     /**
-     * 
      * Loading: This gives input with regards to how far along the login process is. <br>
      * 
      * Rejection: This is given with a fetch error. You are given the fetch item as a data object. <br>
@@ -57,6 +56,11 @@ interface update {
     percent?: number
 }
 
+interface windowProperties{
+    prompt: "login" | "none" | "consent" | "select_account",
+    window: any
+}
+
 /**
  * @param token Your MS Login token. Mainly your client ID, client secret (optional  | Depends how azure is set up) and a redirect (Do not include http://localhost:<port>/ as that's added for you!)
  * @param callback The callback that is fired on a successful login. It contains a mojang access token and a user profile
@@ -72,7 +76,7 @@ export declare function MSLogin(token: MSToken, callback: (info: callback) => vo
  * @param callback The callback that is fired on a successful login. It contains a mojang access token and a user profile
  * @param updates The URL needed to log in your user. You need to send this to a web browser or something similar to that!
  */
-export declare async function MSCallBack(code: string, MStoken: MSToken, callback: (info: callback) => void, updates?: (info: update) => void): Promise<void>;
+export declare function MSCallBack(code: string, MStoken: MSToken, callback: (info: callback) => void, updates?: (info: update) => void): Promise<void>;
 
 /**
  * An override to manually define which version of fetch should be used 
@@ -80,9 +84,11 @@ export declare async function MSCallBack(code: string, MStoken: MSToken, callbac
  */
 export declare function setFetch(fetchIn: any): void;
 
-/**
- * Use with electron to get a electron version of fast launch 
- */
+/**Use with electron to get a electron version of fast launch */
 export declare function getElectron(): {
-    FastLaunch: (callback: (info: callback) => void, updates?: (info: update) => void, prompt: "login" | "none" | "consent" | "select_account") => void
+    FastLaunch: (callback: (info: callback) => void, updates?: (info: update) => void, properties?: windowProperties) => void
+};
+/**Use with NV.js to get a electron version of fast launch */
+ export declare function getNWjs(): {
+    FastLaunch: (callback: (info: callback) => void, updates?: (info: update) => void, properties?: windowProperties) => void
 };
