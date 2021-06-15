@@ -28,48 +28,33 @@ interface MSToken {
     prompt?: "login" | "none" | "consent" | "select_account"
 }
 
-/**
- * The callback given on a successful login!
- */
+/**The callback given on a successful login!*/
 interface callback {
     "access_token": string, //Your classic Mojang auth token. You can do anything with this that you could do with the normal MC login token 
     profile: { "id": string, "name": string, "skins": [], "capes": [] } //Player profile. Similar to the one you'd normaly get with the mojang login
 }
 
-
-
-/**
- * Update object. Used with the update callback to get some info on the login process
- * 
- * types: 
- * "Loading" 
- * This gives input with regards to how far along the login process is
- * 
- * "Rejection" 
- * This is given with a fetch error. You are given the fetch item as a data object.
- * 
- * "Error"
- * This is given with a normal MC account error and will give you some user readable feedback. 
- * 
- * "Starting"
- * This is fired once when the whole loading process is started. This is mainly for setting up loading bars and stuff like that
- */
-
-declare enum updateTypes {
-    /** This gives input with regards to how far along the login process is */
-    Loading = "Loading",
-    /** This is given with a fetch error. You are given the fetch item as a data object.  */
-    Rejection = "Rejection",
-    /**This is given with a normal MC account error and will give you some user readable feedback.  */
-    Error = "Error",
-    /**This is fired once when the whole loading process is started. This is mainly for setting up loading bars and stuff like that */
-    Starting = "Starting"
-}
+/**The object returned to give you information about how the login process is progressing */
 interface update {
-    type: updateTypes, // Either "Starting","Loading" , "Rejection" or "Error". 
-    data: string, // Some information about the call. Like the component that's loading or the cause of the error. 
-    response: Response, //used by the rejection type
-    percent?: number // Used to show how far along the object is in terms of loading
+    /**
+     * 
+     * Loading: This gives input with regards to how far along the login process is. <br>
+     * 
+     * Rejection: This is given with a fetch error. You are given the fetch item as a data object. <br>
+     * 
+     * Error: This is given with a normal MC account error and will give you some user readable feedback. <br>
+     * 
+     * Starting: This is fired once when the whole loading process is started. This is mainly for setting up loading bars and stuff like that. <br>
+     * 
+     * Canceled: When the user closes out of a popup (Electron / NV.js only)
+     */
+    type: "Loading" | "Rejection" | "Error" | "Starting" | "Canceled",
+    /**Some information about the call. Like the component that's loading or the cause of the error. */
+    data?: string,
+    /**Used by the rejection type.*/
+    response?: Response,
+    /**Used to show how far along the object is in terms of loading*/
+    percent?: number
 }
 
 /**
@@ -99,5 +84,5 @@ export declare function setFetch(fetchIn: any): void;
  * Use with electron to get a electron version of fast launch 
  */
 export declare function getElectron(): {
-    FastLaunch: (callback: (info: callback) => void, updates?: (info: update) => void,prompt: "login" | "none" | "consent" | "select_account") => void
+    FastLaunch: (callback: (info: callback) => void, updates?: (info: update) => void, prompt: "login" | "none" | "consent" | "select_account") => void
 };

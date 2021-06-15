@@ -9,12 +9,16 @@
     "url": "git://github.com/Hanro50/MSMC.git"
   },
   "types": "microsoft.d.ts",
-  "optionalDependencies": {
-    "node-fetch": "^2.6.1"
-  },
   "author": "Hanro50 (https://github.com/Hanro50)",
   "bugs": {
     "url": "https://github.com/Hanro50/MSMC/issues"
   },
-  "homepage": "https://github.com/Hanro50/MSMC/blob/main/README.md"
+  "files": [
+    "microsoft.js",
+    "electron.js"
+  ],
+  "homepage": "https://github.com/Hanro50/MSMC/blob/main/README.md",
+  "optionalDependencies": {
+    "node-fetch": "^2.6.1"
+  }
 }

@@ -3,24 +3,25 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 End license text.*/
-//This could be running in a hybrid browser context (NW.js) or node context (Electron)
-function FETCHGet() {
-    if (typeof fetch === "function") {
-        //hybrid browser context
-        return fetch;
-    } else {
-        try {
-            //node context (Electron)
-            return require("node-fetch");
-        } catch {
-            //And the user no longer has a required dependency - If someone wants to. I'd be open for a wrapper to work with request.js
-            //console.error("No version of fetch is a available in this enviroment!")
-        }
+
+try {
+    var FETCH = require('node-fetch')
+} catch (er) {
+    try {
+        FETCH = fetch
+    } catch {
+
     }
 }
+
+if (!FETCH) {
+    console.error("Could not automatically determine which version of fetch to use.\nPlease use 'setFetch' to set this property manually");
+}
+
+
 /** We need an http server of some description to get the callback */
 const http = require("http");
-var FETCH = FETCHGet();
+
 
 module.exports.setFetch = (fetchIn) => {
     FETCH = fetchIn;
@@ -44,7 +45,17 @@ module.exports.CreateLink = function (token) {
  * @param {URLSearchParams} Params
  * @returns
  */
-module.exports.MSCallBack = async function (code, MStoken, callback, updates = () => {}) {
+module.exports.MSCallBack = async function (code, MStoken, callback, updates = () => { }) {
+
+    if (!FETCH) {
+        console.error("Could not automatically determine which version of fetch to use.\nPlease use 'setFetch' to set this property manually");
+        return;
+    }
+    if (typeof FETCH !== 'function') {
+        console.error("The version of fetch provided is not a function!");
+        return;
+    }
+
     updates({ type: "Starting" });
 
     //console.log(Params); //debug
@@ -203,7 +214,7 @@ function setCallback(callback) {
         if (app) {
             app.close();
         }
-    } catch {}
+    } catch { }
     app = http.createServer((req, res) => {
         res.writeHead(200, { "Content-Type": "text/plain" });
         res.end("Thank you!");
@@ -236,5 +247,5 @@ module.exports.MSLogin = function (token, callback, updates) {
 };
 
 module.exports.getElectron = () => {
-    return require("./electron");
+    return require("msmc/electron");
 };
