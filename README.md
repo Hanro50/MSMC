@@ -15,7 +15,7 @@ This is a code sample for electron. It should be added to your main.js file. Thi
 ```js
 app.whenReady().then(() => {
   ...
-  require("./MSLogin/microsoft").getElectron().FastLaunch(
+  require("msmc").getElectron().FastLaunch(
     (call) => {
       // The function is called when the login has been successful
       console.log("Login successful");
