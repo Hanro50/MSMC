@@ -1,25 +1,30 @@
 const MSMC = require("./microsoft");
 const { BrowserWindow } = require("electron");
 
-module.exports.FastLaunch = (callback, updates = () => { }, prompt) => {
+const defaultProperties = {
+    prompt: "login",
+    window: {
+        width: 500,
+        height: 650,
+        resizable: false,
+    },
+};
+
+module.exports.FastLaunch = (callback, updates = () => {}, properties = defaultProperties) => {
     const token = {
         client_id: "00000000402b5328",
         redirect: "https://login.live.com/oauth20_desktop.srf",
-        prompt: prompt,
+        prompt: properties.prompt,
     };
     var redirect = MSMC.CreateLink(token);
-    const mainWindow = new BrowserWindow({
-        width: 500,
-        height: 650,
-        resizable: false
-    });
+    const mainWindow = new BrowserWindow(properties.window);
     mainWindow.setMenu(null);
     mainWindow.loadURL(redirect);
     const contents = mainWindow.webContents;
     var loading = false;
-    mainWindow.on('close', () => {
+    mainWindow.on("close", () => {
         if (!loading) {
-            updates({ type: "Canceled" })
+            updates({ type: "Canceled" });
         }
     });
     contents.on("did-finish-load", () => {
