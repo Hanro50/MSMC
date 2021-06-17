@@ -215,16 +215,30 @@ Possible values for the 'type' parameter:
       </tr>
    </table>
 
-### windowProperties:
-
-Used witht the gui based fastlaunch options. Window property is set to any to avoid needing both nw.js and electron loaded as dev dependencies<br>
+### WindowsProperties
+Window property is set to any to avoid needing both nw.js and electron loaded as dev dependencies<br>
+The common properties between both libraries has been backed into the type informarmation for this interface however<br> 
 See <a href="https://www.electronjs.org/docs/api/browser-window#new-browserwindowoptions">this</a> resource for Electron, if you want to know what options are available <br>
 See <a href="https://nwjs.readthedocs.io/en/latest/References/Manifest%20Format/#window-subfields">this</a> resource for NW.js, if you want to know the available options<br>
 
 ```ts
-windowProperties{
+interface WindowsProperties {
+    width: number,
+    height: number,
+    resizable?: boolean,
+    [key: string]: any
+}
+```
+
+### FastLaunchProperties:
+
+Used with the gui based fastlaunch options. 
+See the MStoken interface for more information on the 'prompt' property
+
+```ts
+FastLaunchProperties{
     prompt: "login" | "none" | "consent" | "select_account",
-    window: any
+    window: WindowsProperties
 }
 ```
 
