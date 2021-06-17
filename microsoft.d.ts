@@ -1,4 +1,8 @@
-
+/**
+ * For more information. Check out Microsoft's support page: https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-auth-code-flow#request-an-authorization-code <br>
+ * 
+ * Basically this is the prompt value in the request sent to Microsoft. This should only be important if you're using either the FastLaunch or Launch functions under either Electron or NW.js
+ */
 type prompt = "login" | "none" | "consent" | "select_account";
 
 
