@@ -106,7 +106,7 @@ updates => A callback that one can hook into to get updates on the login process
 returns => The URL needed to log in your user in the form of a promise. You need to send this to a web browser or something similar to that!<br>
 
 ```ts
-function MSLogin(token: MSToken, callback: (info: callback) => void, updates?: (info: update) => void): Promise<string>`<br>
+function MSLogin(token: MSToken, callback: (info: callback) => void, updates?: (info: update) => void): Promise<string>
 ``` 
 ### MSCallBack
 
@@ -117,7 +117,7 @@ callback => The callback that is fired on a successful login. It contains a moja
 updates => The URL needed to log in your user. You need to send this to a web browser or something similar to that!<br>
 
 ```ts
-function MSCallBack(code: string, MStoken: MSToken, callback: (info: callback) => void, updates?: (info: update) => void): Promise<void>;
+function MSCallBack(code: string, MStoken: MSToken, callback: (info: callback) => void, updates?: (info: update) => void): Promise<void>
 ``` 
 ### getElectron() and getNWjs()
 
