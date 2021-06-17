@@ -1,3 +1,7 @@
+
+type prompt = "login" | "none" | "consent" | "select_account";
+
+
 /**
  * The Oauth2 details needed to log you in. 
  * 
@@ -25,8 +29,11 @@ interface MSToken {
     client_id: string,
     clientSecret?: string,
     redirect?: string,
-    prompt?: "login" | "none" | "consent" | "select_account"
+    prompt?: prompt
 }
+
+
+
 
 /**The callback given on a successful login!*/
 interface callback {
@@ -95,10 +102,10 @@ export declare function setFetch(fetchIn: any): void;
 /**Use with electron to get a electron version of fast launch */
 export declare function getElectron(): {
     Launch: (token: MSToken, callback: (info: callback) => void, updates?: (info: update) => void, properties?: WindowsProperties) => void
-    FastLaunch: (callback: (info: callback) => void, updates?: (info: update) => void, properties?: FastLaunchProperties) => void
+    FastLaunch: (callback: (info: callback) => void, updates?: (info: update) => void, prompt?: prompt, properties?: WindowsProperties) => void
 };
 /**Use with NW.js to get a electron version of fast launch */
 export declare function getNWjs(): {
     Launch: (token: MSToken, callback: (info: callback) => void, updates?: (info: update) => void, properties?: WindowsProperties) => void
-    FastLaunch: (callback: (info: callback) => void, updates?: (info: update) => void, properties?: FastLaunchProperties) => void
+    FastLaunch: (callback: (info: callback) => void, updates?: (info: update) => void, prompt?: prompt, properties?: WindowsProperties) => void
 };

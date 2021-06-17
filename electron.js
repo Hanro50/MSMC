@@ -2,14 +2,11 @@ const MSMC = require("./microsoft");
 const { BrowserWindow } = require("electron");
 
 const defaultProperties = {
-    prompt: "select_account",
-    window: {
         width: 500,
         height: 650,
         resizable: false,
-    },
 };
-module.exports.Launch = (token, callback, updates = () => { }, Windowproperties = defaultProperties.window) => {
+module.exports.Launch = (token, callback, updates = () => { }, Windowproperties = defaultProperties) => {
     var redirect = MSMC.CreateLink(token);
     const mainWindow = new BrowserWindow(Windowproperties);
     mainWindow.setMenu(null);
@@ -37,11 +34,11 @@ module.exports.Launch = (token, callback, updates = () => { }, Windowproperties 
 };
 
 
-module.exports.FastLaunch = (callback, updates = () => { }, properties = defaultProperties) => {
+module.exports.FastLaunch = (callback, updates = () => { },prompt ="select_account", properties = defaultProperties) => {
     const token = {
         client_id: "00000000402b5328",
         redirect: "https://login.live.com/oauth20_desktop.srf",
-        prompt: properties.prompt,
+        prompt: prompt,
     };
-    this.Launch(token, callback, updates, properties.window);
+    this.Launch(token, callback, updates, properties);
 };

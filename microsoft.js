@@ -26,7 +26,7 @@ module.exports.setFetch = (fetchIn) => {
 };
 
 module.exports.CreateLink = function (token) {
-    console.log(token);
+    //console.log(token);
     return (
         "https://login.live.com/oauth20_authorize.srf" +
         "?client_id=" +

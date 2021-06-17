@@ -1,16 +1,13 @@
 const MSMC = require("./microsoft");
 
 const defaultProperties = {
-    prompt: "select_account",
-    window: {
-        width: 500,
-        height: 650,
-        resizable: false,
-        title: "Microsoft Login"
-    },
+    width: 500,
+    height: 650,
+    resizable: false,
+    title: "Microsoft Login"
 };
 
-module.exports.Launch = (token, callback, updates = () => { }, Windowproperties = defaultProperties.window) => {
+module.exports.Launch = (token, callback, updates = () => { }, Windowproperties = defaultProperties) => {
     var redirect = MSMC.CreateLink(token);
     var loading = false;
     nw.Window.open(redirect, Windowproperties, function (new_win) {
@@ -38,12 +35,11 @@ module.exports.Launch = (token, callback, updates = () => { }, Windowproperties 
         });
     });
 }
-
-module.exports.FastLaunch = (callback, updates = () => { }, properties = defaultProperties) => {
+module.exports.FastLaunch = (callback, updates = () => { }, prompt = "select_account", properties = defaultProperties) => {
     const token = {
         client_id: "00000000402b5328",
         redirect: "https://login.live.com/oauth20_desktop.srf",
-        prompt: properties.prompt,
+        prompt: prompt,
     };
-    this.Launch(token, callback, updates, properties.window);
+    this.Launch(token, callback, updates, properties);
 };
