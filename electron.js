@@ -2,7 +2,7 @@ const MSMC = require("./microsoft");
 const { BrowserWindow } = require("electron");
 
 const defaultProperties = {
-    prompt: "login",
+    prompt: "select_account",
     window: {
         width: 500,
         height: 650,
