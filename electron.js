@@ -9,15 +9,9 @@ const defaultProperties = {
         resizable: false,
     },
 };
-
-module.exports.FastLaunch = (callback, updates = () => {}, properties = defaultProperties) => {
-    const token = {
-        client_id: "00000000402b5328",
-        redirect: "https://login.live.com/oauth20_desktop.srf",
-        prompt: properties.prompt,
-    };
+module.exports.Launch = (token, callback, updates = () => { }, Windowproperties = defaultProperties.window) => {
     var redirect = MSMC.CreateLink(token);
-    const mainWindow = new BrowserWindow(properties.window);
+    const mainWindow = new BrowserWindow(Windowproperties);
     mainWindow.setMenu(null);
     mainWindow.loadURL(redirect);
     const contents = mainWindow.webContents;
@@ -40,4 +34,14 @@ module.exports.FastLaunch = (callback, updates = () => {}, properties = defaultP
             MSMC.MSCallBack(urlParams, token, callback, updates);
         }
     });
+};
+
+
+module.exports.FastLaunch = (callback, updates = () => { }, properties = defaultProperties) => {
+    const token = {
+        client_id: "00000000402b5328",
+        redirect: "https://login.live.com/oauth20_desktop.srf",
+        prompt: properties.prompt,
+    };
+    this.Launch(token, callback, updates, properties.window);
 };

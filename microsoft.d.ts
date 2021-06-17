@@ -21,7 +21,7 @@
  * 4) Basically the redirect field is equal to your redirect URL you gave microsoft without the "http://localhost/" part. 
  * Please keep this in mind or you'll get weird errors as a mismatch here will still work...sort of. 
  */
- interface MSToken {
+interface MSToken {
     client_id: string,
     clientSecret?: string,
     redirect?: string,
@@ -56,9 +56,17 @@ interface update {
     percent?: number
 }
 
-interface windowProperties{
+
+interface WindowsProperties {
+    width: number,
+    height: number,
+    resizable?: boolean,
+    [key: string]: any
+}
+
+interface FastLaunchProperties {
     prompt: "login" | "none" | "consent" | "select_account",
-    window: any
+    window: WindowsProperties
 }
 
 /**
@@ -86,9 +94,11 @@ export declare function setFetch(fetchIn: any): void;
 
 /**Use with electron to get a electron version of fast launch */
 export declare function getElectron(): {
-    FastLaunch: (callback: (info: callback) => void, updates?: (info: update) => void, properties?: windowProperties) => void
+    Launch: (token: MSToken, callback: (info: callback) => void, updates?: (info: update) => void, properties?: WindowsProperties) => void
+    FastLaunch: (callback: (info: callback) => void, updates?: (info: update) => void, properties?: FastLaunchProperties) => void
 };
-/**Use with NV.js to get a electron version of fast launch */
- export declare function getNWjs(): {
-    FastLaunch: (callback: (info: callback) => void, updates?: (info: update) => void, properties?: windowProperties) => void
+/**Use with NW.js to get a electron version of fast launch */
+export declare function getNWjs(): {
+    Launch: (token: MSToken, callback: (info: callback) => void, updates?: (info: update) => void, properties?: WindowsProperties) => void
+    FastLaunch: (callback: (info: callback) => void, updates?: (info: update) => void, properties?: FastLaunchProperties) => void
 };
