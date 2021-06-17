@@ -80,20 +80,35 @@ require("msmc").getNWjs().FastLaunch(
 
 # Docs
 
-## Functions
+## types
+### prompt 
+For more information. Check out Microsoft's support page: https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-auth-code-flow#request-an-authorization-code
 
+Basically this is the prompt value in the request sent to Microsoft. This should only be important if you're using either the FastLaunch or Launch functions under either Electron or NW.js 
+
+```ts
+ type prompt = "login" | "none" | "consent" | "select_account";
+```
+
+## Functions
+### setFetch
 An override to manually define which version of fetch should be used. Useful for if you have multiple versions of fetch available and want to use a specific variant<br>
 fetchIn => A version of fetch <br>
 
-`setFetch(fetchIn: any): void`<br>
+```ts
+function setFetch(fetchIn: any): void
+``` 
 
+### MSLogin (RECOMMENDED) 
 token => Basic MS token info<br>
 callback => The callback that is fired on a successful login. It contains a mojang access token and a user profile<br>
 updates => A callback that one can hook into to get updates on the login process<br>
 returns => The URL needed to log in your user in the form of a promise. You need to send this to a web browser or something similar to that!<br>
 
-(RECOMMENDED) <br>
-`MSLogin(token: MSToken, callback: (info: callback) => void, updates?: (info: update) => void): Promise<string>`<br>
+```ts
+function MSLogin(token: MSToken, callback: (info: callback) => void, updates?: (info: update) => void): Promise<string>`<br>
+``` 
+### MSCallBack
 
 An exposed version of the function that gets called when this library has found a login code. You can use this for custom setups where you do not want to use premade functions provided by the library for yout stuff.
 code => The code gotten from a successful login <br>
@@ -101,24 +116,53 @@ MStoken => The MS token object <br>
 callback => The callback that is fired on a successful login. It contains a mojang access token and a user profile<br>
 updates => The URL needed to log in your user. You need to send this to a web browser or something similar to that!<br>
 
-`MSCallBack(code: string, MStoken: MSToken, callback: (info: callback) => void, updates?: (info: update) => void): Promise<void>;`<br>
+```ts
+function MSCallBack(code: string, MStoken: MSToken, callback: (info: callback) => void, updates?: (info: update) => void): Promise<void>;
+``` 
+### getElectron() and getNWjs()
 
 Use with electron to get a electron version of fast launch <br>
 returns => <br>
 { <br>
 &nbsp;&nbsp;&nbsp;&nbsp;callback => The callback that is fired on a successful login. It contains a mojang access token and a user profile<br>
+&nbsp;&nbsp;&nbsp;&nbsp;token => Basic MS token info
 &nbsp;&nbsp;&nbsp;&nbsp;updates => A callback that one can hook into to get updates on the login process<br>
 &nbsp;&nbsp;&nbsp;&nbsp;properties => See windowProperties interface for more information<br>
-&nbsp;&nbsp;&nbsp;&nbsp;`FastLaunch: (callback: (info: callback) => void, updates?: (info: update) => void,properties?:windowProperties)=>void` <br>
+```ts
+function Launch: (token: MSToken, callback: (info: callback) => void, updates?: (info: update) => void, properties?: WindowsProperties) => void
+```
+
+&nbsp;&nbsp;&nbsp;&nbsp;callback => The callback that is fired on a successful login. It contains a mojang access token and a user profile<br>
+&nbsp;&nbsp;&nbsp;&nbsp;updates => A callback that one can hook into to get updates on the login process<br>
+&nbsp;&nbsp;&nbsp;&nbsp;prompt => See the type definition for "prompt" for more information <br>
+&nbsp;&nbsp;&nbsp;&nbsp;properties => See windowProperties interface for more information<br>
+```ts
+function FastLaunch: (callback: (info: callback) => void, updates?: (info: update) => void, prompt?: prompt, properties?: WindowsProperties) => void
+```
+
+
 }<br>
 
-`getElectron()` or `getNWjs()` <br>
+```ts
+/**Use with electron to get a electron version of fast launch */
+function getElectron(): {
+    Launch: (token: MSToken, callback: (info: callback) => void, updates?: (info: update) => void, properties?: WindowsProperties) => void
+    FastLaunch: (callback: (info: callback) => void, updates?: (info: update) => void, prompt?: prompt, properties?: WindowsProperties) => void
+};
+/**Use with NW.js to get a electron version of fast launch */
+function getNWjs(): {
+    Launch: (token: MSToken, callback: (info: callback) => void, updates?: (info: update) => void, properties?: WindowsProperties) => void
+    FastLaunch: (callback: (info: callback) => void, updates?: (info: update) => void, prompt?: prompt, properties?: WindowsProperties) => void
+};
+``` 
 
 This function will create a login link based on the inputs provided. Note that this function is called internally after the redirect has been formated. Aka after "http://localhost:\<port\>/" is appended to the redirect. This is done to allow us to create the "FastLaunch" methods which don't rely on an internal http server<br>
 
 token => The MS token object <br>
 
 `CreateLink(token: MSToken):String` <br>
+
+
 
 ## interfaces
 
@@ -131,7 +175,6 @@ Resources
 1. https://docs.microsoft.com/en-us/graph/auth-register-app-v2
 2. https://docs.microsoft.com/en-us/graph/auth-v2-user#1-register-your-app
 3. https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps
-4. https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-auth-code-flow#request-an-authorization-code
 
 Recommendations:
 
@@ -152,7 +195,7 @@ interface MSToken {
     client_id: string,
     clientSecret?: string,
     redirect?: string,
-    prompt?: "login" | "none" | "consent" | "select_account"
+    prompt?: prompt
 }
 ```
 
@@ -227,18 +270,6 @@ interface WindowsProperties {
     height: number,
     resizable?: boolean,
     [key: string]: any
-}
-```
-
-### FastLaunchProperties:
-
-Used with the gui based fastlaunch options. 
-See the MStoken interface for more information on the 'prompt' property
-
-```ts
-FastLaunchProperties{
-    prompt: "login" | "none" | "consent" | "select_account",
-    window: WindowsProperties
 }
 ```
 
