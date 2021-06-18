@@ -8,6 +8,41 @@ Based off the Oauth2 flow outline on <a href="https://wiki.vg/Microsoft_Authenti
 
 # Examples
 
+### PureNode Example 
+This is the setup you'd use if you where only using node or an incompatible gui framework 
+
+```js
+const MSMC = require('msmc');
+/**
+ * Do this if you get the following waring message
+ * "
+ * MSMC: Could not automatically determine which version of fetch to use.
+ * MSMC: Please use 'setFetch' to set this property manually
+ * "
+ */
+MSMC.setFetch(require("node-fetch"));
+MSMC.MSLogin({ client_id: "<token>"},
+    (call) => {
+        //The function called when the login has been a success
+        console.log("")
+        console.log("CallBack!!!!!")
+        console.log(call)
+        console.log("")
+    },
+    (update) => {
+        //A hook for catching loading bar events and errors
+        console.log("")
+        console.log("CallBack!!!!!")
+        console.log(update)
+        console.log("")
+    }
+).then((link) => {
+    //This is the link to the login page
+    console.log("Click ME!!!!")
+    console.log(link)
+})
+```
+
 ### Electron code sample:
 
 This is a code sample for electron. It should be added to your main.js file. This will launch a popup that allows a user to log in with their microsoft account as soon as possible. Fastlaunch actually emulates the vanilla minecraft launcher, meaning that we can use mojangs own client ID to login. Inline login windows should use the older method.
