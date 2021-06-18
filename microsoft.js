@@ -14,7 +14,7 @@ try {
 
 if (!FETCH) {
     console.warn(
-        "Could not automatically determine which version of fetch to use.\nPlease use 'setFetch' to set this property manually"
+        "MSMC: Could not automatically determine which version of fetch to use.\nMSMC: Please use 'setFetch' to set this property manually"
     );
 }
 
@@ -46,12 +46,12 @@ module.exports.CreateLink = function (token) {
 module.exports.MSCallBack = async function (code, MStoken, callback, updates = () => { }) {
     if (!FETCH) {
         console.error(
-            "Could not automatically determine which version of fetch to use.\nPlease use 'setFetch' to set this property manually"
+            "MSMC: Could not automatically determine which version of fetch to use.\nMSMC: Please use 'setFetch' to set this property manually"
         );
         return;
     }
     if (typeof FETCH !== "function") {
-        console.error("The version of fetch provided is not a function!");
+        console.error("MSMC: The version of fetch provided is not a function!");
         return;
     }
 
