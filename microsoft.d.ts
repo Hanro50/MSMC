@@ -3,8 +3,7 @@
  * 
  * Basically this is the prompt value in the request sent to Microsoft. This should only be important if you're using either the FastLaunch or Launch functions under either Electron or NW.js
  */
-type prompt = "login" | "none" | "consent" | "select_account";
-
+export type prompt = "login" | "none" | "consent" | "select_account";
 
 /**
  * The Oauth2 details needed to log you in. 
@@ -29,33 +28,26 @@ type prompt = "login" | "none" | "consent" | "select_account";
  * 4) Basically the redirect field is equal to your redirect URL you gave microsoft without the "http://localhost/" part. 
  * Please keep this in mind or you'll get weird errors as a mismatch here will still work...sort of. 
  */
-interface MSToken {
+export interface MSToken {
     client_id: string,
     clientSecret?: string,
     redirect?: string,
     prompt?: prompt
 }
 
-
-
-
 /**The callback given on a successful login!*/
-interface callback {
+export interface callback {
     "access_token": string, //Your classic Mojang auth token. You can do anything with this that you could do with the normal MC login token 
     profile: { "id": string, "name": string, "skins": [], "capes": [] } //Player profile. Similar to the one you'd normaly get with the mojang login
 }
 
 /**The object returned to give you information about how the login process is progressing */
-interface update {
+export interface update {
     /**
      * Loading: This gives input with regards to how far along the login process is. <br>
-     * 
      * Rejection: This is given with a fetch error. You are given the fetch item as a data object. <br>
-     * 
      * Error: This is given with a normal MC account error and will give you some user readable feedback. <br>
-     * 
      * Starting: This is fired once when the whole loading process is started. This is mainly for setting up loading bars and stuff like that. <br>
-     * 
      * Canceled: When the user closes out of a popup (Electron / NV.js only)
      */
     type: "Loading" | "Rejection" | "Error" | "Starting" | "Canceled",
@@ -66,18 +58,14 @@ interface update {
     /**Used to show how far along the object is in terms of loading*/
     percent?: number
 }
-
-
-interface WindowsProperties {
+/**
+ * Used by grathical Electron and NW.js intergrations to set the properties of the generated popup
+ */
+export interface WindowsProperties {
     width: number,
     height: number,
     resizable?: boolean,
     [key: string]: any
-}
-
-interface FastLaunchProperties {
-    prompt: "login" | "none" | "consent" | "select_account",
-    window: WindowsProperties
 }
 
 /**
@@ -113,3 +101,12 @@ export declare function getNWjs(): {
     Launch: (token: MSToken, callback: (info: callback) => void, updates?: (info: update) => void, properties?: WindowsProperties) => void
     FastLaunch: (callback: (info: callback) => void, updates?: (info: update) => void, prompt?: prompt, properties?: WindowsProperties) => void
 };
+
+
+/**
+ * ES 6 compatibility for typescript
+ * These lines of code where a royal pain in the behind to get working.
+ * 
+ */
+import * as module from './microsoft';
+export default module;

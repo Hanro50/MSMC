@@ -9,7 +9,7 @@ try {
 } catch (er) {
     try {
         FETCH = fetch;
-    } catch {}
+    } catch { }
 }
 
 if (!FETCH) {
@@ -43,7 +43,7 @@ module.exports.CreateLink = function (token) {
  * @param {URLSearchParams} Params
  * @returns
  */
-module.exports.MSCallBack = async function (code, MStoken, callback, updates = () => {}) {
+module.exports.MSCallBack = async function (code, MStoken, callback, updates = () => { }) {
     if (!FETCH) {
         console.error(
             "Could not automatically determine which version of fetch to use.\nPlease use 'setFetch' to set this property manually"
@@ -213,7 +213,7 @@ function setCallback(callback) {
         if (app) {
             app.close();
         }
-    } catch {}
+    } catch { }
     app = http.createServer((req, res) => {
         res.writeHead(200, { "Content-Type": "text/plain" });
         res.end("Thank you!");
@@ -236,10 +236,10 @@ module.exports.MSLogin = function (token, callback, updates) {
                 token.redirect = String(token.redirect).substr(1);
             }
             token.redirect =
-                "http%3A%2F%2Flocalhost%3A" +
+                "http://localhost:" +
                 app.address().port +
-                "%2F" +
-                (token.redirect ? encodeURIComponent(token.redirect) : "");
+                "/" +
+                (token.redirect ? token.redirect : "");
             resolve(this.CreateLink(token));
         })
     );
@@ -252,3 +252,5 @@ module.exports.getElectron = () => {
 module.exports.getNWjs = () => {
     return require("./nwjs");
 };
+/**ES6 compatibility */
+module.exports.default = module.exports
