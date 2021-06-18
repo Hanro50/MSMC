@@ -7,7 +7,7 @@ import MSMC from "msmc"
  * "
  */
 MSMC.setFetch(require("node-fetch"));
-MSMC.MSLogin({ client_id: "9263b99c-b7c7-4c98-ac73-3dd90bc1fa2e"},
+MSMC.MSLogin({ client_id: "<token>"},
     (call) => {
         //The function called when the login has been a success
         console.log("")
