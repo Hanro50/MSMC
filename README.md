@@ -8,7 +8,7 @@ Based off the Oauth2 flow outline on <a href="https://wiki.vg/Microsoft_Authenti
 
 # Examples
 
-### PureNode Example 
+### Pure Node Example 
 This is the setup you'd use if you where only using node or an incompatible gui framework 
 
 ```js
