@@ -1,6 +1,6 @@
 {
   "name": "msmc",
-  "version": "2.0.1",
+  "version": "2.0.3",
   "description": "A bare bones login library for Minecraft based projects to authenticate individuals with a Microsoft account.",
   "license": "MIT",
   "main": "microsoft.js",
@@ -29,6 +29,8 @@
     "msmc",
     "microsoft",
     "oauth2",
-    "minecraft"
+    "minecraft",
+    "login",
+    "mc"
   ]
 }
