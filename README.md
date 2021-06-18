@@ -73,6 +73,9 @@ app.whenReady().then(() => {
         case "Error":
           console.error("MC-Account error:", update.data);
           break;
+        case "Canceled":
+          console.error("User clicked cancel!");
+          break;	
       }
     }
   )
@@ -108,6 +111,9 @@ require("msmc").getNWjs().FastLaunch(
         case "Error":
           console.error("MC-Account error:", update.data);
           break;
+        case "Canceled":
+          console.error("User clicked cancel!");
+          break;	
       }
     }
 )
