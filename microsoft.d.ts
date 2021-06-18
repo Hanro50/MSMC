@@ -1,4 +1,11 @@
 /**
+ * For more information. Check out Microsoft's support page: https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-auth-code-flow#request-an-authorization-code <br>
+ * 
+ * Basically this is the prompt value in the request sent to Microsoft. This should only be important if you're using either the FastLaunch or Launch functions under either Electron or NW.js
+ */
+export type prompt = "login" | "none" | "consent" | "select_account";
+
+/**
  * The Oauth2 details needed to log you in. 
  * 
  * Resources
@@ -21,54 +28,44 @@
  * 4) Basically the redirect field is equal to your redirect URL you gave microsoft without the "http://localhost/" part. 
  * Please keep this in mind or you'll get weird errors as a mismatch here will still work...sort of. 
  */
-interface MSToken {
+export interface MSToken {
     client_id: string,
     clientSecret?: string,
-    redirect: string
+    redirect?: string,
+    prompt?: prompt
 }
 
-/**
- * The callback given on a successful login!
- */
-interface callback {
+/**The callback given on a successful login!*/
+export interface callback {
     "access_token": string, //Your classic Mojang auth token. You can do anything with this that you could do with the normal MC login token 
     profile: { "id": string, "name": string, "skins": [], "capes": [] } //Player profile. Similar to the one you'd normaly get with the mojang login
 }
 
-
-
-/**
- * Update object. Used with the update callback to get some info on the login process
- * 
- * types: 
- * "Loading" 
- * This gives input with regards to how far along the login process is
- * 
- * "Rejection" 
- * This is given with a fetch error. You are given the fetch item as a data object.
- * 
- * "Error"
- * This is given with a normal MC account error and will give you some user readable feedback. 
- * 
- * "Starting"
- * This is fired once when the whole loading process is started. This is mainly for setting up loading bars and stuff like that
- */
-
-declare enum updateTypes {
-    /** This gives input with regards to how far along the login process is */
-    Loading = "Loading",
-    /** This is given with a fetch error. You are given the fetch item as a data object.  */
-    Rejection = "Rejection",
-    /**This is given with a normal MC account error and will give you some user readable feedback.  */
-    Error = "Error",
-    /**This is fired once when the whole loading process is started. This is mainly for setting up loading bars and stuff like that */
-    Starting = "Starting"
+/**The object returned to give you information about how the login process is progressing */
+export interface update {
+    /**
+     * Loading: This gives input with regards to how far along the login process is. <br>
+     * Rejection: This is given with a fetch error. You are given the fetch item as a data object. <br>
+     * Error: This is given with a normal MC account error and will give you some user readable feedback. <br>
+     * Starting: This is fired once when the whole loading process is started. This is mainly for setting up loading bars and stuff like that. <br>
+     * Canceled: When the user closes out of a popup (Electron / NV.js only)
+     */
+    type: "Loading" | "Rejection" | "Error" | "Starting" | "Canceled",
+    /**Some information about the call. Like the component that's loading or the cause of the error. */
+    data?: string,
+    /**Used by the rejection type.*/
+    response?: Response,
+    /**Used to show how far along the object is in terms of loading*/
+    percent?: number
 }
-interface update {
-    type: updateTypes, // Either "Starting","Loading" , "Rejection" or "Error". 
-    data: string, // Some information about the call. Like the component that's loading or the cause of the error. 
-    response: Response, //used by the rejection type
-    percent?: number // Used to show how far along the object is in terms of loading
+/**
+ * Used by grathical Electron and NW.js intergrations to set the properties of the generated popup
+ */
+export interface WindowsProperties {
+    width: number,
+    height: number,
+    resizable?: boolean,
+    [key: string]: any
 }
 
 /**
@@ -86,10 +83,30 @@ export declare function MSLogin(token: MSToken, callback: (info: callback) => vo
  * @param callback The callback that is fired on a successful login. It contains a mojang access token and a user profile
  * @param updates The URL needed to log in your user. You need to send this to a web browser or something similar to that!
  */
-export declare async function MSCallBack(code: string, MStoken: MSToken, callback: (info: callback) => void, updates?: (info: update) => void): Promise<void>;
+export declare function MSCallBack(code: string, MStoken: MSToken, callback: (info: callback) => void, updates?: (info: update) => void): Promise<void>;
 
 /**
  * An override to manually define which version of fetch should be used 
  * @param fetchIn A version of fetch 
  */
 export declare function setFetch(fetchIn: any): void;
+
+/**Use with electron to get a electron version of fast launch */
+export declare function getElectron(): {
+    Launch: (token: MSToken, callback: (info: callback) => void, updates?: (info: update) => void, properties?: WindowsProperties) => void
+    FastLaunch: (callback: (info: callback) => void, updates?: (info: update) => void, prompt?: prompt, properties?: WindowsProperties) => void
+};
+/**Use with NW.js to get a electron version of fast launch */
+export declare function getNWjs(): {
+    Launch: (token: MSToken, callback: (info: callback) => void, updates?: (info: update) => void, properties?: WindowsProperties) => void
+    FastLaunch: (callback: (info: callback) => void, updates?: (info: update) => void, prompt?: prompt, properties?: WindowsProperties) => void
+};
+
+
+/**
+ * ES 6 compatibility for typescript
+ * These lines of code where a royal pain in the behind to get working.
+ * 
+ */
+import * as module from './microsoft';
+export default module;
