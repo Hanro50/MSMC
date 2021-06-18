@@ -151,7 +151,7 @@ function MSLogin(token: MSToken, callback: (info: callback) => void, updates?: (
 ``` 
 ### MSCallBack
 
-An exposed version of the function that gets called when this library has found a login code. You can use this for custom setups where you do not want to use premade functions provided by the library for yout stuff.
+An exposed version of the function that gets called when this library has found a login code. You can use this for custom setups where you do not want to use premade functions provided by the library for yout stuff.<br>
 code => The code gotten from a successful login <br>
 MStoken => The MS token object <br>
 callback => The callback that is fired on a successful login. It contains a mojang access token and a user profile<br>
