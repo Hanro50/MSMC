@@ -91,8 +91,3 @@ module.exports.getMCLC = () => {
 module.exports.default = module.exports
 
 
-module.exports.setFetch = (fetchIn) => {
-    FETCH = fetchIn;
-};
-
-
