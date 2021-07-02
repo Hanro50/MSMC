@@ -252,5 +252,10 @@ module.exports.getElectron = () => {
 module.exports.getNWjs = () => {
     return require("./nwjs");
 };
+
+module.exports.getMLC = () => {
+    return require("./mcl");
+};
+
 /**ES6 compatibility */
 module.exports.default = module.exports

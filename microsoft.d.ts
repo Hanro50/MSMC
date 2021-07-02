@@ -102,6 +102,9 @@ export declare function getNWjs(): {
     FastLaunch: (callback: (info: callback) => void, updates?: (info: update) => void, prompt?: prompt, properties?: WindowsProperties) => void
 };
 
+export declare function getMLC():{
+    getAuth:(info: callback)=>Promise<any>
+}
 
 /**
  * ES 6 compatibility for typescript
