@@ -1,4 +1,4 @@
-const MSMC = require("./microsoft");
+const MSMC = require("..");
 const { BrowserWindow } = require("electron");
 
 const defaultProperties = {
@@ -35,5 +35,5 @@ module.exports.Launch = (token, callback, updates = () => { }, Windowproperties 
 
 
 module.exports.FastLaunch = (callback, updates = () => { },prompt ="select_account", properties = defaultProperties) => {
-    this.Launch(MSMC.MojangAuthToken(prompt), callback, updates, properties);
+    this.Launch(BE.MojangAuthToken(prompt), callback, updates, properties);
 };

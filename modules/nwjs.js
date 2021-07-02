@@ -1,5 +1,5 @@
-const MSMC = require("./microsoft");
-
+const MSMC = require("..");
+const BE = require("./backEnd");
 const defaultProperties = {
     width: 500,
     height: 650,
@@ -36,5 +36,5 @@ module.exports.Launch = (token, callback, updates = () => { }, Windowproperties 
     });
 }
 module.exports.FastLaunch = (callback, updates = () => { }, prompt = "select_account", properties = defaultProperties) => {
-    this.Launch(MSMC.MojangAuthToken(prompt), callback, updates, properties);
+    this.Launch(BE.MojangAuthToken(prompt), callback, updates, properties);
 };

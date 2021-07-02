@@ -101,9 +101,6 @@ export declare function MSRefresh(profile: profile, callback: (info: callback) =
  */
 export declare function setFetch(fetchIn: any): void;
 
-/**Used to get the fetch method in use */
-export declare function getFetch(): any;
-
 /**Use with electron to get a electron version of fast launch */
 export declare function getElectron(): {
     Launch: (token: MSToken, callback: (info: callback) => void, updates?: (info: update) => void, properties?: WindowsProperties) => void
@@ -114,9 +111,6 @@ export declare function getNWjs(): {
     Launch: (token: MSToken, callback: (info: callback) => void, updates?: (info: update) => void, properties?: WindowsProperties) => void
     FastLaunch: (callback: (info: callback) => void, updates?: (info: update) => void, prompt?: prompt, properties?: WindowsProperties) => void
 };
-
-export declare function MojangAuthToken(prompt: prompt): MSToken;
-
 
 /**Used with the Minecraft Launcher core library, special thanks for Luuxis */
 export declare function getMLC(): {
@@ -135,5 +129,5 @@ export declare function getMLC(): {
  * These lines of code where a royal pain in the behind to get working.
  * 
  */
-import * as module from './microsoft';
+import * as module from '.';
 export default module;
