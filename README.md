@@ -8,44 +8,6 @@ Based off the Oauth2 flow outline on <a href="https://wiki.vg/Microsoft_Authenti
 
 # Examples
 
-### Using with Minecraft Launcher Core
-Based on the example from the Minecraft Launcher core docs 
-```js
-//Import just the client package, MSMC replaces the Auth package in Minecraft Launcher core in this example
-const { Client } = require('minecraft-launcher-core');
-const launcher = new Client();
-const msmc = require("msmc"); 
-//Just using NWjs for this example, any function that gives the callback parameter type will work 
-msmc.getNWjs().FastLaunch((callback)=>{
-    let opts = {
-        clientPackage: null,
-        // We use a custom funtion here to emulate the authentication library, this should be nearly 100% compatible  
-        authorization: msmc.getMLC().getAuth(callback),
-        root: "./minecraft",
-        version: {
-            number: "1.14",
-            type: "release"
-        },
-        memory: {
-            max: "6G",
-            min: "4G"
-        }
-    }
-    console.log("Starting")
-    launcher.launch(opts);
-    
-    launcher.on('debug', (e) => console.log(e));
-    launcher.on('data', (e) => console.log(e));
-}, (update) => {
-    //A hook for catching loading bar events and errors, standard with MSMC 
-    console.log("")
-    console.log("CallBack!!!!!")
-    console.log(update)
-    console.log("")
-})
-
-```
-
 ### Pure Node Example: 
 This is the setup you'd use if you where only using node or an incompatible gui framework 
 
@@ -234,22 +196,14 @@ function getNWjs(): {
     FastLaunch: (callback: (info: callback) => void, updates?: (info: update) => void, prompt?: prompt, properties?: WindowsProperties) => void
 };
 ``` 
-### CreateLink
+
 This function will create a login link based on the inputs provided. Note that this function is called internally after the redirect has been formated. Aka after "http://localhost:\<port\>/" is appended to the redirect. This is done to allow us to create the "FastLaunch" methods which don't rely on an internal http server<br>
 
 token => The MS token object <br>
 
-```ts
-function CreateLink(token: MSToken): String
-``` 
-### getMLC()
-This function returns an object with a function to get a Minecraft Launcher core style auth object.  
+`CreateLink(token: MSToken):String` <br>
 
-```ts
-function getMLC(): {
-    getAuth: (info: callback)=>Promise<any>
-};
-```
+
 
 ## interfaces
 

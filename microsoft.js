@@ -18,12 +18,47 @@ if (!FETCH) {
     );
 }
 
+
+
 /** We need an http server of some description to get the callback */
 const http = require("http");
 
-module.exports.setFetch = (fetchIn) => {
+const errorCheck = () => {
+    if (!FETCH) {
+        console.error(
+            "MSMC: Could not automatically determine which version of fetch to use.\nMSMC: Please use 'setFetch' to set this property manually"
+        );
+        return true;
+    }
+    if (typeof FETCH !== "function") {
+        console.error("MSMC: The version of fetch provided is not a function!");
+        return true;
+    }
+
+    return false;
+}
+
+
+module.exports.MojangAuthToken = (prompt) => {
+    const token = {
+        client_id: "00000000402b5328",
+        redirect: "https://login.live.com/oauth20_desktop.srf",
+        scope: "XboxLive.signin%20offline_access"
+
+    }
+    if (prompt)
+        token.prompt = prompt;
+    return token;
+};
+
+module.exports.getFetch = (fetchIn) => {
     FETCH = fetchIn;
 };
+
+module.exports.getFetch = () => {
+    return FETCH;
+}
+
 
 module.exports.CreateLink = function (token) {
     //console.log(token);
@@ -39,26 +74,14 @@ module.exports.CreateLink = function (token) {
     );
 };
 
-/**
- * @param {URLSearchParams} Params
- * @returns
- */
-module.exports.MSCallBack = async function (code, MStoken, callback, updates = () => { }) {
-    if (!FETCH) {
-        console.error(
-            "MSMC: Could not automatically determine which version of fetch to use.\nMSMC: Please use 'setFetch' to set this property manually"
-        );
-        return;
-    }
-    if (typeof FETCH !== "function") {
-        console.error("MSMC: The version of fetch provided is not a function!");
-        return;
-    }
 
-    updates({ type: "Starting" });
+const percent = 100 / 8;
+/**Used to get an MC account from a MS profile object */
+async function MSget(MS, callback, updates = () => { }) {
+    if (errorCheck()) { return }
 
     //console.log(Params); //debug
-    var percent = 100 / 8;
+
     function loadBar(number, asset) {
         updates({ type: "Loading", data: asset, percent: number });
     }
@@ -73,25 +96,8 @@ module.exports.MSCallBack = async function (code, MStoken, callback, updates = (
         }
     }
 
-    loadBar(percent * 1, "Getting Login Token");
-    var MS = await (
-        await FETCH("https://login.live.com/oauth20_token.srf", {
-            method: "post",
-            body:
-                "client_id=" +
-                MStoken.client_id +
-                "&code=" +
-                code +
-                "&grant_type=authorization_code" +
-                "&redirect_uri=" +
-                MStoken.redirect +
-                (MStoken.clientSecret ? "&client_secret=" + MStoken.clientSecret : ""),
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        })
-    ).json();
-    //console.log(MS); //debug
     webCheck(MS);
-
+    console.log(MS);
     loadBar(percent * 2, "Logging into Xbox Live");
     var rxboxlive = await FETCH("https://user.auth.xboxlive.com/user/authenticate", {
         method: "post",
@@ -106,10 +112,12 @@ module.exports.MSCallBack = async function (code, MStoken, callback, updates = (
         }),
         headers: { "Content-Type": "application/json", Accept: "application/json" },
     });
-    //console.log(rxboxlive); //debug
-    webCheck(rxboxlive);
-    var token = await rxboxlive.json();
 
+    webCheck(rxboxlive);
+    var tokenText = await rxboxlive.text();
+    console.log(tokenText); //debug
+    console.log(rxboxlive); //debug
+    var token = JSON.parse(tokenText)
     //console.log(token); //debug
 
     var XBLToken = token.Token;
@@ -197,9 +205,69 @@ module.exports.MSCallBack = async function (code, MStoken, callback, updates = (
     if (profile.error) {
         return error("You do not seem to have a minecraft account.");
     }
-
+    console.log(MS)
+    profile._msmc = MS.refresh_token;
     loadBar(100, "Done!");
     callback({ access_token: MCauth.access_token, profile: profile });
+}
+
+
+module.exports.MSRefresh = async function (profile, callback, updates = () => { }, authToken) {
+    if (errorCheck()) { return }
+    if (!profile._msmc) {
+        console.error("This is not an msmc style profile object");
+        return;
+    }
+    updates({ type: "Starting" });
+    updates({ type: "Loading", data: "Getting Refresh Token", percent: percent * 1 });
+    if (!authToken) {
+        authToken = this.MojangAuthToken();
+    }
+    const MS = await (await FETCH("https://login.live.com/oauth20_token.srf",
+        {
+            "body": (
+                "client_id=" + authToken.client_id +
+                "&grant_type=refresh_token" +
+                "&refresh_token=" + profile._msmc +
+                (authToken.clientSecret ? "&client_secret=" + authToken.clientSecret : "") +
+                (authToken.scope ? "&scope=" + authToken.scope : "")),
+            "method": "POST",
+            "headers": {
+                'Content-Type': 'application/x-www-form-urlencoded'
+
+            }
+        })).json();
+    MSget(MS, callback, updates);
+}
+
+/**
+ * @param {URLSearchParams} Params
+ * @returns
+ */
+module.exports.MSCallBack = async function (code, MStoken, callback, updates = () => { }) {
+    if (errorCheck()) { return }
+
+    updates({ type: "Starting" });
+
+    updates({ type: "Loading", data: "Getting Login Token", percent: percent * 1 });
+
+    var MS = await (
+        await FETCH("https://login.live.com/oauth20_token.srf", {
+            method: "post",
+            body:
+                "client_id=" +
+                MStoken.client_id +
+                "&code=" +
+                code +
+                "&grant_type=authorization_code" +
+                "&redirect_uri=" +
+                MStoken.redirect +
+                (MStoken.clientSecret ? "&client_secret=" + MStoken.clientSecret : ""),
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        })
+    ).json();
+
+    MSget(MS, callback, updates);
 };
 
 //This needs to be apart or we could end up with a memory leak!
