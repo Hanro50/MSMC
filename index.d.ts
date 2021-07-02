@@ -35,10 +35,14 @@ export interface MSToken {
     prompt?: prompt
 }
 
+export interface profile {
+    id: string, name: string, skins?: [], capes?: []
+}
+
 /**The callback given on a successful login!*/
 export interface callback {
     "access_token": string, //Your classic Mojang auth token. You can do anything with this that you could do with the normal MC login token 
-    profile: { "id": string, "name": string, "skins": [], "capes": [] } //Player profile. Similar to the one you'd normaly get with the mojang login
+    profile: profile //Player profile. Similar to the one you'd normaly get with the mojang login
 }
 
 /**The object returned to give you information about how the login process is progressing */
@@ -84,7 +88,13 @@ export declare function MSLogin(token: MSToken, callback: (info: callback) => vo
  * @param updates The URL needed to log in your user. You need to send this to a web browser or something similar to that!
  */
 export declare function MSCallBack(code: string, MStoken: MSToken, callback: (info: callback) => void, updates?: (info: update) => void): Promise<void>;
-
+/**
+ * @param profile Player profile. Similar to the one you'd normaly get with the mojang login
+ * @param callback The callback that is fired on a successful login. It contains a mojang access token and a user profile
+ * @param updates The URL needed to log in your user. You need to send this to a web browser or something similar to that!
+ * @param MStoken The MS token object 
+ */
+export declare function MSRefresh(profile: profile, callback: (info: callback) => void, updates?: (info: update) => void, authToken?: MSToken): Promise<void>;
 /**
  * An override to manually define which version of fetch should be used 
  * @param fetchIn A version of fetch 
@@ -101,15 +111,23 @@ export declare function getNWjs(): {
     Launch: (token: MSToken, callback: (info: callback) => void, updates?: (info: update) => void, properties?: WindowsProperties) => void
     FastLaunch: (callback: (info: callback) => void, updates?: (info: update) => void, prompt?: prompt, properties?: WindowsProperties) => void
 };
+
 /**Used with the Minecraft Launcher core library, special thanks for Luuxis */
-export declare function getMLC():{
-    getAuth:(info: callback)=>Promise<any>
-}
+export declare function getMCLC(): {
+    getAuth: (info: callback) => Promise<any>
+    refresh: (profile: {
+        access_token: string;
+        client_token?: string;
+        uuid?: string;
+        name?: string;
+        user_properties?: Partial<any>;
+    }) => Promise<any>
+};
 
 /**
  * ES 6 compatibility for typescript
  * These lines of code where a royal pain in the behind to get working.
  * 
  */
-import * as module from './microsoft';
+import * as module from '.';
 export default module;

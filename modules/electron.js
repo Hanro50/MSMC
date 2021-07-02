@@ -1,4 +1,4 @@
-const MSMC = require("./microsoft");
+const MSMC = require("..");
 const { BrowserWindow } = require("electron");
 
 const defaultProperties = {
@@ -35,10 +35,5 @@ module.exports.Launch = (token, callback, updates = () => { }, Windowproperties 
 
 
 module.exports.FastLaunch = (callback, updates = () => { },prompt ="select_account", properties = defaultProperties) => {
-    const token = {
-        client_id: "00000000402b5328",
-        redirect: "https://login.live.com/oauth20_desktop.srf",
-        prompt: prompt,
-    };
-    this.Launch(token, callback, updates, properties);
+    this.Launch(BE.MojangAuthToken(prompt), callback, updates, properties);
 };

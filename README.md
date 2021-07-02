@@ -8,22 +8,24 @@ Based off the Oauth2 flow outline on <a href="https://wiki.vg/Microsoft_Authenti
 
 # Examples
 
-### Using with Minecraft Launcher Core
-Based on the example from the Minecraft Launcher core docs 
+### MCLC example 
+A basic example of how to hook this library into <a href="https://github.com/Pierce01/MinecraftLauncher-core#readme">Mincraft Launcher core</a> to launch minecraft
+
 ```js
 //Import just the client package, MSMC replaces the Auth package in Minecraft Launcher core in this example
-const { Client } = require('minecraft-launcher-core');
+const {Client} = require('minecraft-launcher-core');
 const launcher = new Client();
 const msmc = require("msmc"); 
+
 //Just using NWjs for this example, any function that gives the callback parameter type will work 
 msmc.getNWjs().FastLaunch((callback)=>{
     let opts = {
         clientPackage: null,
-        // We use a custom funtion here to emulate the authentication library, this should be nearly 100% compatible  
+        // Pulled from the Minecraft Launcher core docs , this function is the star of the show
         authorization: msmc.getMLC().getAuth(callback),
         root: "./minecraft",
         version: {
-            number: "1.14",
+            number: "1.14.4",
             type: "release"
         },
         memory: {
@@ -36,12 +38,11 @@ msmc.getNWjs().FastLaunch((callback)=>{
     
     launcher.on('debug', (e) => console.log(e));
     launcher.on('data', (e) => console.log(e));
+
 }, (update) => {
     //A hook for catching loading bar events and errors, standard with MSMC 
-    console.log("")
     console.log("CallBack!!!!!")
     console.log(update)
-    console.log("")
 })
 
 ```
@@ -170,14 +171,6 @@ Basically this is the prompt value in the request sent to Microsoft. This should
 ```
 
 ## Functions
-### setFetch
-An override to manually define which version of fetch should be used. Useful for if you have multiple versions of fetch available and want to use a specific variant<br>
-fetchIn => A version of fetch <br>
-
-```ts
-function setFetch(fetchIn: any): void
-``` 
-
 ### MSLogin (RECOMMENDED) 
 token => Basic MS token info<br>
 callback => The callback that is fired on a successful login. It contains a mojang access token and a user profile<br>
@@ -198,6 +191,24 @@ updates => The URL needed to log in your user. You need to send this to a web br
 ```ts
 function MSCallBack(code: string, MStoken: MSToken, callback: (info: callback) => void, updates?: (info: update) => void): Promise<void>
 ``` 
+### MSRefresh
+This function is used to refresh account objects
+
+profile => Player profile. The same one you'd get from the callback function. This method only works with profiles gotten with msmc!
+callback => The callback that is fired on a successful login. It contains a mojang access token and a user profile
+updates => The URL needed to log in your user. You need to send this to a web browser or something similar to that!
+MStoken => The MS token object 
+```ts
+    function MSRefresh(profile: profile, callback: (info: callback) => void, updates?: (info: update) => void, authToken?: MSToken): Promise<void>;
+```
+### setFetch
+An override to manually define which version of fetch should be used. Useful for if you have multiple versions of fetch available and want to use a specific variant<br>
+fetchIn => A version of fetch <br>
+
+```ts
+function setFetch(fetchIn: any): void
+``` 
+
 ### getElectron() and getNWjs()
 
 Use with electron to get a electron version of fast launch <br>
@@ -235,25 +246,40 @@ function getNWjs(): {
 };
 ``` 
 ### CreateLink
-This function will create a login link based on the inputs provided. Note that this function is called internally after the redirect has been formated. Aka after "http://localhost:\<port\>/" is appended to the redirect. This is done to allow us to create the "FastLaunch" methods which don't rely on an internal http server<br>
+This function will create a login link based on the inputs provided. <br>
+Note that this function is called internally after the redirect has been formated. Aka after "http://localhost:\<port\>/" is appended to the redirect. <br>
+This is done to allow us to create the "FastLaunch" methods which don't rely on an internal http server<br>
 
 token => The MS token object <br>
 
 ```ts
-function CreateLink(token: MSToken): String
+function CreateLink(token: MSToken):String;
 ``` 
-### getMLC()
-This function returns an object with a function to get a Minecraft Launcher core style auth object.  
+
+### getMCLC 
+Replaces some of the functions the Authenticator component in MCLC. 
+#### getAuth
+This serves as a msmc friendly version of getAuth function in MCLC's Authenticator component. Translating the information msmc gets into something mclc can comprehend. This does however not work with normal mojang accounts 
+#### refresh
+This serves as a drop in replacement for the refreshAuth function in MCLC's Authenticator component. This will refresh vanilla and msmc accounts. A hidden \_msmc variable is used to determine how an account should be refreshed so please avoid removing that somehow since the mojang method of refreshing accounts is not compatible with msmc signed in accounts. 
 
 ```ts
-function getMLC(): {
-    getAuth: (info: callback)=>Promise<any>
+function getMCLC(): {
+    getAuth: (info: callback) => Promise<any>
+    refresh: (profile: {
+        access_token: string;
+        client_token?: string;
+        uuid?: string;
+        name?: string;
+        user_properties?: Partial<any>;
+    }) => Promise<any>
 };
 ```
+###### getMLC is marked as deprecated. As it's been renamed to getMCLC the getMLC version of the function will likely be removed by V0.0.8
 
 ## interfaces
 
-### MSToken:
+### MSToken
 
 The Oauth2 details needed to log you in.
 
@@ -285,9 +311,20 @@ interface MSToken {
     prompt?: prompt
 }
 ```
+### profile
+A minecraft profile object. 
 
-### callback:
+```ts
+interface profile {
+    id: string, 
+    name: string, 
+    skins?: [], 
+    capes?: []
+}
 
+```
+
+### callback
 Used in the callback that is fired upon a successfull login
 
 access_token": string => Your classic Mojang auth token. You can do anything with this that you could do with the normal MC login token <br>
@@ -300,7 +337,7 @@ interface callback {
 }
 ```
 
-### update:
+### update
 
 Used in the callback that is fired multiple times during the login process to give the user feedback on how far along the login process is
 
