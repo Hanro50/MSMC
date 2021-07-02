@@ -27,7 +27,7 @@ exports.getAuth = async (info) => {
  * 
   */
 exports.refresh = async (profile, updates = (info) => { console.log(info) }, authToken) => {
-    const FETCH = require("node-fetch").default;
+    const FETCH = msmc.getFetch();
     console.log(profile);
     if (profile._msmc) {
         return await this.getAuth(await new Promise(res => {

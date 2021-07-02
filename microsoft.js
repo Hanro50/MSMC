@@ -76,12 +76,14 @@ module.exports.CreateLink = function (token) {
 
 
 const percent = 100 / 8;
+
 /**Used to get an MC account from a MS profile object */
-async function MSget(MS, callback, updates = () => { }) {
+async function MSget(body, callback, updates = () => { }) {
     if (errorCheck()) { return }
+    updates({ type: "Starting" });
 
     //console.log(Params); //debug
-
+    var percent = 100 / 8;
     function loadBar(number, asset) {
         updates({ type: "Loading", data: asset, percent: number });
     }
@@ -96,8 +98,17 @@ async function MSget(MS, callback, updates = () => { }) {
         }
     }
 
+    loadBar(percent * 1, "Getting Login Token");
+    var MS = await (
+        await FETCH("https://login.live.com/oauth20_token.srf", {
+            method: "post",
+            body: body,
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        })
+    ).json();
+    //console.log(MS); //debug
     webCheck(MS);
-    console.log(MS);
+
     loadBar(percent * 2, "Logging into Xbox Live");
     var rxboxlive = await FETCH("https://user.auth.xboxlive.com/user/authenticate", {
         method: "post",
@@ -112,12 +123,10 @@ async function MSget(MS, callback, updates = () => { }) {
         }),
         headers: { "Content-Type": "application/json", Accept: "application/json" },
     });
-
+    //console.log(rxboxlive); //debug
     webCheck(rxboxlive);
-    var tokenText = await rxboxlive.text();
-    console.log(tokenText); //debug
-    console.log(rxboxlive); //debug
-    var token = JSON.parse(tokenText)
+    var token = await rxboxlive.json();
+
     //console.log(token); //debug
 
     var XBLToken = token.Token;
@@ -205,7 +214,8 @@ async function MSget(MS, callback, updates = () => { }) {
     if (profile.error) {
         return error("You do not seem to have a minecraft account.");
     }
-    console.log(MS)
+
+
     profile._msmc = MS.refresh_token;
     loadBar(100, "Done!");
     callback({ access_token: MCauth.access_token, profile: profile });
@@ -213,31 +223,18 @@ async function MSget(MS, callback, updates = () => { }) {
 
 
 module.exports.MSRefresh = async function (profile, callback, updates = () => { }, authToken) {
-    if (errorCheck()) { return }
     if (!profile._msmc) {
         console.error("This is not an msmc style profile object");
         return;
     }
-    updates({ type: "Starting" });
-    updates({ type: "Loading", data: "Getting Refresh Token", percent: percent * 1 });
-    if (!authToken) {
-        authToken = this.MojangAuthToken();
-    }
-    const MS = await (await FETCH("https://login.live.com/oauth20_token.srf",
-        {
-            "body": (
-                "client_id=" + authToken.client_id +
-                "&grant_type=refresh_token" +
-                "&refresh_token=" + profile._msmc +
-                (authToken.clientSecret ? "&client_secret=" + authToken.clientSecret : "") +
-                (authToken.scope ? "&scope=" + authToken.scope : "")),
-            "method": "POST",
-            "headers": {
-                'Content-Type': 'application/x-www-form-urlencoded'
-
-            }
-        })).json();
-    MSget(MS, callback, updates);
+    authToken = authToken ? authToken : this.MojangAuthToken();
+    const body = (
+        "client_id=" + authToken.client_id +
+        "&grant_type=refresh_token" +
+        "&refresh_token=" + profile._msmc +
+        (authToken.clientSecret ? "&client_secret=" + authToken.clientSecret : "") +
+        (authToken.scope ? "&scope=" + authToken.scope : ""))
+    MSget(body, callback, updates);
 }
 
 /**
@@ -245,29 +242,14 @@ module.exports.MSRefresh = async function (profile, callback, updates = () => { 
  * @returns
  */
 module.exports.MSCallBack = async function (code, MStoken, callback, updates = () => { }) {
-    if (errorCheck()) { return }
+    const body = (
+        "client_id=" + MStoken.client_id +
+        "&code=" + code +
+        "&grant_type=authorization_code" +
+        "&redirect_uri=" + MStoken.redirect +
+        (MStoken.clientSecret ? "&client_secret=" + MStoken.clientSecret : ""));
 
-    updates({ type: "Starting" });
-
-    updates({ type: "Loading", data: "Getting Login Token", percent: percent * 1 });
-
-    var MS = await (
-        await FETCH("https://login.live.com/oauth20_token.srf", {
-            method: "post",
-            body:
-                "client_id=" +
-                MStoken.client_id +
-                "&code=" +
-                code +
-                "&grant_type=authorization_code" +
-                "&redirect_uri=" +
-                MStoken.redirect +
-                (MStoken.clientSecret ? "&client_secret=" + MStoken.clientSecret : ""),
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        })
-    ).json();
-
-    MSget(MS, callback, updates);
+    MSget(body, callback, updates);
 };
 
 //This needs to be apart or we could end up with a memory leak!

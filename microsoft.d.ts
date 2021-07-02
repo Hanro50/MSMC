@@ -101,8 +101,9 @@ export declare function MSRefresh(profile: profile, callback: (info: callback) =
  */
 export declare function setFetch(fetchIn: any): void;
 
-
+/**Used to get the fetch method in use */
 export declare function getFetch(): any;
+
 /**Use with electron to get a electron version of fast launch */
 export declare function getElectron(): {
     Launch: (token: MSToken, callback: (info: callback) => void, updates?: (info: update) => void, properties?: WindowsProperties) => void
