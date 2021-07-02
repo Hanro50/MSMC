@@ -1,7 +1,7 @@
 # Goals of this test branch 
 1) Implement ability to refresh login tokens 
 2) Code clean up, reducing redundancies 
-3) Lib cleanup, fix typos and small scale errors 
+3) Doc cleanup, fix typos and small scale errors 
 4) improve MCLC support 
 
 # MSMC
