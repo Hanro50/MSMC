@@ -234,18 +234,21 @@ function getNWjs(): {
     FastLaunch: (callback: (info: callback) => void, updates?: (info: update) => void, prompt?: prompt, properties?: WindowsProperties) => void
 };
 ``` 
-
+### CreateLink
 This function will create a login link based on the inputs provided. Note that this function is called internally after the redirect has been formated. Aka after "http://localhost:\<port\>/" is appended to the redirect. This is done to allow us to create the "FastLaunch" methods which don't rely on an internal http server<br>
 
 token => The MS token object <br>
 
-`CreateLink(token: MSToken):String` <br>
+```ts
+function CreateLink(token: MSToken): String
+``` 
+### getMLC()
 This function returns an object with a function to get a Minecraft Launcher core style auth object.  
 
 ```ts
-export declare function getMLC():{
-    getAuth:(info: callback)=>Promise<any>
-}
+function getMLC(): {
+    getAuth: (info: callback)=>Promise<any>
+};
 ```
 
 ## interfaces
