@@ -4,16 +4,11 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 End license text.*/
 
-
 const BE = require("./modules/backEnd")
 
 module.exports.setFetch = (fetchIn) => {
     BE.setFetch(fetchIn);
 };
-
-module.exports.getFetch = () => {
-    return BE.getFetch();
-}
 
 module.exports.CreateLink = function (token) {
     //console.log(token);
@@ -60,19 +55,19 @@ module.exports.MSCallBack = async function (code, MStoken, callback, updates = (
 
 module.exports.MSLogin = function (token, callback, updates) {
     return new Promise((resolve) => {
-        BE.setCallback((Params, app) => {
+        const app = BE.setCallback((Params) => {
             this.MSCallBack(Params.get("code"), token, callback, updates)
-            app.addListener("listening", () => {
-                if (String(token.redirect).startsWith("/")) {
-                    token.redirect = String(token.redirect).substr(1);
-                }
-                token.redirect =
-                    "http://localhost:" +
-                    app.address().port +
-                    "/" +
-                    (token.redirect ? token.redirect : "");
-                resolve(this.CreateLink(token));
-            });
+        })
+        app.addListener("listening", () => {
+            if (String(token.redirect).startsWith("/")) {
+                token.redirect = String(token.redirect).substr(1);
+            }
+            token.redirect =
+                "http://localhost:" +
+                app.address().port +
+                "/" +
+                (token.redirect ? token.redirect : "");
+            resolve(this.CreateLink(token));
         });
     });
 }
@@ -85,6 +80,10 @@ module.exports.getNWjs = () => {
 };
 
 module.exports.getMLC = () => {
+    console.warn("Deprecated! : please use getMCLC instead!")
+    return require("./modules/mclc");
+};
+module.exports.getMCLC = () => {
     return require("./modules/mclc");
 };
 

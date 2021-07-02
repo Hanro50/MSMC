@@ -113,7 +113,7 @@ export declare function getNWjs(): {
 };
 
 /**Used with the Minecraft Launcher core library, special thanks for Luuxis */
-export declare function getMLC(): {
+export declare function getMCLC(): {
     getAuth: (info: callback) => Promise<any>
     refresh: (profile: {
         access_token: string;

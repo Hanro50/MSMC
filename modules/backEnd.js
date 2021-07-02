@@ -22,7 +22,8 @@ const percent = 100 / 8;
 //This needs to be apart or we could end up with a memory leak!
 var app;
 /**
- * @param {(URLCallback:URLSearchParams,App:any)=>void} callback
+ * @param {(URLCallback:URLSearchParams)=>void} callback
+ * @param {(App:any)=>void}
  * This is needed for the oauth 2 callback
  */
 module.exports.setCallback = (callback) => {
@@ -39,12 +40,10 @@ module.exports.setCallback = (callback) => {
         res.writeHead(200, { "Content-Type": "text/plain" });
         res.end("Thank you!");
         app.close();
-        //console.log(req.url);
-        //console.log(req.url.substr(req.url.indexOf("?") + 1))
+
         if (req.url.includes("?")) {
             const urlParams = new URLSearchParams(req.url.substr(req.url.indexOf("?") + 1));
-            //console.log(Array.from(urlParams.keys()));
-            callback(urlParams, app);
+            callback(urlParams);
         }
     });
     return app.listen();
