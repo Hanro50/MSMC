@@ -14,9 +14,11 @@
     "url": "https://github.com/Hanro50/MSMC/issues"
   },
   "files": [
+    "microsoft.d.ts",
     "microsoft.js",
     "electron.js",
-    "nwjs.js"
+    "nwjs.js",
+    "mcl.js"
   ],
   "homepage": "https://github.com/Hanro50/MSMC/",
   "optionalDependencies": {

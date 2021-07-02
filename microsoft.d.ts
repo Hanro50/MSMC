@@ -101,7 +101,7 @@ export declare function getNWjs(): {
     Launch: (token: MSToken, callback: (info: callback) => void, updates?: (info: update) => void, properties?: WindowsProperties) => void
     FastLaunch: (callback: (info: callback) => void, updates?: (info: update) => void, prompt?: prompt, properties?: WindowsProperties) => void
 };
-
+/**Used with the Minecraft Launcher core library, special thanks for Luuxis */
 export declare function getMLC():{
     getAuth:(info: callback)=>Promise<any>
 }

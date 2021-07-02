@@ -8,6 +8,5 @@ exports.getAuth = async (info) => {
         name: info.profile.name,
         user_properties: '{}'
     }
-
     return userProfile;
 }
