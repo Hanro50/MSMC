@@ -1,3 +1,9 @@
+# Goals of this test branch 
+1) Implement ability to refresh login tokens 
+2) Code clean up, reducing redundancies 
+3) Doc cleanup, fix typos and small scale errors 
+4) improve MCLC support 
+
 # MSMC
 
 A bare bones login library for Minecraft based projects to authenticate individuals with a Microsoft account.
