@@ -22,7 +22,7 @@ msmc.getNWjs().FastLaunch((callback)=>{
     let opts = {
         clientPackage: null,
         // Pulled from the Minecraft Launcher core docs , this function is the star of the show
-        authorization: msmc.getMLC().getAuth(callback),
+        authorization: msmc.getMCLC().getAuth(callback),
         root: "./minecraft",
         version: {
             number: "1.14.4",
