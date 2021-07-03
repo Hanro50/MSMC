@@ -14,8 +14,8 @@ module.exports.Launch = (token, callback, updates = () => { }, Windowproperties 
         new_win.on('close', function () {
             if (!loading) {
                 updates({ type: "Canceled" });
-            }
-        })
+            };
+        });
         new_win.on('loaded', function () {
 
             const loc = new_win.window.location.href;

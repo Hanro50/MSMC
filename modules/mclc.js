@@ -1,7 +1,10 @@
 const msmc = require("..");
 const BE = require("./backEnd");
 exports.getAuth = async (info) => {
-    console.log(info)
+    //console.log(info)
+    if (!info.profile) {
+        return Promise.reject("No player object in attached callback object!");
+    };
     const userProfile = {
         access_token: info.access_token,
         client_token: null,
@@ -9,7 +12,7 @@ exports.getAuth = async (info) => {
         name: info.profile.name,
         _msmc: info.profile._msmc,
         user_properties: "{}"
-    }
+    };
     return userProfile;
 }
 /**
@@ -32,10 +35,9 @@ exports.refresh = async (profile, updates = (info) => { console.log(info) }, aut
     console.log(profile);
     if (profile._msmc) {
         return await this.getAuth(await new Promise(res => {
-            msmc.MSRefresh({ "name": profile.name, "id": profile.uuid, "_msmc": profile._msmc }, async (callback) => {
-                res(await this.getAuth(callback))
-            }, updates, authToken);
-        }))
+            msmc.MSRefresh({ "name": profile.name, "id": profile.uuid, "_msmc": profile._msmc },
+                async (callback) => { res(callback) }, updates, authToken);
+        }));
     } else {
         updates({ type: "Starting" });
         updates({ type: "Loading", data: "Refreshing Mojang account", percent: 0.5 });
@@ -43,7 +45,7 @@ exports.refresh = async (profile, updates = (info) => { console.log(info) }, aut
             "accessToken": profile.access_token,
             "clientToken": profile.client_token,
             "requestUser": true
-        }
+        };
 
         const user = await FETCH("https://authserver.mojang.com/refresh", {
             "body": JSON.stringify(req),
@@ -54,12 +56,12 @@ exports.refresh = async (profile, updates = (info) => { console.log(info) }, aut
 
         });
         updates({ type: "Loading", data: "Getting user data", percent: 0.9 });
-        const data = await user.json()
+        const data = await user.json();
 
         if (data.error) {
             updates({ type: "Error", data: data });
             return null;
-        }
+        };
 
         const userProfile = {
             access_token: data.accessToken,
@@ -67,7 +69,7 @@ exports.refresh = async (profile, updates = (info) => { console.log(info) }, aut
             uuid: data.selectedProfile.id,
             name: data.selectedProfile.name,
             user_properties: data.user ? data.user.properties : "{}"
-        }
+        };
         updates({ type: "Loading", data: "Done!", percent: 1 });
         return userProfile;
 

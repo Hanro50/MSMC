@@ -17,7 +17,7 @@ module.exports.Launch = (token, callback, updates = () => { }, Windowproperties 
     mainWindow.on("close", () => {
         if (!loading) {
             updates({ type: "Canceled" });
-        }
+        };
     });
     contents.on("did-finish-load", () => {
         const loc = contents.getURL();
@@ -30,7 +30,7 @@ module.exports.Launch = (token, callback, updates = () => { }, Windowproperties 
                 console.error("Failed to close window!");
             }
             MSMC.MSCallBack(urlParams, token, callback, updates);
-        }
+        };
     });
 };
 

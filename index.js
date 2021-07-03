@@ -4,7 +4,7 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 End license text.*/
 
-const BE = require("./modules/backEnd")
+const BE = require("./modules/backEnd");
 
 module.exports.setFetch = (fetchIn) => {
     BE.setFetch(fetchIn);
@@ -28,7 +28,7 @@ module.exports.MSRefresh = async function (profile, callback, updates = () => { 
     if (!profile._msmc) {
         console.error("This is not an msmc style profile object");
         return;
-    }
+    };
     authToken = authToken ? authToken : BE.MojangAuthToken();
     const body = (
         "client_id=" + authToken.client_id +
@@ -37,7 +37,7 @@ module.exports.MSRefresh = async function (profile, callback, updates = () => { 
         (authToken.clientSecret ? "&client_secret=" + authToken.clientSecret : "") +
         (authToken.scope ? "&scope=" + authToken.scope : ""))
     BE.MSget(body, callback, updates);
-}
+};
 
 /**
  * @param {URLSearchParams} Params
@@ -70,7 +70,7 @@ module.exports.MSLogin = function (token, callback, updates) {
             resolve(this.CreateLink(token));
         });
     });
-}
+};
 module.exports.getElectron = () => {
     return require("./modules/electron");
 };
@@ -78,16 +78,11 @@ module.exports.getElectron = () => {
 module.exports.getNWjs = () => {
     return require("./modules/nwjs");
 };
-
-module.exports.getMLC = () => {
-    console.warn("Deprecated! : please use getMCLC instead!")
-    return require("./modules/mclc");
-};
 module.exports.getMCLC = () => {
     return require("./modules/mclc");
 };
 
 /**ES6 compatibility */
-module.exports.default = module.exports
+module.exports.default = module.exports;
 
 

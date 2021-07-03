@@ -275,8 +275,6 @@ function getMCLC(): {
     }) => Promise<any>
 };
 ```
-###### getMLC is marked as deprecated. As it's been renamed to getMCLC the getMLC version of the function will likely be removed by V0.0.10
-
 ## interfaces
 
 ### MSToken

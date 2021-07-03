@@ -208,7 +208,7 @@ module.exports.MSget = async function (body, callback, updates = () => { }) {
     //console.log(MCPurchaseCheck) //debug
     if (MCPurchaseCheck.items.length < 1) {
         return error("You do not seem to own minecraft.");
-    }
+    };
 
     loadBar(percent * 7, "Fetching player profile");
     var r998 = await FETCH("https://api.minecraftservices.com/minecraft/profile", {
@@ -223,11 +223,11 @@ module.exports.MSget = async function (body, callback, updates = () => { }) {
     //console.log(profile) //debug
     if (profile.error) {
         return error("You do not seem to have a minecraft account.");
-    }
+    };
 
 
     profile._msmc = MS.refresh_token;
     loadBar(100, "Done!");
     callback({ access_token: MCauth.access_token, profile: profile });
-}
+};
 
