@@ -3,21 +3,21 @@ try {
     /** We need an http server of some description to get the callback */
     var http = require("http");
 } catch (er) {
-    console.warn("Some sign in methods may not work due to missing http server support in enviroment")
-}
+    console.warn("Some sign in methods may not work due to missing http server support in enviroment");
+};
 
 try {
     var FETCH = require("node-fetch");
 } catch (err) {
     try {
         FETCH = fetch;
-    } catch { }
-}
+    } catch { };
+};
 if (!FETCH) {
     console.warn(
         "MSMC: Could not automatically determine which version of fetch to use.\nMSMC: Please use 'setFetch' to set this property manually"
     );
-}
+};
 const percent = 100 / 8;
 //This needs to be apart or we could end up with a memory leak!
 var app;
@@ -47,7 +47,7 @@ module.exports.setCallback = (callback) => {
         }
     });
     return app.listen();
-}
+};
 
 
 //Load module methods 
@@ -57,7 +57,7 @@ module.exports.setFetch = (fetchIn) => {
 
 module.exports.getFetch = () => {
     return FETCH;
-}
+};
 
 //Load helper methods 
 module.exports.MojangAuthToken = (prompt) => {
@@ -85,28 +85,27 @@ module.exports.errorCheck = () => {
     }
 
     return false;
-}
+};
 
 //Load account logic 
 module.exports.MSget = async function (body, callback, updates = () => { }) {
-    if (this.errorCheck()) { return }
+    if (this.errorCheck()) { return; };
     updates({ type: "Starting" });
 
     //console.log(Params); //debug
-    var percent = 100 / 8;
     function loadBar(number, asset) {
         updates({ type: "Loading", data: asset, percent: number });
-    }
+    };
 
     function error(reason) {
         updates({ type: "Error", data: reason });
-    }
+    };
 
     function webCheck(response) {
         if (response.status > 400) {
             updates({ type: "Rejection", response: response });
-        }
-    }
+        };
+    };
 
     loadBar(percent * 1, "Getting Login Token");
     var MS = await (
@@ -170,13 +169,13 @@ module.exports.MSget = async function (body, callback, updates = () => { }) {
             case "2148916233": {
                 reason = "The account doesn't have an Xbox account.";
                 break;
-            }
+            };
             case "2148916238": {
                 reason =
                     "The account is a child (under 18) and cannot proceed unless the account is added to a Family by an adult. (FIX ME: This error should in theory never happen if the launcher's oauth token is set up correctly)";
                 break;
-            }
-        }
+            };
+        };
         return error(reason);
     }
 

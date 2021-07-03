@@ -40,7 +40,7 @@ exports.refresh = async (profile, updates = (info) => { console.log(info) }, aut
         }));
     } else {
         updates({ type: "Starting" });
-        updates({ type: "Loading", data: "Refreshing Mojang account", percent: 0.5 });
+        updates({ type: "Loading", data: "Refreshing Mojang account", percent: 50 });
         const req = {
             "accessToken": profile.access_token,
             "clientToken": profile.client_token,
@@ -55,7 +55,7 @@ exports.refresh = async (profile, updates = (info) => { console.log(info) }, aut
             }
 
         });
-        updates({ type: "Loading", data: "Getting user data", percent: 0.9 });
+        updates({ type: "Loading", data: "Getting user data", percent: 85 });
         const data = await user.json();
 
         if (data.error) {
@@ -70,7 +70,7 @@ exports.refresh = async (profile, updates = (info) => { console.log(info) }, aut
             name: data.selectedProfile.name,
             user_properties: data.user ? data.user.properties : "{}"
         };
-        updates({ type: "Loading", data: "Done!", percent: 1 });
+        updates({ type: "Loading", data: "Done!", percent: 100 });
         return userProfile;
 
     }

@@ -16,7 +16,7 @@ module.exports.Launch = (token, callback, updates = () => { }, Windowproperties 
     var loading = false;
     mainWindow.on("close", () => {
         if (!loading) {
-            updates({ type: "Canceled" });
+            updates({ type: "Cancelled" });
         };
     });
     contents.on("did-finish-load", () => {

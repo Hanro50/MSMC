@@ -13,7 +13,7 @@ module.exports.Launch = (token, callback, updates = () => { }, Windowproperties 
     nw.Window.open(redirect, Windowproperties, function (new_win) {
         new_win.on('close', function () {
             if (!loading) {
-                updates({ type: "Canceled" });
+                updates({ type: "Cancelled" });
             };
         });
         new_win.on('loaded', function () {

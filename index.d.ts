@@ -52,9 +52,9 @@ export interface update {
      * Rejection: This is given with a fetch error. You are given the fetch item as a data object. <br>
      * Error: This is given with a normal MC account error and will give you some user readable feedback. <br>
      * Starting: This is fired once when the whole loading process is started. This is mainly for setting up loading bars and stuff like that. <br>
-     * Canceled: When the user closes out of a popup (Electron / NV.js only)
+     * Cancelled: When the user closes out of a popup (Electron / NV.js only)
      */
-    type: "Loading" | "Rejection" | "Error" | "Starting" | "Canceled",
+    type: "Loading" | "Rejection" | "Error" | "Starting" | "Cancelled",
     /**Some information about the call. Like the component that's loading or the cause of the error. */
     data?: string,
     /**Used by the rejection type.*/

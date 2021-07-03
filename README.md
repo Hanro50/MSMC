@@ -1,4 +1,4 @@
-# MSMC
+﻿# MSMC
 
 A bare bones login library for Minecraft based projects to authenticate individuals with a Microsoft account.
 
@@ -84,7 +84,7 @@ MSMC.MSLogin({ client_id: "<token>"},
 
 ### Electron code sample:
 
-This is a code sample for electron. It should be added to your main.js file. This will launch a popup that allows a user to log in with their microsoft account as soon as possible. Fastlaunch actually emulates the vanilla minecraft launcher, meaning that we can use mojangs own client ID to login. Inline login windows should use the older method.
+This is a code sample for electron. It should be added to your main.js file. This will launch a pop-up that allows a user to log in with their Microsoft account as soon as possible. Fastlaunch actually emulates the vanilla Minecraft launcher, meaning that we can use Mojangs own client ID to login. In-line login windows should use the older method.
 
 ```js
 app.whenReady().then(() => {
@@ -112,7 +112,7 @@ app.whenReady().then(() => {
         case "Error":
           console.error("MC-Account error:", update.data);
           break;
-        case "Canceled":
+        case "Cancelled":
           console.error("User clicked cancel!");
           break;	
       }
@@ -150,7 +150,7 @@ require("msmc").getNWjs().FastLaunch(
         case "Error":
           console.error("MC-Account error:", update.data);
           break;
-        case "Canceled":
+        case "Cancelled":
           console.error("User clicked cancel!");
           break;	
       }
@@ -182,7 +182,7 @@ function MSLogin(token: MSToken, callback: (info: callback) => void, updates?: (
 ``` 
 ### MSCallBack
 
-An exposed version of the function that gets called when this library has found a login code. You can use this for custom setups where you do not want to use premade functions provided by the library for yout stuff.<br>
+An exposed version of the function that gets called when this library has found a login code. You can use this for custom setups where you do not want to use pre-made functions provided by the library for yout stuff.<br>
 code => The code gotten from a successful login <br>
 MStoken => The MS token object <br>
 callback => The callback that is fired on a successful login. It contains a mojang access token and a user profile<br>
@@ -195,7 +195,7 @@ function MSCallBack(code: string, MStoken: MSToken, callback: (info: callback) =
 This function is used to refresh account objects
 
 profile => Player profile. The same one you'd get from the callback function. This method only works with profiles gotten with msmc!
-callback => The callback that is fired on a successful login. It contains a mojang access token and a user profile
+callback => The callback that is fired on a successful login. It contains a Mojang’s access token and a user profile
 updates => The URL needed to log in your user. You need to send this to a web browser or something similar to that!
 MStoken => The MS token object 
 ```ts
@@ -259,7 +259,7 @@ function CreateLink(token: MSToken):String;
 ### getMCLC 
 Replaces some of the functions the Authenticator component in MCLC. 
 #### getAuth
-This serves as a msmc friendly version of getAuth function in MCLC's Authenticator component. Translating the information msmc gets into something mclc can comprehend. This does however not work with normal mojang accounts 
+This serves as a msmc friendly version of getAuth function in MCLC's Authenticator component. Translating the information msmc gets into something mclc can comprehend. This does however not work with normal Mojang accounts 
 #### refresh
 This serves as a drop in replacement for the refreshAuth function in MCLC's Authenticator component. This will refresh vanilla and msmc accounts. A hidden \_msmc variable is used to determine how an account should be refreshed so please avoid removing that somehow since the mojang method of refreshing accounts is not compatible with msmc signed in accounts. 
 
@@ -322,11 +322,11 @@ interface profile {
 
 ```
 
-### callback
-Used in the callback that is fired upon a successfull login
+### callback 
+Used in the callback that is fired upon a successful login
 
 access_token": string => Your classic Mojang auth token. You can do anything with this that you could do with the normal MC login token <br>
-profile: { "id": string, "name": string, "skins": [], "capes": [] } => Player profile. Similar to the one you'd normaly get with the mojang login
+profile: { "id": string, "name": string, "skins": [], "capes": [] } => Player profile. Similar to the one you'd normally get with the Mojang login
 
 ```ts
 interface callback {
@@ -341,7 +341,7 @@ Used in the callback that is fired multiple times during the login process to gi
 
 ```ts
 interface update {
-    type: "Loading" | "Rejection" | "Error" | "Starting" | "Canceled", //See table below!
+    type: "Loading" | "Rejection" | "Error" | "Starting" | "Cancelled", //See table below!
     /**Some information about the call. Like the component that's loading or the cause of the error. */
     data?: string,
     /**Used by the rejection type.*/
@@ -375,14 +375,14 @@ Possible values for the 'type' parameter:
       <tr>
   <tr>
    <tr>
- <td>"Canceled"</td>
+ <td>"Cancelled"</td>
   <td>When the user closes out of a popup (Electron / NV.js / methods that involve a GUI only) . </td>
       </tr>
    </table>
 
 ### WindowsProperties
 Window property is set to any to avoid needing both nw.js and electron loaded as dev dependencies<br>
-The common properties between both libraries has been backed into the type informarmation for this interface however<br> 
+The common properties between both libraries has been backed into the type information for this interface however<br> 
 See <a href="https://www.electronjs.org/docs/api/browser-window#new-browserwindowoptions">this</a> resource for Electron, if you want to know what options are available <br>
 See <a href="https://nwjs.readthedocs.io/en/latest/References/Manifest%20Format/#window-subfields">this</a> resource for NW.js, if you want to know the available options<br>
 
