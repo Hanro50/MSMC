@@ -3,9 +3,9 @@ const BE = require("./backEnd");
 const { BrowserWindow } = require("electron");
 
 const defaultProperties = {
-        width: 500,
-        height: 650,
-        resizable: false,
+    width: 500,
+    height: 650,
+    resizable: false,
 };
 
 module.exports.Launch = (token, callback, updates = () => { }, Windowproperties = defaultProperties) => {
@@ -16,10 +16,9 @@ module.exports.Launch = (token, callback, updates = () => { }, Windowproperties 
     const contents = mainWindow.webContents;
     var loading = false;
     mainWindow.on("close", () => {
-        if (!loading) {
-            updates({ type: "Cancelled" });
-        };
+        if (!loading) { updates({ type: "Cancelled" }); };
     });
+
     contents.on("did-finish-load", () => {
         const loc = contents.getURL();
         if (loc.startsWith(token.redirect)) {
@@ -35,6 +34,6 @@ module.exports.Launch = (token, callback, updates = () => { }, Windowproperties 
     });
 };
 
-module.exports.FastLaunch = (callback, updates = () => { },prompt ="select_account", properties = defaultProperties) => {
+module.exports.FastLaunch = (callback, updates = () => { }, prompt = "select_account", properties = defaultProperties) => {
     this.Launch(BE.MojangAuthToken(prompt), callback, updates, properties);
 };
