@@ -7,6 +7,7 @@ const defaultProperties = {
         height: 650,
         resizable: false,
 };
+
 module.exports.Launch = (token, callback, updates = () => { }, Windowproperties = defaultProperties) => {
     var redirect = MSMC.CreateLink(token);
     const mainWindow = new BrowserWindow(Windowproperties);
@@ -27,13 +28,12 @@ module.exports.Launch = (token, callback, updates = () => { }, Windowproperties 
                 loading = true;
                 mainWindow.close();
             } catch {
-                console.error("Failed to close window!");
+                console.error("[MSMC] Failed to close window!");
             }
             MSMC.MSCallBack(urlParams, token, callback, updates);
         };
     });
 };
-
 
 module.exports.FastLaunch = (callback, updates = () => { },prompt ="select_account", properties = defaultProperties) => {
     this.Launch(BE.MojangAuthToken(prompt), callback, updates, properties);

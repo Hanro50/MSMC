@@ -5,54 +5,50 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 End license text.*/
 
 const BE = require("./modules/backEnd");
-
 module.exports.setFetch = (fetchIn) => {
     BE.setFetch(fetchIn);
 };
 
+//Creates a login link
 module.exports.CreateLink = function (token) {
-    //console.log(token);
     return (
         "https://login.live.com/oauth20_authorize.srf" +
         "?client_id=" +
         token.client_id +
         "&response_type=code" +
-        "&redirect_uri=" +
-        encodeURIComponent(token.redirect) +
+        "&redirect_uri=" + encodeURIComponent(token.redirect) +
         "&scope=XboxLive.signin%20offline_access" +
         (token.prompt ? "&prompt=" + token.prompt : "")
     );
 };
 
+//Callback function used with custom login flows
+module.exports.MSCallBack = async function (code, MStoken, callback, updates = () => { }) {
+    const body = (
+        "client_id=" + MStoken.client_id +
+        (MStoken.clientSecret ? "&client_secret=" + MStoken.clientSecret : "") +
+        "&code=" + code +
+        "&grant_type=authorization_code" +
+        "&redirect_uri=" + MStoken.redirect)
+    BE.MSget(body, callback, updates);
+};
+
+//Used to refresh the login token of a msmc account 
 module.exports.MSRefresh = async function (profile, callback, updates = () => { }, authToken) {
     if (!profile._msmc) {
-        console.error("This is not an msmc style profile object");
+        console.error("[MSMC] This is not an msmc style profile object");
         return;
     };
     authToken = authToken ? authToken : BE.MojangAuthToken();
     const body = (
         "client_id=" + authToken.client_id +
-        "&grant_type=refresh_token" +
-        "&refresh_token=" + profile._msmc +
         (authToken.clientSecret ? "&client_secret=" + authToken.clientSecret : "") +
-        (authToken.scope ? "&scope=" + authToken.scope : ""))
+        "&refresh_token=" + profile._msmc +
+        "&grant_type=refresh_token")
     BE.MSget(body, callback, updates);
 };
 
-/**
- * @param {URLSearchParams} Params
- * @returns
- */
-module.exports.MSCallBack = async function (code, MStoken, callback, updates = () => { }) {
-    const body = (
-        "client_id=" + MStoken.client_id +
-        "&code=" + code +
-        "&grant_type=authorization_code" +
-        "&redirect_uri=" + MStoken.redirect +
-        (MStoken.clientSecret ? "&client_secret=" + MStoken.clientSecret : ""));
-    BE.MSget(body, callback, updates);
-};
-
+//Generic ms login flow
 module.exports.MSLogin = function (token, callback, updates) {
     return new Promise((resolve) => {
         const app = BE.setCallback((Params) => {
@@ -71,18 +67,21 @@ module.exports.MSLogin = function (token, callback, updates) {
         });
     });
 };
+
+//Electron integration
 module.exports.getElectron = () => {
     return require("./modules/electron");
 };
 
+//NWjs integration
 module.exports.getNWjs = () => {
     return require("./modules/nwjs");
 };
+
+//MCLC integration
 module.exports.getMCLC = () => {
     return require("./modules/mclc");
 };
 
-/**ES6 compatibility */
+//ES6 compatibility 
 module.exports.default = module.exports;
-
-

@@ -35,6 +35,7 @@ export interface MSToken {
     prompt?: prompt
 };
 
+/**A version of a mincraft profile you'd get from the auth end points */
 export interface profile {
     id: string, name: string, skins?: [], capes?: []
 };
@@ -73,21 +74,28 @@ export interface WindowsProperties {
 };
 
 /**
- * @param token Your MS Login token. Mainly your client ID, client secret (optional  | Depends how azure is set up) and a redirect (Do not include http://localhost:<port>/ as that's added for you!)
- * @param callback The callback that is fired on a successful login. It contains a mojang access token and a user profile
- * @param updates A callback that one can hook into to get updates on the login process
- * @returns The URL needed to log in your user. You need to send this to a web browser or something similar to that!
+ * An override to manually define which version of fetch should be used 
+ * @param fetchIn A version of fetch 
  */
+export declare function setFetch(fetchIn: any): void;
 
-export declare function MSLogin(token: MSToken, callback: (info: callback) => void, updates?: (info: update) => void): Promise<string>;
+/** 
+ * This function will create a login link based on the inputs provided. <br>
+ * Note that this function is called internally after the redirect has been formated. Aka after "http://localhost:\<port\>/" is appended to the redirect. <br>
+ * This is done to allow us to create the "FastLaunch" methods which don't rely on an internal http server<br>
+ *
+ * @param token Your MS Login token. Mainly your client ID, client secret (optional  | Depends how azure is set up) and a redirect;
+ */
+export declare function CreateLink(token: MSToken): String;
+
 /**
- * 
  * @param code The code gotten from a successful login 
  * @param MStoken The MS token object 
  * @param callback The callback that is fired on a successful login. It contains a mojang access token and a user profile
  * @param updates The URL needed to log in your user. You need to send this to a web browser or something similar to that!
  */
 export declare function MSCallBack(code: string, MStoken: MSToken, callback: (info: callback) => void, updates?: (info: update) => void): Promise<void>;
+
 /**
  * @param profile Player profile. Similar to the one you'd normaly get with the mojang login
  * @param callback The callback that is fired on a successful login. It contains a mojang access token and a user profile
@@ -95,11 +103,14 @@ export declare function MSCallBack(code: string, MStoken: MSToken, callback: (in
  * @param MStoken The MS token object 
  */
 export declare function MSRefresh(profile: profile, callback: (info: callback) => void, updates?: (info: update) => void, authToken?: MSToken): Promise<void>;
+
 /**
- * An override to manually define which version of fetch should be used 
- * @param fetchIn A version of fetch 
+ * @param token Your MS Login token. Mainly your client ID, client secret (optional  | Depends how azure is set up) and a redirect (Do not include http://localhost:<port>/ as that's added for you!)
+ * @param callback The callback that is fired on a successful login. It contains a mojang access token and a user profile
+ * @param updates A callback that one can hook into to get updates on the login process
+ * @returns The URL needed to log in your user. You need to send this to a web browser or something similar to that!
  */
-export declare function setFetch(fetchIn: any): void;
+export declare function MSLogin(token: MSToken, callback: (info: callback) => void, updates?: (info: update) => void): Promise<string>;
 
 /**Use with electron to get a electron version of fast launch */
 export declare function getElectron(): {
@@ -127,7 +138,6 @@ export declare function getMCLC(): {
 /**
  * ES 6 compatibility for typescript
  * These lines of code where a royal pain in the behind to get working.
- * 
  */
 import * as module from '.';
 export default module;

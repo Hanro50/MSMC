@@ -1,41 +1,18 @@
 //Load optional dependencies
-try {
-    /** We need an http server of some description to get the callback */
-    var http = require("http");
-} catch (er) {
-    console.warn("Some sign in methods may not work due to missing http server support in enviroment");
-};
+try { var http = require("http"); } catch (er) { console.warn("[MSMC] Some sign in methods may not work due to missing http server support in enviroment"); };
+try { var FETCH = require("node-fetch"); } catch (err) { try { FETCH = fetch; } catch { }; };
 
-try {
-    var FETCH = require("node-fetch");
-} catch (err) {
-    try {
-        FETCH = fetch;
-    } catch { };
-};
-if (!FETCH) {
-    console.warn(
-        "MSMC: Could not automatically determine which version of fetch to use.\nMSMC: Please use 'setFetch' to set this property manually"
-    );
-};
-const percent = 100 / 8;
+//Check if fetch is defined
+if (!FETCH) { console.warn("[MSMC] Could not automatically determine which version of fetch to use.\n[MSMC] Please use 'setFetch' to set this property manually"); };
+
 //This needs to be apart or we could end up with a memory leak!
 var app;
-/**
- * @param {(URLCallback:URLSearchParams)=>void} callback
- * @param {(App:any)=>void}
- * This is needed for the oauth 2 callback
- */
+//Used for the old/generic method of authentication
 module.exports.setCallback = (callback) => {
-    if (!http) {
-        console.error("Could not define http server, please use a different method!");
-        return;
-    }
-    try {
-        if (app) {
-            app.close();
-        }
-    } catch { }
+    if (!http) { console.error("[MSMC] Could not define http server, please use a different method!"); return; }
+
+    try { if (app) { app.close(); } } catch { /*Ignore*/ }
+
     app = http.createServer((req, res) => {
         res.writeHead(200, { "Content-Type": "text/plain" });
         res.end("Thank you!");
@@ -49,12 +26,12 @@ module.exports.setCallback = (callback) => {
     return app.listen();
 };
 
-
-//Load module methods 
+//Used to set the version of fetch used manually
 module.exports.setFetch = (fetchIn) => {
     FETCH = fetchIn;
 };
 
+//Used internally to get fetch when needed
 module.exports.getFetch = () => {
     return FETCH;
 };
@@ -64,31 +41,29 @@ module.exports.MojangAuthToken = (prompt) => {
     const token = {
         client_id: "00000000402b5328",
         redirect: "https://login.live.com/oauth20_desktop.srf",
-        scope: "XboxLive.signin%20offline_access"
     }
-    if (prompt)
-        token.prompt = prompt;
+    if (prompt) token.prompt = prompt;
     return token;
 };
 
 //Load constants 
 module.exports.errorCheck = () => {
     if (!FETCH) {
-        console.error(
-            "MSMC: Could not automatically determine which version of fetch to use.\nMSMC: Please use 'setFetch' to set this property manually"
-        );
+        console.error("[MSMC] Could not automatically determine which version of fetch to use.");
+        console.error("[MSMC] Please use 'setFetch' to set this property manually");
         return true;
     }
     if (typeof FETCH !== "function") {
-        console.error("MSMC: The version of fetch provided is not a function!");
+        console.error("[MSMC] The version of fetch provided is not a function!");
         return true;
     }
 
     return false;
 };
 
-//Load account logic 
+//Main Login flow implementation
 module.exports.MSget = async function (body, callback, updates = () => { }) {
+    const percent = 100 / 5;
     if (this.errorCheck()) { return; };
     updates({ type: "Starting" });
 
@@ -107,61 +82,51 @@ module.exports.MSget = async function (body, callback, updates = () => { }) {
         };
     };
 
-    loadBar(percent * 1, "Getting Login Token");
+    loadBar(percent * 0, "Getting Login Token");
     var MS = await (
         await FETCH("https://login.live.com/oauth20_token.srf", {
-            method: "post",
-            body: body,
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            method: "post", body: body, headers: { "Content-Type": "application/x-www-form-urlencoded" }
         })
     ).json();
     //console.log(MS); //debug
     webCheck(MS);
 
-    loadBar(percent * 2, "Logging into Xbox Live");
+    loadBar(percent * 1, "Logging into Xbox Live");
     var rxboxlive = await FETCH("https://user.auth.xboxlive.com/user/authenticate", {
         method: "post",
         body: JSON.stringify({
             Properties: {
                 AuthMethod: "RPS",
                 SiteName: "user.auth.xboxlive.com",
-                RpsTicket: "d=" + MS.access_token, // your access token from step 2 here
+                RpsTicket: "d=" + MS.access_token // your access token from step 2 here
             },
             RelyingParty: "http://auth.xboxlive.com",
-            TokenType: "JWT",
+            TokenType: "JWT"
         }),
         headers: { "Content-Type": "application/json", Accept: "application/json" },
     });
-    //console.log(rxboxlive); //debug
+
     webCheck(rxboxlive);
     var token = await rxboxlive.json();
-
     //console.log(token); //debug
-
     var XBLToken = token.Token;
     var UserHash = token.DisplayClaims.xui[0].uhs;
-    loadBar(percent * 3, "Getting a Xbox One Security Token");
+    loadBar(percent * 2, "Getting a Xbox One Security Token");
     var rxsts = await FETCH("https://xsts.auth.xboxlive.com/xsts/authorize", {
         method: "post",
         body: JSON.stringify({
-            Properties: {
-                SandboxId: "RETAIL",
-                UserTokens: [
-                    XBLToken, // from above
-                ],
-            },
+            Properties: { SandboxId: "RETAIL", UserTokens: [XBLToken] },
             RelyingParty: "rp://api.minecraftservices.com/",
             TokenType: "JWT",
         }),
         headers: { "Content-Type": "application/json", Accept: "application/json" },
     });
 
-    webCheck(rxsts);
-    //console.log(rxsts) //debug
-    var XSTS = await rxsts.json();
 
-    //console.log(XSTS);
-    loadBar(percent * 4, "Checking for errors");
+    var XSTS = await rxsts.json();
+    //console.log(XSTS); //debug
+
+    loadBar(percent * 2.5, "Checking for errors");
 
     if (XSTS.XErr) {
         var reason = "Unknown reason";
@@ -179,7 +144,7 @@ module.exports.MSget = async function (body, callback, updates = () => { }) {
         return error(reason);
     }
 
-    loadBar(percent * 5, "Logging into Minecraft");
+    loadBar(percent * 3, "Logging into Minecraft");
     var rlogin_with_xbox = await FETCH(
         "https://api.minecraftservices.com/authentication/login_with_xbox",
         {
@@ -192,24 +157,27 @@ module.exports.MSget = async function (body, callback, updates = () => { }) {
     );
     webCheck(rlogin_with_xbox);
 
-    loadBar(percent * 6, "Checking game ownership");
+    // loadBar(percent * 6, "Checking game ownership");
     var MCauth = await rlogin_with_xbox.json();
+
     //console.log(MCauth) //debug
-    var rmcstore = await FETCH("https://api.minecraftservices.com/entitlements/mcstore", {
-        headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-            Authorization: "Bearer " + MCauth.access_token,
-        },
-    });
 
-    var MCPurchaseCheck = await rmcstore.json();
+    //Is this even needed? The call after this will error out anyway. -Hanro
+
+    //var rmcstore = await FETCH("https://api.minecraftservices.com/entitlements/mcstore", {
+    //    headers: {
+    //        "Content-Type": "application/json",
+    //        Accept: "application/json",
+    //        Authorization: "Bearer " + MCauth.access_token,
+    //    },
+    //});
+    //var MCPurchaseCheck = await rmcstore.json();
     //console.log(MCPurchaseCheck) //debug
-    if (MCPurchaseCheck.items.length < 1) {
-        return error("You do not seem to own minecraft.");
-    };
+    //if (MCPurchaseCheck.items.length < 1) {
+    //     return error("You do not seem to own minecraft.");
+    //};
 
-    loadBar(percent * 7, "Fetching player profile");
+    loadBar(percent * 4, "Fetching player profile");
     var r998 = await FETCH("https://api.minecraftservices.com/minecraft/profile", {
         headers: {
             "Content-Type": "application/json",
@@ -217,16 +185,12 @@ module.exports.MSget = async function (body, callback, updates = () => { }) {
             Authorization: "Bearer " + MCauth.access_token,
         },
     });
-
     var profile = await r998.json();
     //console.log(profile) //debug
     if (profile.error) {
         return error("You do not seem to have a minecraft account.");
     };
-
-
     profile._msmc = MS.refresh_token;
     loadBar(100, "Done!");
     callback({ access_token: MCauth.access_token, profile: profile });
 };
-

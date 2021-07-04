@@ -1,7 +1,6 @@
 const msmc = require("..");
 const BE = require("./backEnd");
 exports.getAuth = async (info) => {
-    //console.log(info)
     if (!info.profile) {
         return Promise.reject("No player object in attached callback object!");
     };
@@ -15,24 +14,9 @@ exports.getAuth = async (info) => {
     };
     return userProfile;
 }
-/**
- * @param {{
- *   access_token: string;
- *   client_token: string;
- *   uuid: string;
- *   name: string;
- *   user_properties: Partial<any>;}} profile 
- * @param {
- *     { client_id: string,
- *   clientSecret?: string,
- *   redirect?: string,
- *   prompt?: prompt}} authToken
- * 
- * 
-  */
+
 exports.refresh = async (profile, updates = (info) => { console.log(info) }, authToken) => {
     const FETCH = BE.getFetch();
-    console.log(profile);
     if (profile._msmc) {
         return await this.getAuth(await new Promise(res => {
             msmc.MSRefresh({ "name": profile.name, "id": profile.uuid, "_msmc": profile._msmc },
@@ -70,8 +54,8 @@ exports.refresh = async (profile, updates = (info) => { console.log(info) }, aut
             name: data.selectedProfile.name,
             user_properties: data.user ? data.user.properties : "{}"
         };
+
         updates({ type: "Loading", data: "Done!", percent: 100 });
         return userProfile;
-
     }
 }
