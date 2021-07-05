@@ -296,6 +296,14 @@ function getNWjs(): {
     ) => void;
 };
 ```
+### Validate
+Checks if a profile object is still valid. Only works with logins done via msmc.
+profile => Player profile. Similar to the one you'd normaly get with the mojang login (Has a hidden \_msmc field)
+
+```ts
+function Validate(profile: profile): Boolean;
+```
+
 
 ### CreateLink
 
@@ -317,6 +325,10 @@ Replaces some of the functions the Authenticator component in MCLC.
 
 This serves as a msmc friendly version of getAuth function in MCLC's Authenticator component. Translating the information msmc gets into something mclc can comprehend. This does however not work with normal Mojang accounts
 
+#### validate
+
+This serves as a drop in replacement for the validate function in MCLC's Authenticator component. This works with mojang and microsoft accounts. 
+
 #### refresh
 
 This serves as a drop in replacement for the refreshAuth function in MCLC's Authenticator component. This will refresh vanilla and msmc accounts. A hidden \_msmc variable is used to determine how an account should be refreshed so please avoid removing that somehow since the mojang method of refreshing accounts is not compatible with msmc signed in accounts.
@@ -324,6 +336,13 @@ This serves as a drop in replacement for the refreshAuth function in MCLC's Auth
 ```ts
 function getMCLC(): {
     getAuth: (info: callback) => Promise<any>;
+    validate: (profile: {
+        access_token: string;
+        client_token?: string;
+        uuid?: string;
+        name?: string;
+        user_properties?: Partial<any>;
+    }) => Promise<Boolean>;
     refresh: (profile: {
         access_token: string;
         client_token?: string;
