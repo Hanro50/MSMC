@@ -7,6 +7,7 @@ if (!FETCH) { console.warn("[MSMC] Could not automatically determine which versi
 
 //This needs to be apart or we could end up with a memory leak!
 var app;
+
 //Used for the old/generic method of authentication
 module.exports.setCallback = (callback) => {
     if (!http) { console.error("[MSMC] Could not define http server, please use a different method!"); return; }
@@ -168,6 +169,7 @@ module.exports.MSget = async function (body, callback, updates = () => { }) {
             Authorization: "Bearer " + MCauth.access_token,
         },
     });
+    
     var profile = await r998.json();
     //console.log(profile) //debug
     if (profile.error) {

@@ -23,7 +23,7 @@ module.exports.CreateLink = function (token) {
 };
 
 //Callback function used with custom login flows
-module.exports.MSCallBack = async function (code, MStoken, callback, updates = () => { }) {
+module.exports.MSCallBack = function (code, MStoken, callback, updates = () => { }) {
     const body = (
         "client_id=" + MStoken.client_id +
         (MStoken.clientSecret ? "&client_secret=" + MStoken.clientSecret : "") +
@@ -33,10 +33,8 @@ module.exports.MSCallBack = async function (code, MStoken, callback, updates = (
     BE.MSget(body, callback, updates);
 };
 
-
-
 //Used to refresh the login token of a msmc account 
-module.exports.MSRefresh = async function (profile, callback, updates = () => { }, authToken) {
+module.exports.MSRefresh = function (profile, callback, updates = () => { }, authToken) {
     if (!profile._msmc) {
         console.error("[MSMC] This is not an msmc style profile object");
         return;
@@ -51,8 +49,9 @@ module.exports.MSRefresh = async function (profile, callback, updates = () => { 
     BE.MSget(body, callback, updates);
 };
 
+//Used to check if tokens are still valid
 module.exports.Validate = (profile) => {
-    return profile._msmc.expires_by && ((profile._msmc.expires_by - Math.floor(Date.now())) > 0);
+    return profile._msmc.expires_by && ((profile._msmc.expires_by - Math.floor(Date.now()/1000)) > 0);
 }
 
 //Generic ms login flow
