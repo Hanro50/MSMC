@@ -192,12 +192,12 @@ updates => The URL needed to log in your user. You need to send this to a web br
 function MSCallBack(code: string, MStoken: MSToken, callback: (info: callback) => void, updates?: (info: update) => void): Promise<void>
 ``` 
 ### MSRefresh
-This function is used to refresh account objects
+This function is used to refresh account objects<br>
 
-profile => Player profile. The same one you'd get from the callback function. This method only works with profiles gotten with msmc!
-callback => The callback that is fired on a successful login. It contains a Mojang’s access token and a user profile
-updates => The URL needed to log in your user. You need to send this to a web browser or something similar to that!
-MStoken => The MS token object 
+profile => Player profile. The same one you'd get from the callback function. This method only works with profiles gotten with msmc!<br>
+callback => The callback that is fired on a successful login. It contains a Mojang’s access token and a user profile<br>
+updates => The URL needed to log in your user. You need to send this to a web browser or something similar to that!<br>
+MStoken => The MS token object <br>
 ```ts
     function MSRefresh(profile: profile, callback: (info: callback) => void, updates?: (info: update) => void, authToken?: MSToken): Promise<void>;
 ```
