@@ -33,18 +33,18 @@ export interface MSToken {
     clientSecret?: string,
     redirect?: string,
     prompt?: prompt
-};
+}
 
 /**A version of a mincraft profile you'd get from the auth end points */
 export interface profile {
     id: string, name: string, skins?: [], capes?: []
-};
+}
 
 /**The callback given on a successful login!*/
 export interface callback {
     "access_token": string, //Your classic Mojang auth token. You can do anything with this that you could do with the normal MC login token 
     profile: profile //Player profile. Similar to the one you'd normaly get with the mojang login
-};
+}
 
 /**The object returned to give you information about how the login process is progressing */
 export interface update {
@@ -62,7 +62,7 @@ export interface update {
     response?: Response,
     /**Used to show how far along the object is in terms of loading*/
     percent?: number
-};
+}
 /**
  * Used by grathical Electron and NW.js intergrations to set the properties of the generated popup
  */
@@ -71,7 +71,7 @@ export interface WindowsProperties {
     height: number,
     resizable?: boolean,
     [key: string]: any
-};
+}
 
 /**
  * An override to manually define which version of fetch should be used 
