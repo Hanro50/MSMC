@@ -33,20 +33,27 @@ module.exports.MSCallBack = async function (code, MStoken, callback, updates = (
     BE.MSget(body, callback, updates);
 };
 
+
+
 //Used to refresh the login token of a msmc account 
 module.exports.MSRefresh = async function (profile, callback, updates = () => { }, authToken) {
     if (!profile._msmc) {
         console.error("[MSMC] This is not an msmc style profile object");
         return;
     };
+    const refreshToken = profile._msmc.refresh ? profile._msmc.refresh : profile._msmc;
     authToken = authToken ? authToken : BE.MojangAuthToken();
     const body = (
         "client_id=" + authToken.client_id +
         (authToken.clientSecret ? "&client_secret=" + authToken.clientSecret : "") +
-        "&refresh_token=" + profile._msmc +
+        "&refresh_token=" + refreshToken +
         "&grant_type=refresh_token")
     BE.MSget(body, callback, updates);
 };
+
+module.exports.Validate = (profile) => {
+    return profile._msmc.expires_by && ((profile._msmc.expires_by - Math.floor(Date.now())) > 0);
+}
 
 //Generic ms login flow
 module.exports.MSLogin = function (token, callback, updates) {

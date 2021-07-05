@@ -156,26 +156,9 @@ module.exports.MSget = async function (body, callback, updates = () => { }) {
         }
     );
     webCheck(rlogin_with_xbox);
-
-    // loadBar(percent * 6, "Checking game ownership");
     var MCauth = await rlogin_with_xbox.json();
+    const experationDate = Math.floor(Date.now() / 1000) + MCauth["expires_in"] - 100
 
-    //console.log(MCauth) //debug
-
-    //Is this even needed? The call after this will error out anyway. -Hanro
-
-    //var rmcstore = await FETCH("https://api.minecraftservices.com/entitlements/mcstore", {
-    //    headers: {
-    //        "Content-Type": "application/json",
-    //        Accept: "application/json",
-    //        Authorization: "Bearer " + MCauth.access_token,
-    //    },
-    //});
-    //var MCPurchaseCheck = await rmcstore.json();
-    //console.log(MCPurchaseCheck) //debug
-    //if (MCPurchaseCheck.items.length < 1) {
-    //     return error("You do not seem to own minecraft.");
-    //};
 
     loadBar(percent * 4, "Fetching player profile");
     var r998 = await FETCH("https://api.minecraftservices.com/minecraft/profile", {
@@ -190,7 +173,7 @@ module.exports.MSget = async function (body, callback, updates = () => { }) {
     if (profile.error) {
         return error("You do not seem to have a minecraft account.");
     };
-    profile._msmc = MS.refresh_token;
+    profile._msmc = { refresh: MS.refresh_token, expires_by: experationDate };
     loadBar(100, "Done!");
     callback({ access_token: MCauth.access_token, profile: profile });
 };

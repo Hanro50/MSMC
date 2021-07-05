@@ -92,17 +92,23 @@ export declare function CreateLink(token: MSToken): String;
  * @param code The code gotten from a successful login 
  * @param MStoken The MS token object 
  * @param callback The callback that is fired on a successful login. It contains a mojang access token and a user profile
- * @param updates The URL needed to log in your user. You need to send this to a web browser or something similar to that!
+ * @param updates A callback that one can hook into to get updates on the login process
  */
 export declare function MSCallBack(code: string, MStoken: MSToken, callback: (info: callback) => void, updates?: (info: update) => void): Promise<void>;
 
 /**
  * @param profile Player profile. Similar to the one you'd normaly get with the mojang login
  * @param callback The callback that is fired on a successful login. It contains a mojang access token and a user profile
- * @param updates The URL needed to log in your user. You need to send this to a web browser or something similar to that!
- * @param MStoken The MS token object 
+ * @param updates A callback that one can hook into to get updates on the login process
+ * @param MStoken The MS token object (Optional, will use the vanilla client token if it doesn't have anything)
  */
 export declare function MSRefresh(profile: profile, callback: (info: callback) => void, updates?: (info: update) => void, authToken?: MSToken): Promise<void>;
+
+/**
+ * Checks if a profile object is still valid
+ * @param profile Player profile. Similar to the one you'd normaly get with the mojang login
+ */
+export declare function Validate(profile: profile): Boolean;
 
 /**
  * @param token Your MS Login token. Mainly your client ID, client secret (optional  | Depends how azure is set up) and a redirect (Do not include http://localhost:<port>/ as that's added for you!)

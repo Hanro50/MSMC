@@ -15,11 +15,37 @@ exports.getAuth = async (info) => {
     return userProfile;
 }
 
+exports.toProfile = (profile) => {
+    return { "name": profile.name, "id": profile.uuid, "_msmc": profile._msmc };
+}
+
+exports.validate = async (profile) => {
+    if (profile._msmc) {
+        return msmc.Validate(his.toProfile(profile));
+    }
+    
+    const req = {
+        "accessToken": profile.access_token,
+        "clientToken": profile.client_token
+    };
+
+    const r = await FETCH("https://authserver.mojang.com/validate", {
+        "body": JSON.stringify(req),
+        "method": "POST",
+        "headers": {
+            "Content-Type": "application/json"
+        }
+
+    });
+
+    return r.status == 204
+}
+
 exports.refresh = async (profile, updates = (info) => { console.log(info) }, authToken) => {
     const FETCH = BE.getFetch();
     if (profile._msmc) {
         return await this.getAuth(await new Promise(res => {
-            msmc.MSRefresh({ "name": profile.name, "id": profile.uuid, "_msmc": profile._msmc },
+            msmc.MSRefresh(this.toProfile(profile),
                 async (callback) => { res(callback) }, updates, authToken);
         }));
     } else {
