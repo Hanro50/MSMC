@@ -37,7 +37,7 @@ Basically keep things civil.
 Documentation is a necessity. It keeps the project organised and makes it easier for people to use the library. 
 Please update the documents accordingly/leave comments so others can do it for you when you submit new features or change the way an existing command works.
 
-For functions a basic description of what each variable is for and what the function does is a requirement. 
-It is recommended to write an example for modules showing how to use them.     
+For functions a basic description of what each variable is for and what the function does is a requirement in the final docs.  
+It is recommended to write an example for modules showing how to use them. The exception being internal modules.     
   
    
