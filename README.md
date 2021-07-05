@@ -197,7 +197,7 @@ This function is used to refresh account objects<br>
 profile => Player profile. The same one you'd get from the callback function. This method only works with profiles gotten with msmc!<br>
 callback => The callback that is fired on a successful login. It contains a Mojang’s access token and a user profile<br>
 updates => The URL needed to log in your user. You need to send this to a web browser or something similar to that!<br>
-MStoken => The MS token object <br>
+MStoken => The MS token object (Optional, will use the vanilla client token if it doesn't have anything) <br>
 ```ts
     function MSRefresh(profile: profile, callback: (info: callback) => void, updates?: (info: update) => void, authToken?: MSToken): Promise<void>;
 ```
