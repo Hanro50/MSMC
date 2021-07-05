@@ -23,13 +23,15 @@ module.exports.Launch = (token, callback, updates = () => { }, Windowproperties 
         const loc = contents.getURL();
         if (loc.startsWith(token.redirect)) {
             const urlParams = new URLSearchParams(loc.substr(loc.indexOf("?") + 1)).get("code");
-            try {
+            if (urlParams) {
+                MSMC.MSCallBack(urlParams, token, callback, updates);
                 loading = true;
+            }
+            try {
                 mainWindow.close();
             } catch {
                 console.error("[MSMC] Failed to close window!");
             }
-            MSMC.MSCallBack(urlParams, token, callback, updates);
         };
     });
 };
