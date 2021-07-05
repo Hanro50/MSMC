@@ -132,6 +132,15 @@ export declare function getNWjs(): {
 /**Used with the Minecraft Launcher core library, special thanks for Luuxis */
 export declare function getMCLC(): {
     getAuth: (info: callback) => Promise<any>
+
+    validate: (profile: {
+        access_token: string;
+        client_token?: string;
+        uuid?: string;
+        name?: string;
+        user_properties?: Partial<any>;
+    }) => Promise<Boolean>
+    
     refresh: (profile: {
         access_token: string;
         client_token?: string;
