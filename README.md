@@ -7,7 +7,7 @@ A bare bones login library for Minecraft based projects to authenticate individu
 Based off the Oauth2 flow outline on <a href="https://wiki.vg/Microsoft_Authentication_Scheme"> this site</a>
 
 # Support
-
+Atm you can get support via Discord (link below).
 <p>
    <a href="https://discord.gg/3hM8H7nQMA">
    <img src="https://img.shields.io/discord/861839919655944213?logo=discord"
