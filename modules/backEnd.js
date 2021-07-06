@@ -63,7 +63,7 @@ module.exports.errorCheck = () => {
 };
 
 //Main Login flow implementation
-module.exports.get = async function (body, callback, updates = () => { }) {
+module.exports.get = async function (body, updates = () => { }) {
     const percent = 100 / 5;
     if (this.errorCheck()) { return; };
     updates({ type: "Starting" });
@@ -177,5 +177,5 @@ module.exports.get = async function (body, callback, updates = () => { }) {
     };
     profile._msmc = { refresh: MS.refresh_token, expires_by: experationDate };
     loadBar(100, "Done!");
-    callback({ access_token: MCauth.access_token, profile: profile });
+    return ({ access_token: MCauth.access_token, profile: profile });
 };

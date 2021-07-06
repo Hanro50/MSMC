@@ -23,7 +23,7 @@ exports.validate = async (profile) => {
     if (profile._msmc) {
         return msmc.Validate(his.toProfile(profile));
     }
-    
+
     const req = {
         "accessToken": profile.access_token,
         "clientToken": profile.client_token
@@ -45,8 +45,8 @@ exports.refresh = async (profile, updates = (info) => { console.log(info) }, aut
     const FETCH = BE.getFetch();
     if (profile._msmc) {
         return await this.getAuth(await new Promise(res => {
-            msmc.MSRefresh(this.toProfile(profile),
-                async (callback) => { res(callback) }, updates, authToken);
+            res(msmc.refresh(this.toProfile(profile)
+                , updates, authToken));
         }));
     } else {
         updates({ type: "Starting" });

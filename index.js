@@ -7,7 +7,6 @@ End license text.*/
 const BE = require("./modules/backEnd");
 
 module.exports = {
-
     //Pass through to set fetch 
     setFetch(fetchIn) {
         BE.setFetch(fetchIn);
@@ -25,17 +24,17 @@ module.exports = {
         );
     },
     //Callback function used with custom login flows
-    authenticate(code, MStoken, callback, updates = () => { }) {
+    authenticate(code, MStoken, updates = () => { }) {
         const body = (
             "client_id=" + MStoken.client_id +
             (MStoken.clientSecret ? "&client_secret=" + MStoken.clientSecret : "") +
             "&code=" + code +
             "&grant_type=authorization_code" +
             "&redirect_uri=" + MStoken.redirect)
-        BE.get(body, callback, updates);
+        return BE.get(body, updates);
     },
     //Used to refresh the login token of a msmc account 
-    refresh(profile, callback, updates = () => { }, authToken) {
+    refresh(profile, updates = () => { }, authToken) {
         if (!profile._msmc) {
             console.error("[MSMC] This is not an msmc style profile object");
             return;
@@ -47,7 +46,7 @@ module.exports = {
             (authToken.clientSecret ? "&client_secret=" + authToken.clientSecret : "") +
             "&refresh_token=" + refreshToken +
             "&grant_type=refresh_token")
-        BE.get(body, callback, updates);
+        return BE.get(body, updates);
     },
     //Used to check if tokens are still valid
     validate(profile) {
@@ -57,7 +56,8 @@ module.exports = {
     login(token, callback, updates) {
         return new Promise((resolve) => {
             const app = BE.setCallback((Params) => {
-                this.authenticate(Params.get("code"), token, callback, updates)
+                this.authenticate(Params.get("code"), token, updates).then(c => { resolve(c); });
+
             })
             app.addListener("listening", () => {
                 if (String(token.redirect).startsWith("/")) {
@@ -68,24 +68,22 @@ module.exports = {
                     app.address().port +
                     "/" +
                     (token.redirect ? token.redirect : "");
-                resolve(this.createLink(token));
+                callback(this.createLink(token));
             });
         });
     },
 
-    fastLuanch(type, callback, updates, prompt = "select_account", properties) {
-        this.luanch(type, BE.mojangAuthToken(prompt), callback, updates, properties)
+    fastLuanch(type, updates, prompt = "select_account", properties) {
+        return this.luanch(type, BE.mojangAuthToken(prompt), updates, properties)
     },
 
-    luanch(type, token, callback, updates, Windowproperties) {
+    luanch(type, token, updates, Windowproperties) {
         switch (type) {
             case ("electron"): {
-                require("./modules/electron")(token, callback, updates, Windowproperties);
-                break;
+                return require("./modules/electron")(token, updates, Windowproperties);
             }
             case ("nwjs"): {
-                require("./modules/nwjs")(token, callback, updates, Windowproperties);
-                break;
+                return require("./modules/nwjs")(token, updates, Windowproperties);
             }
             default: {
                 console.error('[MSMC] Unknown library type');

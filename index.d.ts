@@ -30,7 +30,7 @@ export type framework = "electron" | "nwjs";
  * 4) Basically the redirect field is equal to your redirect URL you gave microsoft without the "http://localhost/" part. 
  * Please keep this in mind or you'll get weird errors as a mismatch here will still work...sort of. 
  */
-export interface MSToken {
+export interface token {
     client_id: string,
     clientSecret?: string,
     redirect?: string,
@@ -43,7 +43,7 @@ export interface profile {
 }
 
 /**The callback given on a successful login!*/
-export interface callback {
+export interface result {
     "access_token": string, //Your classic Mojang auth token. You can do anything with this that you could do with the normal MC login token 
     profile: profile //Player profile. Similar to the one you'd normaly get with the mojang login
 }
@@ -88,23 +88,21 @@ export declare function setFetch(fetchIn: any): void;
  *
  * @param token Your MS Login token. Mainly your client ID, client secret (optional  | Depends how azure is set up) and a redirect;
  */
-export declare function createLink(token: MSToken): String;
+export declare function createLink(token: token): String;
 
 /**
  * @param code The code gotten from a successful login 
  * @param MStoken The MS token object 
- * @param callback The callback that is fired on a successful login. It contains a mojang access token and a user profile
  * @param updates A callback that one can hook into to get updates on the login process
  */
-export declare function authenticate(code: string, MStoken: MSToken, callback: (info: callback) => void, updates?: (info: update) => void): Promise<void>;
+export declare function authenticate(code: string, MStoken: token, updates?: (info: update) => void): Promise<result>;
 
 /**
  * @param profile Player profile. Similar to the one you'd normaly get with the mojang login
- * @param callback The callback that is fired on a successful login. It contains a mojang access token and a user profile
  * @param updates A callback that one can hook into to get updates on the login process
  * @param MStoken The MS token object (Optional, will use the vanilla client token if it doesn't have anything)
  */
-export declare function refresh(profile: profile, callback: (info: callback) => void, updates?: (info: update) => void, authToken?: MSToken): Promise<void>;
+export declare function refresh(profile: profile, updates?: (info: update) => void, authToken?: token): Promise<result>;
 
 /**
  * Checks if a profile object is still valid
@@ -118,47 +116,39 @@ export declare function validate(profile: profile): Boolean;
  * @param updates A callback that one can hook into to get updates on the login process
  * @returns The URL needed to log in your user. You need to send this to a web browser or something similar to that!
  */
-export declare function login(token: MSToken, callback: (info: callback) => void, updates?: (info: update) => void): Promise<string>;
+export declare function login(token: token, callback: (info: string) => void, updates?: (info: update) => void): Promise<result>;
 /**
  * 
  * @param type The GUI framework this is compatible with
  * @param token Basic MS token info
- * @param callback The callback that is fired on a successful login. It contains a mojang access token and a user profile
  * @param updates A callback that one can hook into to get updates on the login process
  * @param properties See windowProperties interface for more information
  */
-export declare function luanch(type: framework, token: MSToken, callback: (info: callback) => void, updates?: (info: update) => void, properties?: WindowsProperties): void;
+export declare function luanch(type: framework, token: token, updates?: (info: update) => void, properties?: WindowsProperties): Promise<result>;
 
 /**
  * 
  * @param type The GUI framework this is compatible with
- * @param callback The callback that is fired on a successful login. It contains a mojang access token and a user profile
  * @param updates A callback that one can hook into to get updates on the login process
  * @param prompt See the type definition for "prompt" for more information
  * @param properties See windowProperties interface for more information
  */
-export declare function fastLuanch(type: framework, callback: (info: callback) => void, updates?: (info: update) => void, prompt?: prompt, properties?: WindowsProperties): void;
+export declare function fastLuanch(type: framework, updates?: (info: update) => void, prompt?: prompt, properties?: WindowsProperties): Promise<result>;
+
+export type mclcUser = {
+    access_token: string;
+    client_token?: string;
+    uuid?: string;
+    name?: string;
+    user_properties?: Partial<any>;
+}
 
 /**Used with the Minecraft Launcher core library, special thanks for Luuxis */
 export declare function getMCLC(): {
-    getAuth: (info: callback) => Promise<any>
-
-    validate: (profile: {
-        access_token: string;
-        client_token?: string;
-        uuid?: string;
-        name?: string;
-        user_properties?: Partial<any>;
-    }) => Promise<Boolean>
-
-    refresh: (profile: {
-        access_token: string;
-        client_token?: string;
-        uuid?: string;
-        name?: string;
-        user_properties?: Partial<any>;
-    }) => Promise<any>
-};
+    getAuth: (info: result) => Promise<mclcUser>
+    validate: (profile: mclcUser) => Promise<Boolean>
+    refresh: (profile: mclcUser) => Promise<mclcUser>
+}
 
 /**
  * ES 6 compatibility for typescript
