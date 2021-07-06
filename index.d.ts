@@ -119,9 +119,24 @@ export declare function validate(profile: profile): Boolean;
  * @returns The URL needed to log in your user. You need to send this to a web browser or something similar to that!
  */
 export declare function login(token: MSToken, callback: (info: callback) => void, updates?: (info: update) => void): Promise<string>;
-
+/**
+ * 
+ * @param type The GUI framework this is compatible with
+ * @param token Basic MS token info
+ * @param callback The callback that is fired on a successful login. It contains a mojang access token and a user profile
+ * @param updates A callback that one can hook into to get updates on the login process
+ * @param properties See windowProperties interface for more information
+ */
 export declare function luanch(type: framework, token: MSToken, callback: (info: callback) => void, updates?: (info: update) => void, properties?: WindowsProperties): void;
 
+/**
+ * 
+ * @param type The GUI framework this is compatible with
+ * @param callback The callback that is fired on a successful login. It contains a mojang access token and a user profile
+ * @param updates A callback that one can hook into to get updates on the login process
+ * @param prompt See the type definition for "prompt" for more information
+ * @param properties See windowProperties interface for more information
+ */
 export declare function fastLuanch(type: framework, callback: (info: callback) => void, updates?: (info: update) => void, prompt?: prompt, properties?: WindowsProperties): void;
 
 /**Used with the Minecraft Launcher core library, special thanks for Luuxis */
