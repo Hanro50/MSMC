@@ -72,15 +72,7 @@ module.exports = {
             });
         });
     },
-    //Electron integration
-    getElectron() {
-        return require("./modules/electron");
-    },
-    //NWjs integration
-    getNWjs() {
-        return require("./modules/nwjs");
-    },
-    
+
     fastLuanch(type, callback, updates, prompt = "select_account", properties) {
         this.luanch(type, BE.mojangAuthToken(prompt), callback, updates, properties)
     },
@@ -88,11 +80,11 @@ module.exports = {
     luanch(type, token, callback, updates, Windowproperties) {
         switch (type) {
             case ("electron"): {
-                this.getElectron().launch(token, callback, updates, Windowproperties);
+                require("./modules/electron")(token, callback, updates, Windowproperties);
                 break;
             }
             case ("nwjs"): {
-                this.getNWjs().launch(token, callback, updates, Windowproperties);
+                require("./modules/nwjs")(token, callback, updates, Windowproperties);
                 break;
             }
             default: {

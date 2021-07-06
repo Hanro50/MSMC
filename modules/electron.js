@@ -8,7 +8,7 @@ const defaultProperties = {
     resizable: false,
 };
 
-module.exports.launch = (token, callback, updates = () => { }, Windowproperties = defaultProperties) => {
+module.exports = (token, callback, updates = () => { }, Windowproperties = defaultProperties) => {
     var redirect = MSMC.createLink(token);
     const mainWindow = new BrowserWindow(Windowproperties);
     mainWindow.setMenu(null);
@@ -35,7 +35,3 @@ module.exports.launch = (token, callback, updates = () => { }, Windowproperties 
         };
     });
 };
-
-module.exports.fastLaunch = (callback, updates = () => { }, prompt = "select_account", properties = defaultProperties) => {
-    this.launch(BE.mojangAuthToken(prompt), callback, updates, properties);
-}

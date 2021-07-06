@@ -124,22 +124,6 @@ export declare function luanch(type: framework, token: MSToken, callback: (info:
 
 export declare function fastLuanch(type: framework, callback: (info: callback) => void, updates?: (info: update) => void, prompt?: prompt, properties?: WindowsProperties): void;
 
-/**Use with electron to get a electron version of fast launch 
- * @deprecated
-*/
-export declare function getElectron(): {
-    Launch: (token: MSToken, callback: (info: callback) => void, updates?: (info: update) => void, properties?: WindowsProperties) => void
-    FastLaunch: (callback: (info: callback) => void, updates?: (info: update) => void, prompt?: prompt, properties?: WindowsProperties) => void
-};
-/**Use with NW.js to get a electron version of fast launch 
- * @deprecated
-*/
-
-export declare function getNWjs(): {
-    Launch: (token: MSToken, callback: (info: callback) => void, updates?: (info: update) => void, properties?: WindowsProperties) => void
-    FastLaunch: (callback: (info: callback) => void, updates?: (info: update) => void, prompt?: prompt, properties?: WindowsProperties) => void
-};
-
 /**Used with the Minecraft Launcher core library, special thanks for Luuxis */
 export declare function getMCLC(): {
     getAuth: (info: callback) => Promise<any>
