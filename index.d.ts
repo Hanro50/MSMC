@@ -5,6 +5,8 @@
  */
 export type prompt = "login" | "none" | "consent" | "select_account";
 
+
+export type framework = "electron" | "nwjs";
 /**
  * The Oauth2 details needed to log you in. 
  * 
@@ -86,7 +88,7 @@ export declare function setFetch(fetchIn: any): void;
  *
  * @param token Your MS Login token. Mainly your client ID, client secret (optional  | Depends how azure is set up) and a redirect;
  */
-export declare function CreateLink(token: MSToken): String;
+export declare function createLink(token: MSToken): String;
 
 /**
  * @param code The code gotten from a successful login 
@@ -94,7 +96,7 @@ export declare function CreateLink(token: MSToken): String;
  * @param callback The callback that is fired on a successful login. It contains a mojang access token and a user profile
  * @param updates A callback that one can hook into to get updates on the login process
  */
-export declare function MSCallBack(code: string, MStoken: MSToken, callback: (info: callback) => void, updates?: (info: update) => void): Promise<void>;
+export declare function authenticate(code: string, MStoken: MSToken, callback: (info: callback) => void, updates?: (info: update) => void): Promise<void>;
 
 /**
  * @param profile Player profile. Similar to the one you'd normaly get with the mojang login
@@ -102,13 +104,13 @@ export declare function MSCallBack(code: string, MStoken: MSToken, callback: (in
  * @param updates A callback that one can hook into to get updates on the login process
  * @param MStoken The MS token object (Optional, will use the vanilla client token if it doesn't have anything)
  */
-export declare function MSRefresh(profile: profile, callback: (info: callback) => void, updates?: (info: update) => void, authToken?: MSToken): Promise<void>;
+export declare function refresh(profile: profile, callback: (info: callback) => void, updates?: (info: update) => void, authToken?: MSToken): Promise<void>;
 
 /**
  * Checks if a profile object is still valid
  * @param profile Player profile. Similar to the one you'd normaly get with the mojang login
  */
-export declare function Validate(profile: profile): Boolean;
+export declare function validate(profile: profile): Boolean;
 
 /**
  * @param token Your MS Login token. Mainly your client ID, client secret (optional  | Depends how azure is set up) and a redirect (Do not include http://localhost:<port>/ as that's added for you!)
@@ -116,14 +118,23 @@ export declare function Validate(profile: profile): Boolean;
  * @param updates A callback that one can hook into to get updates on the login process
  * @returns The URL needed to log in your user. You need to send this to a web browser or something similar to that!
  */
-export declare function MSLogin(token: MSToken, callback: (info: callback) => void, updates?: (info: update) => void): Promise<string>;
+export declare function login(token: MSToken, callback: (info: callback) => void, updates?: (info: update) => void): Promise<string>;
 
-/**Use with electron to get a electron version of fast launch */
+export declare function luanch(type: framework, token: MSToken, callback: (info: callback) => void, updates?: (info: update) => void, properties?: WindowsProperties): void;
+
+export declare function fastLuanch(type: framework, callback: (info: callback) => void, updates?: (info: update) => void, prompt?: prompt, properties?: WindowsProperties): void;
+
+/**Use with electron to get a electron version of fast launch 
+ * @deprecated
+*/
 export declare function getElectron(): {
     Launch: (token: MSToken, callback: (info: callback) => void, updates?: (info: update) => void, properties?: WindowsProperties) => void
     FastLaunch: (callback: (info: callback) => void, updates?: (info: update) => void, prompt?: prompt, properties?: WindowsProperties) => void
 };
-/**Use with NW.js to get a electron version of fast launch */
+/**Use with NW.js to get a electron version of fast launch 
+ * @deprecated
+*/
+
 export declare function getNWjs(): {
     Launch: (token: MSToken, callback: (info: callback) => void, updates?: (info: update) => void, properties?: WindowsProperties) => void
     FastLaunch: (callback: (info: callback) => void, updates?: (info: update) => void, prompt?: prompt, properties?: WindowsProperties) => void
@@ -140,7 +151,7 @@ export declare function getMCLC(): {
         name?: string;
         user_properties?: Partial<any>;
     }) => Promise<Boolean>
-    
+
     refresh: (profile: {
         access_token: string;
         client_token?: string;

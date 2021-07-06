@@ -38,7 +38,7 @@ module.exports.getFetch = () => {
 };
 
 //Load helper methods 
-module.exports.MojangAuthToken = (prompt) => {
+module.exports.mojangAuthToken = (prompt) => {
     const token = {
         client_id: "00000000402b5328",
         redirect: "https://login.live.com/oauth20_desktop.srf",
@@ -63,7 +63,7 @@ module.exports.errorCheck = () => {
 };
 
 //Main Login flow implementation
-module.exports.MSget = async function (body, callback, updates = () => { }) {
+module.exports.get = async function (body, callback, updates = () => { }) {
     const percent = 100 / 5;
     if (this.errorCheck()) { return; };
     updates({ type: "Starting" });

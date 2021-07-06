@@ -5,89 +5,106 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 End license text.*/
 
 const BE = require("./modules/backEnd");
-module.exports.setFetch = (fetchIn) => {
-    BE.setFetch(fetchIn);
-};
 
-//Creates a login link
-module.exports.CreateLink = function (token) {
-    return (
-        "https://login.live.com/oauth20_authorize.srf" +
-        "?client_id=" +
-        token.client_id +
-        "&response_type=code" +
-        "&redirect_uri=" + encodeURIComponent(token.redirect) +
-        "&scope=XboxLive.signin%20offline_access" +
-        (token.prompt ? "&prompt=" + token.prompt : "")
-    );
-};
+module.exports = {
 
-//Callback function used with custom login flows
-module.exports.MSCallBack = function (code, MStoken, callback, updates = () => { }) {
-    const body = (
-        "client_id=" + MStoken.client_id +
-        (MStoken.clientSecret ? "&client_secret=" + MStoken.clientSecret : "") +
-        "&code=" + code +
-        "&grant_type=authorization_code" +
-        "&redirect_uri=" + MStoken.redirect)
-    BE.MSget(body, callback, updates);
-};
-
-//Used to refresh the login token of a msmc account 
-module.exports.MSRefresh = function (profile, callback, updates = () => { }, authToken) {
-    if (!profile._msmc) {
-        console.error("[MSMC] This is not an msmc style profile object");
-        return;
-    };
-    const refreshToken = profile._msmc.refresh ? profile._msmc.refresh : profile._msmc;
-    authToken = authToken ? authToken : BE.MojangAuthToken();
-    const body = (
-        "client_id=" + authToken.client_id +
-        (authToken.clientSecret ? "&client_secret=" + authToken.clientSecret : "") +
-        "&refresh_token=" + refreshToken +
-        "&grant_type=refresh_token")
-    BE.MSget(body, callback, updates);
-};
-
-//Used to check if tokens are still valid
-module.exports.Validate = (profile) => {
-    return profile._msmc.expires_by && ((profile._msmc.expires_by - Math.floor(Date.now()/1000)) > 0);
-}
-
-//Generic ms login flow
-module.exports.MSLogin = function (token, callback, updates) {
-    return new Promise((resolve) => {
-        const app = BE.setCallback((Params) => {
-            this.MSCallBack(Params.get("code"), token, callback, updates)
-        })
-        app.addListener("listening", () => {
-            if (String(token.redirect).startsWith("/")) {
-                token.redirect = String(token.redirect).substr(1);
-            }
-            token.redirect =
-                "http://localhost:" +
-                app.address().port +
-                "/" +
-                (token.redirect ? token.redirect : "");
-            resolve(this.CreateLink(token));
+    //Pass through to set fetch 
+    setFetch(fetchIn) {
+        BE.setFetch(fetchIn);
+    },
+    //Creates a login link
+    createLink(token) {
+        return (
+            "https://login.live.com/oauth20_authorize.srf" +
+            "?client_id=" +
+            token.client_id +
+            "&response_type=code" +
+            "&redirect_uri=" + encodeURIComponent(token.redirect) +
+            "&scope=XboxLive.signin%20offline_access" +
+            (token.prompt ? "&prompt=" + token.prompt : "")
+        );
+    },
+    //Callback function used with custom login flows
+    authenticate(code, MStoken, callback, updates = () => { }) {
+        const body = (
+            "client_id=" + MStoken.client_id +
+            (MStoken.clientSecret ? "&client_secret=" + MStoken.clientSecret : "") +
+            "&code=" + code +
+            "&grant_type=authorization_code" +
+            "&redirect_uri=" + MStoken.redirect)
+        BE.get(body, callback, updates);
+    },
+    //Used to refresh the login token of a msmc account 
+    refresh(profile, callback, updates = () => { }, authToken) {
+        if (!profile._msmc) {
+            console.error("[MSMC] This is not an msmc style profile object");
+            return;
+        };
+        const refreshToken = profile._msmc.refresh ? profile._msmc.refresh : profile._msmc;
+        authToken = authToken ? authToken : BE.mojangAuthToken();
+        const body = (
+            "client_id=" + authToken.client_id +
+            (authToken.clientSecret ? "&client_secret=" + authToken.clientSecret : "") +
+            "&refresh_token=" + refreshToken +
+            "&grant_type=refresh_token")
+        BE.get(body, callback, updates);
+    },
+    //Used to check if tokens are still valid
+    validate(profile) {
+        return profile._msmc.expires_by && ((profile._msmc.expires_by - Math.floor(Date.now() / 1000)) > 0);
+    },
+    //Generic ms login flow
+    login(token, callback, updates) {
+        return new Promise((resolve) => {
+            const app = BE.setCallback((Params) => {
+                this.authenticate(Params.get("code"), token, callback, updates)
+            })
+            app.addListener("listening", () => {
+                if (String(token.redirect).startsWith("/")) {
+                    token.redirect = String(token.redirect).substr(1);
+                }
+                token.redirect =
+                    "http://localhost:" +
+                    app.address().port +
+                    "/" +
+                    (token.redirect ? token.redirect : "");
+                resolve(this.createLink(token));
+            });
         });
-    });
-};
+    },
+    //Electron integration
+    getElectron() {
+        return require("./modules/electron");
+    },
+    //NWjs integration
+    getNWjs() {
+        return require("./modules/nwjs");
+    },
+    
+    fastLuanch(type, callback, updates, prompt = "select_account", properties) {
+        this.luanch(type, BE.mojangAuthToken(prompt), callback, updates, properties)
+    },
 
-//Electron integration
-module.exports.getElectron = () => {
-    return require("./modules/electron");
-};
-
-//NWjs integration
-module.exports.getNWjs = () => {
-    return require("./modules/nwjs");
-};
-
-//MCLC integration
-module.exports.getMCLC = () => {
-    return require("./modules/mclc");
-};
+    luanch(type, token, callback, updates, Windowproperties) {
+        switch (type) {
+            case ("electron"): {
+                this.getElectron().launch(token, callback, updates, Windowproperties);
+                break;
+            }
+            case ("nwjs"): {
+                this.getNWjs().launch(token, callback, updates, Windowproperties);
+                break;
+            }
+            default: {
+                console.error('[MSMC] Unknown library type');
+            }
+        }
+    },
+    //MCLC integration
+    getMCLC() {
+        return require("./modules/mclc");
+    }
+}
 
 //ES6 compatibility 
 module.exports.default = module.exports;

@@ -8,8 +8,8 @@ const defaultProperties = {
     resizable: false,
 };
 
-module.exports.Launch = (token, callback, updates = () => { }, Windowproperties = defaultProperties) => {
-    var redirect = MSMC.CreateLink(token);
+module.exports.launch = (token, callback, updates = () => { }, Windowproperties = defaultProperties) => {
+    var redirect = MSMC.createLink(token);
     const mainWindow = new BrowserWindow(Windowproperties);
     mainWindow.setMenu(null);
     mainWindow.loadURL(redirect);
@@ -24,7 +24,7 @@ module.exports.Launch = (token, callback, updates = () => { }, Windowproperties 
         if (loc.startsWith(token.redirect)) {
             const urlParams = new URLSearchParams(loc.substr(loc.indexOf("?") + 1)).get("code");
             if (urlParams) {
-                MSMC.MSCallBack(urlParams, token, callback, updates);
+                MSMC.authenticate(urlParams, token, callback, updates);
                 loading = true;
             }
             try {
@@ -36,6 +36,6 @@ module.exports.Launch = (token, callback, updates = () => { }, Windowproperties 
     });
 };
 
-module.exports.FastLaunch = (callback, updates = () => { }, prompt = "select_account", properties = defaultProperties) => {
-    this.Launch(BE.MojangAuthToken(prompt), callback, updates, properties);
-};
+module.exports.fastLaunch = (callback, updates = () => { }, prompt = "select_account", properties = defaultProperties) => {
+    this.launch(BE.mojangAuthToken(prompt), callback, updates, properties);
+}
