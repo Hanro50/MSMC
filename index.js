@@ -57,7 +57,6 @@ module.exports = {
         return new Promise((resolve) => {
             const app = BE.setCallback((Params) => {
                 this.authenticate(Params.get("code"), token, updates).then(c => { resolve(c); });
-
             })
             app.addListener("listening", () => {
                 if (String(token.redirect).startsWith("/")) {
@@ -86,7 +85,7 @@ module.exports = {
                 return require("./modules/nwjs")(token, updates, Windowproperties);
             }
             default: {
-                console.error('[MSMC] Unknown library type');
+                throw new Promise.reject('[MSMC] Unknown library type');
             }
         }
     },
