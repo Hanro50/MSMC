@@ -84,6 +84,9 @@ module.exports = {
             case ("nwjs"): {
                 return require("./modules/nwjs")(token, updates, Windowproperties);
             }
+            case ("raw"):{
+                return require("./modules/raw")(token, updates, Windowproperties);
+            }
             default: {
                 throw new Promise.reject('[MSMC] Unknown library type');
             }

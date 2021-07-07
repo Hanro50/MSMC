@@ -6,7 +6,7 @@
 export type prompt = "login" | "none" | "consent" | "select_account";
 
 
-export type framework = "electron" | "nwjs";
+export type framework = "electron" | "nwjs" | "raw";
 /**
  * The Oauth2 details needed to log you in. 
  * 
