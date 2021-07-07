@@ -38,10 +38,10 @@ class GuiModule {
         this.type = type;
     }
      Launch(token, callback, updates, properties) {
-        msmc.luanch(this.type , token, updates, prompt, properties).then(callback)
+        msmc.launch(this.type , token, updates, prompt, properties).then(callback)
     }
      FastLaunch(callback, updates, prompt, properties) {
-        msmc.fastLuanch(this.type , updates, prompt, properties).then(callback)
+        msmc.fastLaunch(this.type , updates, prompt, properties).then(callback)
     }
 }
 

@@ -72,11 +72,11 @@ module.exports = {
         });
     },
 
-    fastLuanch(type, updates, prompt = "select_account", properties) {
-        return this.luanch(type, BE.mojangAuthToken(prompt), updates, properties)
+    fastLaunch(type, updates, prompt = "select_account", properties) {
+        return this.launch(type, BE.mojangAuthToken(prompt), updates, properties)
     },
 
-    luanch(type, token, updates, Windowproperties) {
+    launch(type, token, updates, Windowproperties) {
         switch (type) {
             case ("electron"): {
                 return require("./modules/electron")(token, updates, Windowproperties);

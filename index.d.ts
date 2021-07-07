@@ -68,7 +68,7 @@ export interface update {
 /**
  * Used by grathical Electron and NW.js intergrations to set the properties of the generated popup
  */
-export interface WindowsProperties {
+export interface windowProperties {
     width: number,
     height: number,
     resizable?: boolean,
@@ -91,18 +91,20 @@ export declare function setFetch(fetchIn: any): void;
 export declare function createLink(token: token): String;
 
 /**
+ * Used when you want to implement your own login code, but still want msmc to handle authentication for you. 
  * @param code The code gotten from a successful login 
- * @param MStoken The MS token object 
+ * @param MStoken The Microsoft token object used to obtain the login code 
  * @param updates A callback that one can hook into to get updates on the login process
  */
 export declare function authenticate(code: string, MStoken: token, updates?: (info: update) => void): Promise<result>;
 
 /**
+ * Used to refresh login tokens. It is recommended to do this at start up after calling validate to check if the client token needs a refresh
  * @param profile Player profile. Similar to the one you'd normaly get with the mojang login
  * @param updates A callback that one can hook into to get updates on the login process
- * @param MStoken The MS token object (Optional, will use the vanilla client token if it doesn't have anything)
+ * @param MStoken Microsoft token object used to obtain the login code  (Optional, will use the vanilla client token if it doesn't have anything)
  */
-export declare function refresh(profile: profile, updates?: (info: update) => void, authToken?: token): Promise<result>;
+export declare function refresh(profile: profile, updates?: (info: update) => void, MStoken?: token): Promise<result>;
 
 /**
  * Checks if a profile object is still valid
@@ -111,6 +113,7 @@ export declare function refresh(profile: profile, updates?: (info: update) => vo
 export declare function validate(profile: profile): Boolean;
 
 /**
+ * A generic login method. Usefull if you aren't using electron or NW.js and want to make a terminal launcher or are using an unsupported framework
  * @param token Your MS Login token. Mainly your client ID, client secret (optional  | Depends how azure is set up) and a redirect (Do not include http://localhost:<port>/ as that's added for you!)
  * @param callback The callback that is fired on a successful login. It contains a mojang access token and a user profile
  * @param updates A callback that one can hook into to get updates on the login process
@@ -118,23 +121,25 @@ export declare function validate(profile: profile): Boolean;
  */
 export declare function login(token: token, callback: (info: string) => void, updates?: (info: update) => void): Promise<result>;
 /**
- * 
+ * Used with electron or nwjs to launch a popup that a user can use to sign in with
  * @param type The GUI framework this is compatible with
  * @param token Basic MS token info
  * @param updates A callback that one can hook into to get updates on the login process
  * @param properties See windowProperties interface for more information
  */
-export declare function luanch(type: framework, token: token, updates?: (info: update) => void, properties?: WindowsProperties): Promise<result>;
+export declare function launch(type: framework, token: token, updates?: (info: update) => void, properties?: windowProperties): Promise<result>;
 
 /**
- * 
+ * Memics the vanilla launcher in how it works. Like launch in creates a popup a user can log in with
  * @param type The GUI framework this is compatible with
  * @param updates A callback that one can hook into to get updates on the login process
  * @param prompt See the type definition for "prompt" for more information
  * @param properties See windowProperties interface for more information
  */
-export declare function fastLuanch(type: framework, updates?: (info: update) => void, prompt?: prompt, properties?: WindowsProperties): Promise<result>;
-
+export declare function fastLaunch(type: framework, updates?: (info: update) => void, prompt?: prompt, properties?: windowProperties): Promise<result>;
+/**
+ * A copy of the user object mclc uses
+ */
 export type mclcUser = {
     access_token: string;
     client_token?: string;
