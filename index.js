@@ -50,7 +50,7 @@ module.exports = {
     },
     //Used to check if tokens are still valid
     validate(profile) {
-        return profile._msmc.expires_by && ((profile._msmc.expires_by - Math.floor(Date.now() / 1000)) > 0);
+        return profile._msmc.expires_by && profile._msmc.mcToken && ((profile._msmc.expires_by - Math.floor(Date.now() / 1000)) > 0);
     },
     //Generic ms login flow
     login(token, callback, updates) {
