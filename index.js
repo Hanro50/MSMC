@@ -92,8 +92,16 @@ module.exports = {
     //MCLC integration
     getMCLC() {
         return require("./modules/mclc");
-    }
+    },
+    loadLegacy() {
+        console.warn("[MSMC]: This adds compatibility for launchers that implement the callback structure of 2.1.x and earlier. \n" +
+            "New implementations should avoid using this as it will be removed with the 2.4.x series!");
+        const legacy = require('./modules/legacy');
+        Object.keys(legacy).forEach(e => {
+            module.exports[e] = legacy[e];
+        });
+    },
+    default: module.exports
 }
 
 //ES6 compatibility 
-module.exports.default = module.exports;

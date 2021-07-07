@@ -151,6 +151,11 @@ export declare function getMCLC(): {
 }
 
 /**
+ * @deprecated Will be removed by version 2.4.0 
+ */
+export declare function loadLegacy(): void;
+
+/**
  * ES 6 compatibility for typescript
  * These lines of code where a royal pain in the behind to get working.
  */

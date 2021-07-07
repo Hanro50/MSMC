@@ -19,7 +19,8 @@
     "modules/electron.js",
     "modules/nwjs.js",
     "modules/mclc.js",
-    "modules/backEnd.js"
+    "modules/backEnd.js",
+    "modules/legacy.js"
   ],
   "homepage": "https://github.com/Hanro50/MSMC/",
   "optionalDependencies": {
