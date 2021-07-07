@@ -1,3 +1,8 @@
+/**
+ * This is to enable backwards compatibility with launchers built against the 2.1.x series of msmc. 
+ * New Launchers should avoid implementing functions from this module!
+ */
+
 const msmc = require("..")
 
 //Creates a login link
