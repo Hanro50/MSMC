@@ -9,7 +9,8 @@ const spawn = require('child_process').spawn;
 const BE = require("./backEnd");
 const os = require("os");
 const temp = path.join(os.tmpdir(), "msmc"); // /tmp
-const pref = path.join(temp, "Preferences")
+const pref = path.join(temp, "Preferences");
+var args = ["--disable-component-extensions-with-background-pages", "--no-first-run", "--disable-extensions", "--remote-debugging-port=0", "--no-default-browser-check", "--force-app-mode"]
 console.log(temp)
 
 async function setup() {
@@ -34,6 +35,7 @@ var type = os.type();
 switch (type) {
     case 'Windows_NT':
         start = "start msedge"
+        args.push(msedge);
         break;
     case 'Linux':
     default:
@@ -80,8 +82,8 @@ function browserLoop(token, port, updates, browser) {
                     }
                 }
             }).catch(() => {
-                clearInterval(f3);
                 browser.kill();
+                clearInterval(f3);
                 updates({ type: "Cancelled" });
                 reject("[MSMC] Action cancelled by user")
             })
@@ -99,7 +101,10 @@ module.exports = (token, updates = () => { }, Windowproperties = defaultProperti
     console.warn("[MSMC]: Using \"" + cmd + "\"");
     var redirect = msmc.createLink(token);
     return new Promise(resolve => {
-        const browser = spawn(cmd, ["--disable-component-extensions-with-background-pages", "--no-first-run", "--disable-extensions", "--window-size=" + Windowproperties.width + "," + Windowproperties.height, "--remote-debugging-port=0", "--no-default-browser-check", "--user-data-dir=" + temp, "--force-app-mode", "--app=" + redirect + ""]);
+        var launchargs = ["--window-size=" + Windowproperties.width + "," + Windowproperties.height, "--user-data-dir=" + temp, "--app=" + redirect + ""];
+        launchargs.push(...args);
+        console.log(launchargs)
+        const browser = spawn(cmd, launchargs);
         var firstrun = true;
         const ouput = (out) => {
             const cout = String(out.toString()).toLocaleLowerCase().trim();
