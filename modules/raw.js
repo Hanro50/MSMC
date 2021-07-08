@@ -30,28 +30,36 @@ const defaultProperties = {
 }
 //const fr = setCallback(console.log) --host-rules="MAP * localhost:' + fr.address().port + '"--debug-print--no-sandbox
 var start
+var paths
 var type = os.type();
+var compatible;
 switch (type) {
     case 'Windows_NT':
-        start = "msedge"
+        paths = ["C:\\Program Files (x86)", "C:\\Program Files"]
+        compatible = ["\\Microsoft\\Edge\\Application\\msedge.exe", "\\Google\\Chrome\\Application\\chrome.exe"]
         break;
     case 'Linux':
     default:
-        const locations = process.env.PATH.split(":");
-        LE: {
-            for (var i = 0; i < locations.length; i++) {
-                const compatible = ["chromium", "google-chrome", "microsoft-edge", "vivaldi", "brave-browser", "blisk-browser", "yandex-browser"]
-                for (var i2 = 0; i2 < compatible.length; i2++) {
-                    const s = locations[i] + "/" + compatible[i2];
-                    if (fs.existsSync(s)) {
-                        start = s;
-                        break LE;
-                    }
-                }
-            }
-            console.error("[MSMC]: No Chromium browser was found")
-        }
+        paths = process.env.PATH.split(":");
+        compatible = ["chromium", "google-chrome", "microsoft-edge", "vivaldi", "brave-browser", "blisk-browser", "yandex-browser"]
 }
+
+
+LE: {
+    for (var i = 0; i < paths.length; i++) {
+
+        for (var i2 = 0; i2 < compatible.length; i2++) {
+            const s = path.join(paths[i], compatible[i2]);
+            if (fs.existsSync(s)) {
+                start = s;
+                break LE;
+            }
+        }
+    }
+    console.error("[MSMC]: No Chromium browser was found")
+}
+
+
 
 function browserLoop(token, port, updates, browser) {
     return new Promise((resolve, reject) => {
