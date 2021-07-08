@@ -21,19 +21,27 @@ switch (type) {
         start = "start msedge"
         break;
     case 'Linux':
-        const compatible = ["google-chrome", "microsoft-edge", "chromium"]
-        for (var i = 0; i < compatible.length; i++) {
-            if (fs.readFileSync("/bin/" + compatible[i])) {
-                start = compatible[i];
-            }
-        }
-        break;
     default:
-        //Safari doesn't seem to support command line options atm 
-        start = "google-chrome";
+        const locations = process.env.PATH.split(":");
+        LE: {
+            for (var i = 0; i < locations.length; i++) {
+                const compatible = [ "chromium", "google-chrome", "microsoft-edge", "brave-browser","vivaldi","blisk-browser","yandex-browser"]
+                for (var i2 = 0; i2 < compatible.length; i2++) {
+                    const s = locations[i] + "/" + compatible[i2];
+                    if (fs.existsSync(s)) {
+                        start = s;
+                        break LE;
+                    }
+                }
+            }
+            console.error("[MSMC]: No Chromium browser was found")
+        }
 }
 module.exports = (token, updates = () => { }, Windowproperties = defaultProperties) => {
-    const cmd = Windowproperties.browserCMD ? Windowproperties.browserCMD : start
+    const cmd = Windowproperties.browserCMD ? Windowproperties.browserCMD : start;
+    if (!cmd) {
+        return Promise.reject("[MSMC] Error : no chromium browser was set, cannot continue!");
+    }
     console.warn("[MSMC]: This setting is experimental");
     console.warn("[MSMC]: Using \"" + cmd + "\"")
     var redirect = msmc.createLink(token);
@@ -44,8 +52,15 @@ module.exports = (token, updates = () => { }, Windowproperties = defaultProperti
             const port = data.substr(0, data.indexOf("\n"));
             const f3 = setInterval(() => {
                 BE.getFetch()("http://localhost:" + port + "/json").then(r => r.json()).then(out => {
-                    const loc = out[0].url;
-                    if (loc && loc.startsWith(token.redirect)) {
+                    for (var i = 0; i < out.length; i++) {
+                        const loc = out[i].url;
+                        if (!loc || !loc.startsWith(token.redirect)) {
+                            if (loc && loc.startsWith("chrome-extension")) {
+                                //Thank you Blisk!
+                                BE.getFetch()("http://localhost:" + port + "/json/close/" + out[i].id)
+                            }
+                            break;
+                        }
                         const urlParams = new URLSearchParams(loc.substr(loc.indexOf("?") + 1)).get("code");
                         if (urlParams) {
                             resolve(msmc.authenticate(urlParams, token, updates));
@@ -54,15 +69,23 @@ module.exports = (token, updates = () => { }, Windowproperties = defaultProperti
                         }
                         try {
                             clearInterval(f3);
-                            BE.getFetch()("http://localhost:" + port + "/json/close/" + out[0].id)
+                            for (var i2 = 0; i2 < out.length; i2++) {
+                                BE.getFetch()("http://localhost:" + port + "/json/close/" + out[i2].id)
+                            }
                             f.kill("SIGILL")
 
                         } catch {
                             console.error("[MSMC] Failed to close window!");
                         }
                         return true;
+
                     }
-                }).catch(err => { clearInterval(f3); f.kill(); console.log(err) })
+                }).catch(err => {
+                    clearInterval(f3);
+                    f.kill();
+                    updates({ type: "Cancelled" });
+                    console.log(err)
+                })
             }, 500);
 
         }, 500);
