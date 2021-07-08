@@ -34,8 +34,8 @@ var start
 var type = os.type();
 switch (type) {
     case 'Windows_NT':
-        start = "start msedge"
-        args.push(msedge);
+        start = "start";
+        args.push("msedge");
         break;
     case 'Linux':
     default:
@@ -64,10 +64,7 @@ function browserLoop(token, port, updates, browser) {
                     if (loc && loc.startsWith(token.redirect)) {
                         try {
                             clearInterval(f3);
-                            for (var i2 = 0; i2 < out.length; i2++) {
-                                BE.getFetch()("http://localhost:" + port + "/json/close/" + out[i2].id)
-                            }
-                            browser.kill("SIGILL")
+                            browser.kill();
 
                         } catch {
                             console.error("[MSMC] Failed to close window!");
@@ -105,6 +102,7 @@ module.exports = (token, updates = () => { }, Windowproperties = defaultProperti
         launchargs.push(...args);
         console.log(launchargs)
         const browser = spawn(cmd, launchargs);
+
         var firstrun = true;
         const ouput = (out) => {
             const cout = String(out.toString()).toLocaleLowerCase().trim();
