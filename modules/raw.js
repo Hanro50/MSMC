@@ -9,8 +9,7 @@ const spawn = require('child_process').spawn;
 const BE = require("./backEnd");
 const os = require("os");
 const temp = path.join(os.tmpdir(), "msmc"); // /tmp
-const pref = path.join(temp, "Preferences");
-var args = ["--disable-component-extensions-with-background-pages", "--no-first-run", "--disable-extensions", "--remote-debugging-port=0", "--no-default-browser-check", "--force-app-mode"]
+const pref = path.join(temp, "Preferences")
 console.log(temp)
 
 async function setup() {
@@ -34,8 +33,7 @@ var start
 var type = os.type();
 switch (type) {
     case 'Windows_NT':
-        start = "start";
-        args.push("msedge");
+        start = "msedge"
         break;
     case 'Linux':
     default:
@@ -65,7 +63,6 @@ function browserLoop(token, port, updates, browser) {
                         try {
                             clearInterval(f3);
                             browser.kill();
-
                         } catch {
                             console.error("[MSMC] Failed to close window!");
                         }
@@ -79,8 +76,8 @@ function browserLoop(token, port, updates, browser) {
                     }
                 }
             }).catch(() => {
-                browser.kill();
                 clearInterval(f3);
+                browser.kill();
                 updates({ type: "Cancelled" });
                 reject("[MSMC] Action cancelled by user")
             })
@@ -98,11 +95,7 @@ module.exports = (token, updates = () => { }, Windowproperties = defaultProperti
     console.warn("[MSMC]: Using \"" + cmd + "\"");
     var redirect = msmc.createLink(token);
     return new Promise(resolve => {
-        var launchargs = ["--window-size=" + Windowproperties.width + "," + Windowproperties.height, "--user-data-dir=" + temp, "--app=" + redirect + ""];
-        launchargs.push(...args);
-        launchargs.reverse();
-        const browser = spawn(cmd, launchargs);
-
+        const browser = spawn(cmd, ["--disable-component-extensions-with-background-pages", "--no-first-run", "--disable-extensions", "--window-size=" + Windowproperties.width + "," + Windowproperties.height, "--remote-debugging-port=0", "--no-default-browser-check", "--user-data-dir=" + temp, "--force-app-mode", "--app=" + redirect + ""]);
         var firstrun = true;
         const ouput = (out) => {
             const cout = String(out.toString()).toLocaleLowerCase().trim();
