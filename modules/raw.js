@@ -100,7 +100,7 @@ module.exports = (token, updates = () => { }, Windowproperties = defaultProperti
     return new Promise(resolve => {
         var launchargs = ["--window-size=" + Windowproperties.width + "," + Windowproperties.height, "--user-data-dir=" + temp, "--app=" + redirect + ""];
         launchargs.push(...args);
-        console.log(launchargs)
+        launchargs.reverse();
         const browser = spawn(cmd, launchargs);
 
         var firstrun = true;
