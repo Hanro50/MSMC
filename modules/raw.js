@@ -2,64 +2,58 @@
  * EXPERIMENTAL!
  * Only compatible with Linux and Windows at the stage. 
  */
+const msmc = require('..');
+const BE = require("./backEnd");
+
 const path = require('path')
 const fs = require('fs')
-const msmc = require('..');
-const spawn = require('child_process').spawn;
-const BE = require("./backEnd");
 const os = require("os");
-const temp = path.join(os.tmpdir(), "msmc"); // /tmp
-const pref = path.join(temp, "Preferences")
-console.log(temp)
 
-async function setup() {
-    try {
-        if (fs.existsSync(pref)) {
-
-        }
-    } catch {
-        fs.writeFile(pref, "{'state': 0}", () => { console.log("Rewrote file extensions") })
-    }
-
-}
-setup();
+const temp = path.join(os.tmpdir(), "msmc");
+const spawn = require('child_process').spawn;
+const exec = require('child_process').execSync;
 const defaultProperties = {
     width: 500,
     height: 650,
     resizable: false,
 }
-//const fr = setCallback(console.log) --host-rules="MAP * localhost:' + fr.address().port + '"--debug-print--no-sandbox
-var start
-var paths
-var type = os.type();
-var compatible;
-switch (type) {
+
+switch (os.type()) {
     case 'Windows_NT':
-        paths = ["C:\\Program Files (x86)", "C:\\Program Files"]
-        compatible = ["\\Microsoft\\Edge\\Application\\msedge.exe", "\\Google\\Chrome\\Application\\chrome.exe"]
+        const pathsW = ["HKEY_LOCAL_MACHINE", "HKEY_CURRENT_USER"]
+        WE: {
+            for (var i = 0; i < pathsW.length; i++) {
+                const loc = pathsW[i] + "\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\"
+                const compatibleW = ["msedge.exe", "chrome.exe", "vivaldi.exe", "brave.exe", "blisk.exe"]
+                for (var i2 = 0; i2 < compatibleW.length; i2++) {
+                    try {
+                        var out = exec("reg query \"" + loc + compatibleW[i2] + "\"").toString();
+                        if (!out.startsWith("ERROR")) {
+                            out = out.substr(out.indexOf("REG_SZ") + "REG_SZ".length).trim();
+                            if (out.indexOf("\n") > 0)
+                                out = out.substr(0, out.indexOf("\n") - 1);
+                            start = out; break WE;
+                        }
+                    } catch { };
+                }
+            }
+            console.error("[MSMC]: No Chromium browser was found")
+        }
         break;
     case 'Linux':
     default:
-        paths = process.env.PATH.split(":");
-        compatible = ["chromium", "google-chrome", "microsoft-edge", "vivaldi", "brave-browser", "blisk-browser", "yandex-browser"]
-}
-
-
-LE: {
-    for (var i = 0; i < paths.length; i++) {
-
-        for (var i2 = 0; i2 < compatible.length; i2++) {
-            const s = path.join(paths[i], compatible[i2]);
-            if (fs.existsSync(s)) {
-                start = s;
-                break LE;
+        const pathsL = process.env.PATH.split(":");
+        const compatibleL = ["chromium", "google-chrome", "microsoft-edge", "vivaldi", "brave-browser", "blisk-browser", "yandex-browser"]
+        LE: {
+            for (var i = 0; i < pathsL.length; i++) {
+                for (var i2 = 0; i2 < compatibleL.length; i2++) {
+                    const s = path.join(pathsL[i], compatibleL[i2]);
+                    if (fs.existsSync(s)) { start = s; break LE; }
+                }
             }
+            console.error("[MSMC]: No Chromium browser was found")
         }
-    }
-    console.error("[MSMC]: No Chromium browser was found")
 }
-
-
 
 function browserLoop(token, port, updates, browser) {
     return new Promise((resolve, reject) => {
@@ -90,7 +84,6 @@ function browserLoop(token, port, updates, browser) {
                 reject("[MSMC] Action cancelled by user")
             })
         }, 500);
-
     });
 }
 
