@@ -17,7 +17,7 @@ const defaultProperties = {
     height: 650,
     resizable: false,
 }
-
+var start
 switch (os.type()) {
     case 'Windows_NT':
         const pathsW = ["HKEY_LOCAL_MACHINE", "HKEY_CURRENT_USER"]
@@ -37,9 +37,17 @@ switch (os.type()) {
                     } catch { };
                 }
             }
-            console.error("[MSMC]: No Chromium browser was found")
+            console.error("[MSMC] No Chromium browser was found")
         }
         break;
+    case 'Darwin':
+        const loc = "/Applications/{0}.app/Contents/MacOS/{0}"
+        const compatibleD = ["Google\\ Chrome", "Microsoft\\ Edge", "Vivaldi", "Blisk", "Brave\\ Browser", "Yandex"]
+        for (var i2 = 0; i2 < compatibleD.length; i2++) {
+            const s = loc.replace(/\{0\}/g, compatibleD[i2])
+            if (fs.existsSync(s)) { start = s; break; }
+        }
+        if (start) break;
     case 'Linux':
     default:
         const pathsL = process.env.PATH.split(":");
@@ -51,7 +59,7 @@ switch (os.type()) {
                     if (fs.existsSync(s)) { start = s; break LE; }
                 }
             }
-            console.error("[MSMC]: No Chromium browser was found")
+            console.error("[MSMC] No Chromium browser was found")
         }
 }
 
@@ -92,8 +100,8 @@ module.exports = (token, updates = () => { }, Windowproperties = defaultProperti
     if (!cmd) {
         return Promise.reject("[MSMC] Error : no chromium browser was set, cannot continue!");
     }
-    console.warn("[MSMC]: This setting is experimental");
-    console.warn("[MSMC]: Using \"" + cmd + "\"");
+    console.warn("[MSMC] This setting is experimental");
+    console.warn("[MSMC] Using \"" + cmd + "\"");
     var redirect = msmc.createLink(token);
     return new Promise(resolve => {
         const browser = spawn(cmd, ["--disable-component-extensions-with-background-pages", "--no-first-run", "--disable-extensions", "--window-size=" + Windowproperties.width + "," + Windowproperties.height, "--remote-debugging-port=0", "--no-default-browser-check", "--user-data-dir=" + temp, "--force-app-mode", "--app=" + redirect + ""]);
