@@ -21,7 +21,8 @@
     "modules/mclc.js",
     "modules/backEnd.js",
     "modules/legacy.js",
-    "modules/raw.js"
+    "modules/raw.js",
+    "modules/exceptional.js"
   ],
   "homepage": "https://github.com/Hanro50/MSMC/",
   "optionalDependencies": {
