@@ -337,8 +337,8 @@ interface update {
     type: "Loading" | "Error" | "Starting" ; //See table below!
     /**Some information about the call. Like the component that's loading or the cause of the error. */
     data?: string;
-    /**Used by the rejection type.*/
-    response?: Response;
+    /**Used by the Error type.*/
+    error?: result;
     /**Used to show how far along the object is in terms of loading*/
     percent?: number;
 }
@@ -489,6 +489,18 @@ function getExceptional(): {
     login: (token: token, callback: (info: string) => void, updates?: (info: update) => void) => Promise<result>
     launch: (type: framework, token: token, updates?: (info: update) => void, properties?: windowProperties) => Promise<result>
     fastLaunch: (type: framework, updates?: (info: update) => void, prompt?: prompt, properties?: windowProperties) => Promise<result>
+}
+```
+## getCallback
+Wraps the following functions and presents them in a similar style to the old 2.1.x series of msmc. The function provided as the callback is fired upon a successfull login.
+
+```ts
+export declare function getCallback(): {
+    authenticate: (callback: (r: result) => void, code: string, MStoken: token, updates?: (info: update) => void) => void
+    refresh: (callback: (r: result) => void, profile: profile, updates?: (info: update) => void, MStoken?: token) => void
+    login: (callback: (r: result) => void, token: token, callback: (info: string) => void, updates?: (info: update) => void) => void
+    launch: (callback: (r: result) => void, type: framework, token: token, updates?: (info: update) => void, properties?: windowProperties) => void
+    fastLaunch: (callback: (r: result) => void, type: framework, updates?: (info: update) => void, prompt?: prompt, properties?: windowProperties) => void
 }
 ```
 

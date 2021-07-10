@@ -111,8 +111,11 @@ module.exports = {
             module.exports[e] = legacy[e];
         });
     },
-    getExceptional(){
-        return require("./modules/exceptional");
+    getExceptional() {
+        return require("./modules/wrapper").exceptional;
+    },
+    getCallback() {
+        return require("./modules/wrapper").callback;
     }
     ,
     default: module.exports
