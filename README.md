@@ -166,7 +166,7 @@ MSMC.login({ client_id: "<token>" },
     })
 ```
 
-# types
+# Docs: Types
 
 ## prompt
 
@@ -195,7 +195,7 @@ Used by the launch and fastLaunch functions to figure out what functions they sh
 ```ts
 type framework = "electron" | "nwjs" | "raw";
 ```
-# interfaces
+# Docs: Interfaces
 
 ## token
 
@@ -309,7 +309,7 @@ interface windowProperties {
     [key: string]: any;
 }
 ```
-# Functions
+# Docs: Functions
 
 ## setFetch
 An override to manually define which version of fetch should be used <br>
