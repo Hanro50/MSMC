@@ -97,7 +97,7 @@ function browserLoop(token, port, updates, browser) {
 module.exports = (token, updates = () => { }, Windowproperties = defaultProperties) => {
     const cmd = Windowproperties.browserCMD ? Windowproperties.browserCMD : start;
     if (!cmd) {
-        return Promise.reject("[MSMC] Error : no chromium browser was set, cannot continue!");
+        throw new Error("[MSMC] Error : no chromium browser was set, cannot continue!");
     }
     console.warn("[MSMC] This setting is experimental");
     console.warn("[MSMC] Using \"" + cmd + "\"");

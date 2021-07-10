@@ -479,6 +479,19 @@ Checks if a return value is valid and if the login procedure has been successful
 ```ts
 function errorCheck(result: result): Boolean;
 ```
+## getExceptional
+Wraps the following functions and causes each to throw a result object as an error on a failed login instead of passing back said result object
+
+```ts
+function getExceptional(): {
+    authenticate: (code: string, MStoken: token, updates?: (info: update) => void) => Promise<result>
+    refresh: (profile: profile, updates?: (info: update) => void, MStoken?: token) => Promise<result>
+    login: (token: token, callback: (info: string) => void, updates?: (info: update) => void) => Promise<result>
+    launch: (type: framework, token: token, updates?: (info: update) => void, properties?: windowProperties) => Promise<result>
+    fastLaunch: (type: framework, updates?: (info: update) => void, prompt?: prompt, properties?: windowProperties) => Promise<result>
+}
+```
+
 ## loadLegacy
 For launchers built against version 2.1.x series of this gui. <br>
 This is here to allow you to update without rewriting everything. New launchers should avoid using it! <br>

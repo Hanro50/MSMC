@@ -92,7 +92,7 @@ module.exports = {
                 return require("./modules/raw")(token, updates, Windowproperties);
             }
             default: {
-                throw new Promise.reject('[MSMC] Unknown library type');
+                throw new Error('[MSMC] Unknown library type');
             }
         }
     },
@@ -111,6 +111,10 @@ module.exports = {
             module.exports[e] = legacy[e];
         });
     },
+    getExceptional(){
+        return require("./modules/exceptional");
+    }
+    ,
     default: module.exports
 }
 

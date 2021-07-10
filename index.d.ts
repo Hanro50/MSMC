@@ -179,6 +179,16 @@ export declare function errorCheck(result: result): Boolean;
  * @deprecated Will be removed by version 2.4.0 
  */
 export declare function loadLegacy(): void;
+/**
+ * Wraps the following functions and causes each to throw a result object as an error on a failed login instead of passing back said result object
+ */
+export declare function getExceptional(): {
+    authenticate: (code: string, MStoken: token, updates?: (info: update) => void) => Promise<result>
+    refresh: (profile: profile, updates?: (info: update) => void, MStoken?: token) => Promise<result>
+    login: (token: token, callback: (info: string) => void, updates?: (info: update) => void) => Promise<result>
+    launch: (type: framework, token: token, updates?: (info: update) => void, properties?: windowProperties) => Promise<result>
+    fastLaunch: (type: framework, updates?: (info: update) => void, prompt?: prompt, properties?: windowProperties) => Promise<result>
+}
 
 /**
  * ES 6 compatibility for typescript
