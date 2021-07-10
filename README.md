@@ -74,9 +74,10 @@ msmc.fastLaunch("nwjs",
         console.log("We failed to log someone in because : "+reason);
     })
 ```
-## Electron:
-It is recommended to run the code for this library on the back-end side of electron. This is mainly due to security and the fast launch methods using functions and objects not available on the front end of electron. Do note that some frameworks that use electron as a base might not have these issues, but it is still something you should consider if you're having issues.
+## Electron
+It is recommended to run the code for this library on the back-end side of electron. This is mainly due to security and the fast launch methods using functions and objects not available on the front end of electron. 
 
+Do note that some frameworks that use electron as a base might not have these issues, but it is still something you should consider if you're having issues.
 ### Example 
 This is a code sample for electron should be added to your main.js file.
 ```js
@@ -165,11 +166,9 @@ MSMC.login({ client_id: "<token>" },
     })
 ```
 
-# Docs
+# types
 
-## types
-
-### prompt
+## prompt
 
 For more information. Check out Microsoft's support page: https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-auth-code-flow#request-an-authorization-code
 
@@ -179,7 +178,7 @@ Basically this is the prompt value in the request sent to Microsoft. This should
 type prompt = "login" | "none" | "consent" | "select_account";
 ```
 
-### mclcUser
+## mclcUser
  A copy of the user object mclc uses
 ```ts
 type mclcUser = {
@@ -190,15 +189,15 @@ type mclcUser = {
     user_properties?: Partial<any>;
 }
 ```
-### framework
+## framework
 A list of gui frameworks supported by this library.
 Used by the launch and fastLaunch functions to figure out what functions they should target.
 ```ts
 type framework = "electron" | "nwjs" | "raw";
 ```
-## interfaces
+# interfaces
 
-### token
+## token
 
 The Oauth2 details needed to log you in.
 
@@ -230,14 +229,14 @@ interface token {
     prompt?: prompt;
 }
 ```
-### profile 
+## profile 
 A version of a Minecraft profile you'd get from the auth end points
 ```ts
 interface profile {
     id: string, name: string, skins?: [], capes?: []
 }
 ```
-### result
+## result
 The return object that all the async login procedures return<br>
 
 "access_token": string => Your classic Mojang auth token. You can do anything with this that you could do with the normal Minecraft login token <br>
@@ -250,7 +249,7 @@ interface result {
 }
 ```
 
-### update
+## update
 
 Used in the callback that is fired multiple times during the login process to give the user feedback on how far along the login process is
 
@@ -281,7 +280,7 @@ Possible values for the 'type' parameter:
  <td>This is given with a fetch error. You are given the fetch item as a data object.  </td>
   </tr>
    <tr>
- <td>"Error" [rework]</td>
+ <td>"Error"</td>
   <td>This is given with a normal MC account error and will give you some user readable feedback. </td>
       </tr>
         <tr>
@@ -295,7 +294,7 @@ Possible values for the 'type' parameter:
       </tr>
    </table>
 
-### windowProperties
+## windowProperties
 
 Window properties is set to any to avoid needing both nw.js and electron loaded as developer dependencies<br>
 The common properties between both libraries has been backed into the type information for this interface however<br>
@@ -310,15 +309,15 @@ interface windowProperties {
     [key: string]: any;
 }
 ```
-## Functions
+# Functions
 
-### setFetch
+## setFetch
 An override to manually define which version of fetch should be used <br>
 fetchIn => A version of fetch 
 ```ts
 function setFetch(fetchIn: any): void;
 ```
-### createLink
+## createLink
 This function will create a login link based on the inputs provided. <br>
 Note that this function is called internally after the redirect has been formatted. Aka after "http://localhost:\<port\>/" is appended to the redirect. <br>
 This is done to allow us to create the "fastLaunch" methods which don't rely on an internal http server<br>
@@ -327,7 +326,7 @@ returns => A link you can plug into a web browser to send a user to a ms login p
 ```ts
 function createLink(token: token): String;
 ```
-### authenticate
+## authenticate
 Used when you want to implement your own login code, but still want msmc to handle authentication for you. <br>
 code => The code gotten from a successful login <br>
 MStoken => The Microsoft token object used to obtain the login code <br>
@@ -336,7 +335,7 @@ returns => A promise that will grant you a user profile and mojang login token<b
 ```ts
 function authenticate(code: string, MStoken: token, updates?: (info: update) => void): Promise<result>;
 ```
-### refresh
+## refresh
 Used to refresh login tokens. It is recommended to do this at start up after calling validate to check if the client token needs a refresh<br>
 profile => Player profile. Similar to the one you'd normally get with the Mojang login<br>
 updates => A callback that one can hook into to get updates on the login process<br>
@@ -345,14 +344,14 @@ returns => A promise that will grant you an updated user profile and Mojang logi
 ```ts
 function refresh(profile: profile, updates?: (info: update) => void, MStoken?: token): Promise<result>;
 ```
-### validate
+## validate
 Checks if a profile object is still valid<br>
 profile => Player profile. Similar to the one you'd normally get with the Mojang login<br>
 return => Returns a boolean stating whether a set account is still valid <br>
 ```ts
  function validate(profile: profile): Boolean;
 ```
-### login
+## login
 A generic login method. Useful if you aren't using electron or NW.js and want to make a terminal launcher or are using an unsupported framework<br>
 token => Your MS Login token. Mainly your client ID, client secret (optional  | Depends how azure is set up) and a redirect (Do not include http://localhost:<port\>/ as that's added for you!)<br>
 callback => The callback will give you a link you can redirect a user to. <br>
@@ -361,7 +360,7 @@ returns => A promise that will grant you a user profile and Mojang login token<b
 ```ts
  function login(token: token, callback: (info: string) => void, updates?: (info: update) => void): Promise<result>;
 ```
-### launch
+## launch
 Used with electron or nwjs to launch a popup that a user can use to sign in with<br>
 type => The GUI framework this is compatible with <br>
 token => Your MS Login token. Mainly your client ID, client secret<br>
@@ -371,7 +370,7 @@ returns => A promise that will grant you a user profile and mojang login token<b
 ```ts
  function launch(type: framework, token: token, updates?: (info: update) => void, properties?: windowProperties): Promise<result>;
 ```
-### fastLaunch
+## fastLaunch
 Mimics the vanilla launcher in how it works. Like launch in creates a pop-up a user can log in with
 type => The GUI framework this is compatible with <br>
 updates => A callback that one can hook into to get updates on the login process<br>
@@ -381,19 +380,19 @@ returns => A promise that will grant you a user profile and mojang login token<b
 ```ts
 function fastLaunch(type: framework, updates?: (info: update) => void, prompt?: prompt, properties?: windowProperties): Promise<result>;
 ```
-### getMCLC
+## getMCLC
 
 Replaces some of the functions the Authenticator component in MCLC.
 
-#### getAuth
+### getAuth
 
 This serves as a MSMC friendly version of getAuth function in MCLC's Authenticator component. Translating the information MSMC gets into something mclc can comprehend. This does however not work with normal Mojang accounts
 
-#### validate
+### validate
 
 This serves as a drop in replacement for the validate function in MCLC's Authenticator component. This works with Mojang and Microsoft accounts. 
 
-#### refresh
+### refresh
 
 This serves as a drop in replacement for the refreshAuth function in MCLC's Authenticator component. This will refresh vanilla and MSMC accounts. A hidden \_msmc variable is used to determine how an account should be refreshed so please avoid removing that somehow since the Mojang method of refreshing accounts is not compatible with MSMC signed in accounts.
 
@@ -405,7 +404,7 @@ function getMCLC(): {
 };
 ```
 
-### loadLegacy
+## loadLegacy
 For launchers built against version 2.1.x series of this gui. <br>
 This is here to allow you to update without rewriting everything. New launchers should avoid using it! <br>
 ###### Will be removed by version 2.4.0
