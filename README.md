@@ -106,18 +106,19 @@ app.whenReady().then(() => {
 A basic example of how to hook this library into <a href="https://github.com/Pierce01/MinecraftLauncher-core#readme">Mincraft Launcher core</a> to launch Minecraft
 
 ```js
-//Import just the client package, MSMC replaces the Auth package in Minecraft Launcher core in this example
-const { Client } = require("minecraft-launcher-core");
+const { Client, Authenticator } = require('minecraft-launcher-core');
 const launcher = new Client();
 const msmc = require("msmc");
-
-//Just using "raw" for this example, any login function should return more or less the same "result" object
-msmc.default.fastLaunch("raw", 
+const fetch = require("node-fetch");
+//msmc's testing enviroment sometimes runs into this issue that it can't load node fetch
+msmc.setFetch(fetch)
+msmc.fastLaunch("raw",
     (update) => {
-        //A hook for catching loading bar events and errors, standard with MSMC 
+        //A hook for catching loading bar events and errors, standard with MSMC
         console.log("CallBack!!!!!")
         console.log(update)
-    }).then(callback => {
+    }).then(result => {
+        //If the login works
         let opts = {
             clientPackage: null,
             // Pulled from the Minecraft Launcher core docs , this function is the star of the show
@@ -134,10 +135,14 @@ msmc.default.fastLaunch("raw",
         }
         console.log("Starting")
         launcher.launch(opts);
-
+        
         launcher.on('debug', (e) => console.log(e));
         launcher.on('data', (e) => console.log(e));
+    }).catch(reason => {
+        //If the login fails
+        console.log("We failed to log someone in because : " + reason);
     })
+
 ```
 
 ## Pure Node Example:
