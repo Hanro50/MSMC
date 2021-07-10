@@ -64,7 +64,7 @@ switch (os.type()) {
 }
 
 function browserLoop(token, port, updates, browser) {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         const f3 = setInterval(() => {
             BE.getFetch()("http://localhost:" + port + "/json/list").then(r => r.json()).then(out => {
                 for (var i = 0; i < out.length; i++) {
@@ -80,16 +80,14 @@ function browserLoop(token, port, updates, browser) {
                         if (urlParams) {
                             resolve(msmc.authenticate(urlParams, token, updates));
                         } else {
-                            updates({ type: "Cancelled" });
-                            reject("[MSMC] Action cancelled by user")
+                            resolve({ type: "Cancelled" })
                         }
                     }
                 }
             }).catch(() => {
                 clearInterval(f3);
                 browser.kill();
-                updates({ type: "Cancelled" });
-                reject("[MSMC] Action cancelled by user")
+                resolve({ type: "Cancelled" })
             })
         }, 500);
     });

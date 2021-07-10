@@ -22,7 +22,7 @@ export type framework = "electron" | "nwjs" | "raw";
  * 
  * 2) set the redirect to "http://localhost/...", With localhost specifically Microsoft does not check port numbers. 
  * This means that  http://localhost:1/... to http://localhost:65535/... are all the same redirect to MS. (http://localhost/... == http://localhost:80/... btw)
- * This app does not allow you to set the port manually, due to the extreme risk of unforseen bugs popping up. 
+ * This library does not allow you to set the port manually, due to the extreme risk of unforeseen bugs popping up. 
  * 
  * 3) If you set the redirect to, for example, "http://localhost/Rainbow/Puppy/Unicorns/hl3/confirmed" then the variable {redirect} needs to equal "Rainbow/Puppy/Unicorns/hl3/confirmed".
  * 
@@ -40,11 +40,17 @@ export interface token {
 export interface profile {
     id: string, name: string, skins?: [], capes?: []
 }
-
-/**The callback given on a successful login!*/
+/**The return object that all the async login procedures return */
 export interface result {
-    "access_token": string, //Your classic Mojang auth token. You can do anything with this that you could do with the normal Minecraft login token 
-    profile: profile //Player profile. Similar to the one you'd normally get with the Mojang login
+    type: "Success" | "DemoUser" | "Authentication" | "Cancelled" | "Unknown"
+    /**Only returned when the user has logged in via microsoft */
+    "access_token"?: string, //Your classic Mojang auth token. 
+    /**Only returned on a successful login and if the player owns the game*/
+    profile?: profile, //Player profile. Similar to the one you'd normally get with the Mojang login
+    /**Used with the error types*/
+    reason?: string,
+    /**Used when there was a fetch rejection.*/
+    data?: Response,
 }
 
 /**The object returned to give you information about how the login process is progressing */
@@ -52,11 +58,11 @@ export interface update {
     /**
      * Loading: This gives input with regards to how far along the login process is. <br>
      * Rejection: This is given with a fetch error. You are given the fetch item as a data object. <br>
-     * Error: This is given with a normal MC account error and will give you some user readable feedback. <br>
+     * Error: This is given with a normal Minecraft account error and will give you some user readable feedback. <br>
      * Starting: This is fired once when the whole loading process is started. This is mainly for setting up loading bars and stuff like that. <br>
      * Cancelled: When the user closes out of a pop-up (Electron / NW.js only)
      */
-    type: "Loading" | "Rejection" | "Error" | "Starting" | "Cancelled",
+    type: "Loading" | "Error" | "Starting",
     /**Some information about the call. Like the component that's loading or the cause of the error. */
     data?: string,
     /**Used by the rejection type.*/
@@ -91,7 +97,7 @@ export declare function createLink(token: token): String;
 
 /**
  * This function will create a login link based on the inputs provided. <br>
- * This method asumes you're planning on using Mojang's endpoints
+ * This method assumes you're planning on using Mojang's endpoints
  * @param prompt See the type definition for "prompt" for more information
  * @returns A link you can plug into a web browser to send a user to a ms login page
  */
@@ -165,6 +171,9 @@ export declare function getMCLC(): {
     validate: (profile: mclcUser) => Promise<Boolean>
     refresh: (profile: mclcUser) => Promise<mclcUser>
 }
+
+/**Checks if a return value is valid */
+export declare function errorCheck(result: result): Boolean;
 
 /**
  * @deprecated Will be removed by version 2.4.0 

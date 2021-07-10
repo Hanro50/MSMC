@@ -12,9 +12,7 @@ module.exports = {
     //Used for the old/generic method of authentication
     setCallback(callback) {
         if (!http) { console.error("[MSMC] Could not define http server, please use a different method!"); return; }
-
         try { if (app) { app.close(); } } catch { /*Ignore*/ }
-
         app = http.createServer((req, res) => {
             res.writeHead(200, { "Content-Type": "text/plain" });
             res.end("Thank you!");
@@ -71,18 +69,14 @@ module.exports = {
             updates({ type: "Loading", data: asset, percent: number });
         };
 
-        function error(reason) {
+        function error(reason, data) {
             updates({ type: "Error", data: reason });
-            return Promise.reject("[MSMC] Error : " + reason);
+            return { type: "Authentication", reason: reason, data: data }
         };
 
         function webCheck(response) {
-            console.log(response);
-            if (response.status >= 400) {
-                updates({ type: "Rejection", response: response });
-            };
+            return (response.status >= 400)
         };
-
 
         loadBar(percent * 0, "Getting Login Token");
         var MS = await (
@@ -110,7 +104,7 @@ module.exports = {
             headers: { "Content-Type": "application/json", Accept: "application/json" },
         });
 
-        webCheck(rxboxlive);
+        if (webCheck(rxboxlive)) return error("Could not log into xbox", rxboxlive);
         var token = await rxboxlive.json();
         //console.log(token); //debug
         var XBLToken = token.Token;
@@ -158,7 +152,8 @@ module.exports = {
                 headers: { "Content-Type": "application/json", Accept: "application/json" },
             }
         );
-        webCheck(rlogin_with_xbox);
+        if (webCheck(rlogin_with_xbox)) return error("Could not log into Minecraft", rlogin_with_xbox);
+
         var MCauth = await rlogin_with_xbox.json();
         const experationDate = Math.floor(Date.now() / 1000) + MCauth["expires_in"] - 100
 
@@ -175,11 +170,11 @@ module.exports = {
         var profile = await r998.json();
         //console.log(profile) //debug
         if (profile.error) {
-            return error("You do not seem to have a minecraft account.");
+            return ({ type: "DemoUser", access_token: MCauth.access_token, reason: "User does not own minecraft" });
         };
         profile._msmc = { refresh: MS.refresh_token, expires_by: experationDate, mcToken: MCauth.access_token };
         loadBar(100, "Done!");
-        return ({ access_token: MCauth.access_token, profile: profile });
+        return ({ type: "Success", access_token: MCauth.access_token, profile: profile });
 
     }
 }

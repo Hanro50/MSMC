@@ -13,7 +13,7 @@ module.exports = (token, updates = () => { }, Windowproperties = defaultProperti
         var redirect = MSMC.createLink(token);
         nw.Window.open(redirect, Windowproperties, function (new_win) {
             new_win.on('close', function () {
-                updates({ type: "Cancelled" });
+                resolve({ type: "Cancelled" })
                 new_win.close(true);
             });
             new_win.on('loaded', function () {
@@ -23,7 +23,7 @@ module.exports = (token, updates = () => { }, Windowproperties = defaultProperti
                     if (urlParams) {
                         resolve(MSMC.authenticate(urlParams, token, updates));
                     } else {
-                        updates({ type: "Cancelled" });
+                        resolve({ type: "Cancelled" });
                     }
                     try {
                         new_win.close(true);

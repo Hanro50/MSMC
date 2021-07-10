@@ -17,7 +17,7 @@ module.exports = (token, updates = () => { }, Windowproperties = defaultProperti
         const contents = mainWindow.webContents;
         var loading = false;
         mainWindow.on("close", () => {
-            if (!loading) { updates({ type: "Cancelled" }); };
+            if (!loading) { resolve({ type: "Cancelled" }) };
         });
 
         contents.on("did-finish-load", () => {

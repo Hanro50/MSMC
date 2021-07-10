@@ -39,12 +39,16 @@ const fetch = require("node-fetch");
 //msmc's testing enviroment sometimes runs into this issue that it can't load node fetch
 msmc.setFetch(fetch)
 msmc.fastLaunch("raw", 
-    (update) => {
+   (update) => {
         //A hook for catching loading bar events and errors, standard with MSMC
         console.log("CallBack!!!!!")
         console.log(update)
     }).then(result => {
         //If the login works
+        if (msmc.errorCheck(result)){
+            console.log("We failed to log someone in because : "+result.reason)
+            return;
+        }
         console.log("Player profile and mojang token : "+result);
     }).catch(reason=>{
         //If the login fails
@@ -68,6 +72,10 @@ msmc.fastLaunch("nwjs",
         console.log(update)
     }).then(result => {
         //If the login works
+        if (msmc.errorCheck(result)){
+            console.log("We failed to log someone in because : "+result.reason)
+            return;
+        }
         console.log("Player profile and mojang token : "+result);
     }).catch(reason=>{
         //If the login fails
@@ -83,13 +91,17 @@ This is a code sample for electron should be added to your main.js file.
 ```js
 app.whenReady().then(() => {
   ...
-    require("msmc").fastLaunch("nwjs", 
+    require("msmc").fastLaunch("electron", 
         (update) => {
             //A hook for catching loading bar events and errors, standard with MSMC
             console.log("CallBack!!!!!")
             console.log(update)
         }).then(result => {
             //If the login works
+             if (msmc.errorCheck(result)){
+                console.log("We failed to log someone in because : "+result.reason)
+                return;
+            }
             console.log("Player profile and mojang token : "+result);
         }).catch(reason=>{
             //If the login fails
@@ -118,11 +130,16 @@ msmc.fastLaunch("raw",
         console.log("CallBack!!!!!")
         console.log(update)
     }).then(result => {
+        //Let's check if we logged in?
+        if (msmc.errorCheck(result)){
+            console.log(result.reason)
+            return;
+        }
         //If the login works
         let opts = {
             clientPackage: null,
             // Pulled from the Minecraft Launcher core docs , this function is the star of the show
-            authorization: msmc.getMCLC().getAuth(callback),
+            authorization: msmc.getMCLC().getAuth(result),
             root: "./minecraft",
             version: {
                 number: "1.17.1",
@@ -131,11 +148,11 @@ msmc.fastLaunch("raw",
             memory: {
                 max: "6G",
                 min: "4G"
-            },
+            }
         }
-        console.log("Starting")
+        console.log("Starting!")
         launcher.launch(opts);
-        
+
         launcher.on('debug', (e) => console.log(e));
         launcher.on('data', (e) => console.log(e));
     }).catch(reason => {
@@ -159,12 +176,17 @@ MSMC.login({ client_id: "<token>" },
             console.log("CallBack!!!!!");
             console.log(update);
         }
-    ).then((call) => {
-        //The function called when the login has been a success
-            console.log("");
-            console.log("CallBack!!!!!");
-            console.log(call);
-            console.log("");
+    ).then((result) => {
+           //Let's check if we logged in?
+        if (msmc.errorCheck(result)){
+            //We had an error? Lets see what it was. 
+            console.log("Failed!!!!!!!");
+            console.log(result)
+            return;
+        }
+        console.log("Logged in!!!!!!!");
+        //Else, lets continue
+        console.log(result)
     }).catch(reason=>{
         //If the login fails
         console.log("We failed to log someone in because : "+reason);
@@ -244,23 +266,75 @@ interface profile {
 ## result
 The return object that all the async login procedures return<br>
 
-"access_token": string => Your classic Mojang auth token. You can do anything with this that you could do with the normal Minecraft login token <br>
-profile: profile => Player profile. Similar to the one you'd normally get with the Mojang login<br>
+Possible values for the 'type' parameter in this interface:
+<table>
+    <tr>
+        <th>Value</th>
+        <th>Cause</th>
+        <th>Other fields</th>
+    </tr>
+    <tr>
+        <td>Success</td>
+        <td>The user has been logged in and it has been verified that the user owns a licence to the game</td>
+        <td>
+            access_token&nbsp;:&nbsp;string<br>
+            profile&nbsp;:&nbsp;profile
+        </td> 
+    </tr>
+    <tr>
+        <td>DemoUser</td>
+        <td>The user has been logged in, but does not appear to own the game.
+        <br>THIS IS ONLY MEANT TO BE USED FOR LAUNCHING THE GAME IN DEMO MODE</td>
+        <td>
+            access_token&nbsp;:&nbsp;string<br>
+            reason&nbsp;:&nbsp;string
+        </td>
+    </tr>
+    <tr>
+        <td>Authentication</td>
+        <td>The user could not be logged into their Microsoft account</td>
+        <td>
+            reason&nbsp;:&nbsp;string<br>
+            data&nbsp;:&nbsp;Response
+        </td>
+    </tr>
+    <tr>
+        <td>Cancelled</td>
+        <td>The user closed the login prompt (Gui based login flows)</td>
+        <td>
+            No added fields. 
+        </td>
+    </tr>
+    <tr>
+        <td>Unknown</td>
+        <td>This unused at the moment</td>
+        <td>
+            No added fields. 
+        </td>
+    </tr>
+</table>
+
+The resulting typescript object.<br> 
 
 ```ts
-interface result {
-    "access_token": string,
-    profile: profile //Player profile. Similar to the one you'd normally get with the Mojang login
-}
+    interface result {
+        type: "Success" | "DemoUser" | "Authentication" | "Cancelled" | "Unknown"
+        /**Your classic Mojang auth token.*/
+        "access_token"?: string, 
+        /**Player profile. Similar to the one you'd normally get with the Mojang login*/
+        profile?: profile,
+        /**Used with the error types */
+        reason?: string,
+        /**Used when there was a fetch rejection.*/
+        data?: Response,
+    }
 ```
-
 ## update
-
 Used in the callback that is fired multiple times during the login process to give the user feedback on how far along the login process is
 
 ```ts
 interface update {
-    type: "Loading" | "Rejection" | "Error" | "Starting" | "Cancelled"; //See table below!
+    type: "Loading" | "Error" | "Starting" ; //See table below!
     /**Some information about the call. Like the component that's loading or the cause of the error. */
     data?: string;
     /**Used by the rejection type.*/
@@ -271,33 +345,24 @@ interface update {
 ```
 
 Possible values for the 'type' parameter:
-###### Those with the [rework] tag might change with the 2.3.x series as they're now redundant
- <table>
-    <tr>
- <th>Value</th>
- <th>Cause</th>
-  </tr>
- <td>"Loading" </td>
- <td>This gives input with regards to how far along the login process is.</td>
-  </tr>
-   <tr>
-<td>"Rejection" [rework]</td>
- <td>This is given with a fetch error. You are given the fetch item as a data object.  </td>
-  </tr>
-   <tr>
- <td>"Error"</td>
-  <td>This is given with a normal MC account error and will give you some user readable feedback. </td>
-      </tr>
+    <table>
         <tr>
- <td>"Starting"</td>
-  <td>This is fired once when the whole loading process is started. This is mainly for setting up loading bars and stuff like that. </td>
-      <tr>
-  <tr>
-   <tr>
- <td>"Cancelled" [rework]</td>
-  <td>When the user closes out of a pop-up (Electron / NV.js / methods that involve a GUI only) . </td>
-      </tr>
-   </table>
+            <th>Value</th>
+            <th>Cause</th>
+        </tr>
+        <tr>
+            <td>"Loading" </td>
+            <td>This gives input with regards to how far along the login process is.</td>
+        </tr>
+        <tr>
+            <td>"Error"</td>
+            <td>This is given with a normal MC account error and will give you some user readable feedback. </td>
+        </tr>
+        <tr>
+            <td>"Starting"</td>
+            <td>This is fired once when the whole loading process is started. This is mainly for setting up loading bars and stuff like that. </td>
+        </tr>
+    </table>
 
 ## windowProperties
 
@@ -407,8 +472,13 @@ function getMCLC(): {
     validate: (profile: mclcUser) => Promise<Boolean>
     refresh: (profile: mclcUser) => Promise<mclcUser>
 };
+## errorCheck
 ```
+Checks if a return value is valid and if the login procedure has been successful
 
+```ts
+function errorCheck(result: result): Boolean;
+```
 ## loadLegacy
 For launchers built against version 2.1.x series of this gui. <br>
 This is here to allow you to update without rewriting everything. New launchers should avoid using it! <br>

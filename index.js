@@ -13,8 +13,8 @@ module.exports = {
     },
     //Creates a login link
     createLink(token) {
-        if (typeof token == String){
-            token = BE.mojangAuthToken(token); 
+        if (typeof token == String) {
+            token = BE.mojangAuthToken(token);
         }
         return (
             "https://login.live.com/oauth20_authorize.srf" +
@@ -99,6 +99,9 @@ module.exports = {
     //MCLC integration
     getMCLC() {
         return require("./modules/mclc");
+    },
+    errorCheck(result) {
+        return !(result.type == "Success")
     },
     loadLegacy() {
         console.warn("[MSMC]: This adds compatibility for launchers that implement the callback structure of 2.1.x and earlier. \n" +
