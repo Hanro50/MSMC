@@ -32,7 +32,8 @@ switch (os.type()) {
                             out = out.substr(out.indexOf("REG_SZ") + "REG_SZ".length).trim();
                             if (out.indexOf("\n") > 0)
                                 out = out.substr(0, out.indexOf("\n") - 1);
-                            start = out; break WE;
+                            if (fs.existsSync(out)) {start = out; break WE;} 
+                            else console.log("[MSMC] cannot find " + out)
                         }
                     } catch { };
                 }
@@ -102,7 +103,7 @@ module.exports = (token, updates = () => { }, Windowproperties = defaultProperti
     console.warn("[MSMC] Using \"" + cmd + "\"");
     var redirect = msmc.createLink(token);
     return new Promise(resolve => {
-        const browser = spawn(cmd, ["--disable-component-extensions-with-background-pages", "--no-first-run", "--disable-extensions", "--window-size=" + Windowproperties.width + "," + Windowproperties.height, "--remote-debugging-port=0", "--no-default-browser-check", "--user-data-dir=" + temp, "--force-app-mode", "--app=" + redirect + ""]);
+        const browser = spawn(cmd, ["--disable-restore-session-state","--disable-first-run-ui","--disable-component-extensions-with-background-pages", "--no-first-run", "--disable-extensions", "--window-size=" + Windowproperties.width + "," + Windowproperties.height, "--remote-debugging-port=0", "--no-default-browser-check", "--user-data-dir=" + temp, "--force-app-mode", "--app=" + redirect + ""]);
         var firstrun = true;
         const ouput = (out) => {
             const cout = String(out.toString()).toLocaleLowerCase().trim();
