@@ -1,10 +1,9 @@
-/**
+﻿/**
  * For more information. Check out Microsoft's support page: https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-auth-code-flow#request-an-authorization-code <br>
  * 
- * Basically this is the prompt value in the request sent to Microsoft. This should only be important if you're using either the FastLaunch or Launch functions under either Electron or NW.js
+ * Basically this is the prompt value in the request sent to Microsoft. This should only be important if you're using either the fastLaunch or launch functions under either Electron or NW.js
  */
 export type prompt = "login" | "none" | "consent" | "select_account";
-
 
 export type framework = "electron" | "nwjs" | "raw";
 /**
@@ -25,7 +24,7 @@ export type framework = "electron" | "nwjs" | "raw";
  * This means that  http://localhost:1/... to http://localhost:65535/... are all the same redirect to MS. (http://localhost/... == http://localhost:80/... btw)
  * This app does not allow you to set the port manually, due to the extreme risk of unforseen bugs popping up. 
  * 
- * 3) If you set the ridirect to, for example, "http://localhost/Rainbow/Puppy/Unicorns/hl3/confirmed" then the variable {redirect} needs to equal "Rainbow/Puppy/Unicorns/hl3/confirmed".
+ * 3) If you set the redirect to, for example, "http://localhost/Rainbow/Puppy/Unicorns/hl3/confirmed" then the variable {redirect} needs to equal "Rainbow/Puppy/Unicorns/hl3/confirmed".
  * 
  * 4) Basically the redirect field is equal to your redirect URL you gave microsoft without the "http://localhost/" part. 
  * Please keep this in mind or you'll get weird errors as a mismatch here will still work...sort of. 
@@ -37,15 +36,15 @@ export interface token {
     prompt?: prompt
 }
 
-/**A version of a mincraft profile you'd get from the auth end points */
+/**A version of a Minecraft profile you'd get from the auth end points */
 export interface profile {
     id: string, name: string, skins?: [], capes?: []
 }
 
 /**The callback given on a successful login!*/
 export interface result {
-    "access_token": string, //Your classic Mojang auth token. You can do anything with this that you could do with the normal MC login token 
-    profile: profile //Player profile. Similar to the one you'd normaly get with the mojang login
+    "access_token": string, //Your classic Mojang auth token. You can do anything with this that you could do with the normal Minecraft login token 
+    profile: profile //Player profile. Similar to the one you'd normally get with the Mojang login
 }
 
 /**The object returned to give you information about how the login process is progressing */
@@ -55,7 +54,7 @@ export interface update {
      * Rejection: This is given with a fetch error. You are given the fetch item as a data object. <br>
      * Error: This is given with a normal MC account error and will give you some user readable feedback. <br>
      * Starting: This is fired once when the whole loading process is started. This is mainly for setting up loading bars and stuff like that. <br>
-     * Cancelled: When the user closes out of a popup (Electron / NV.js only)
+     * Cancelled: When the user closes out of a pop-up (Electron / NW.js only)
      */
     type: "Loading" | "Rejection" | "Error" | "Starting" | "Cancelled",
     /**Some information about the call. Like the component that's loading or the cause of the error. */
@@ -66,7 +65,7 @@ export interface update {
     percent?: number
 }
 /**
- * Used by grathical Electron and NW.js intergrations to set the properties of the generated popup
+ * Used by graphical Electron and NW.js integrations to set the properties of the generated pop-up
  */
 export interface windowProperties {
     width: number,
@@ -83,49 +82,60 @@ export declare function setFetch(fetchIn: any): void;
 
 /** 
  * This function will create a login link based on the inputs provided. <br>
- * Note that this function is called internally after the redirect has been formated. Aka after "http://localhost:\<port\>/" is appended to the redirect. <br>
- * This is done to allow us to create the "FastLaunch" methods which don't rely on an internal http server<br>
- *
+ * Note that this function is called internally after the redirect has been formatted. Aka after "http://localhost:\<port\>/" is appended to the redirect. <br>
+ * This is done to allow us to create the "fastLaunch" methods which don't rely on an internal http server<br>
  * @param token Your MS Login token. Mainly your client ID, client secret (optional  | Depends how azure is set up) and a redirect;
- */
+ * @returns A link you can plug into a web browser to send a user to a ms login page
+*/
 export declare function createLink(token: token): String;
 
 /**
- * Used when you want to implement your own login code, but still want msmc to handle authentication for you. 
+ * This function will create a login link based on the inputs provided. <br>
+ * This method asumes you're planning on using Mojang's endpoints
+ * @param prompt See the type definition for "prompt" for more information
+ * @returns A link you can plug into a web browser to send a user to a ms login page
+ */
+export declare function createLink(prompt: prompt): String;
+/**
+ * Used when you want to implement your own login code, but still want MSMC to handle authentication for you. 
  * @param code The code gotten from a successful login 
  * @param MStoken The Microsoft token object used to obtain the login code 
  * @param updates A callback that one can hook into to get updates on the login process
+ * @returns A promise that will grant you a user profile and Mojang login token
  */
 export declare function authenticate(code: string, MStoken: token, updates?: (info: update) => void): Promise<result>;
 
 /**
  * Used to refresh login tokens. It is recommended to do this at start up after calling validate to check if the client token needs a refresh
- * @param profile Player profile. Similar to the one you'd normaly get with the mojang login
+ * @param profile Player profile. Similar to the one you'd normally get with the Mojang login
  * @param updates A callback that one can hook into to get updates on the login process
  * @param MStoken Microsoft token object used to obtain the login code  (Optional, will use the vanilla client token if it doesn't have anything)
+ * @returns A promise that will grant you an updated user profile and Mojang login token
  */
 export declare function refresh(profile: profile, updates?: (info: update) => void, MStoken?: token): Promise<result>;
 
 /**
  * Checks if a profile object is still valid
- * @param profile Player profile. Similar to the one you'd normaly get with the mojang login
- */
+ * @param profile Player profile. Similar to the one you'd normaly get with the Mojang login
+ * @return Returns a boolean stating whether a set account is still valid
+*/
 export declare function validate(profile: profile): Boolean;
 
 /**
- * A generic login method. Usefull if you aren't using electron or NW.js and want to make a terminal launcher or are using an unsupported framework
+ * A generic login method. Useful if you aren't using electron or NW.js and want to make a terminal launcher or are using an unsupported framework
  * @param token Your MS Login token. Mainly your client ID, client secret (optional  | Depends how azure is set up) and a redirect (Do not include http://localhost:<port>/ as that's added for you!)
- * @param callback The callback that is fired on a successful login. It contains a mojang access token and a user profile
+ * @param callback The URL needed to log in your user will be handled by the function you provide here. I recommend you send it off to a web browser or something similar
  * @param updates A callback that one can hook into to get updates on the login process
- * @returns The URL needed to log in your user. You need to send this to a web browser or something similar to that!
+ * @returns A promise that will grant you a user profile and Mojang login token
  */
 export declare function login(token: token, callback: (info: string) => void, updates?: (info: update) => void): Promise<result>;
 /**
- * Used with electron or nwjs to launch a popup that a user can use to sign in with
+ * Used with electron or nwjs to launch a pop-up that a user can use to sign in with
  * @param type The GUI framework this is compatible with
  * @param token Basic MS token info
  * @param updates A callback that one can hook into to get updates on the login process
  * @param properties See windowProperties interface for more information
+ * @returns A promise that will grant you a user profile and Mojang login token
  */
 export declare function launch(type: framework, token: token, updates?: (info: update) => void, properties?: windowProperties): Promise<result>;
 
@@ -135,6 +145,7 @@ export declare function launch(type: framework, token: token, updates?: (info: u
  * @param updates A callback that one can hook into to get updates on the login process
  * @param prompt See the type definition for "prompt" for more information
  * @param properties See windowProperties interface for more information
+ * @returns A promise that will grant you a user profile and Mojang login token
  */
 export declare function fastLaunch(type: framework, updates?: (info: update) => void, prompt?: prompt, properties?: windowProperties): Promise<result>;
 /**

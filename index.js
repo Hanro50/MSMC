@@ -13,6 +13,9 @@ module.exports = {
     },
     //Creates a login link
     createLink(token) {
+        if (typeof token == String){
+            token = BE.mojangAuthToken(token); 
+        }
         return (
             "https://login.live.com/oauth20_authorize.srf" +
             "?client_id=" +
@@ -62,11 +65,12 @@ module.exports = {
                 if (String(token.redirect).startsWith("/")) {
                     token.redirect = String(token.redirect).substr(1);
                 }
-                token.redirect =
-                    "http://localhost:" +
-                    app.address().port +
-                    "/" +
-                    (token.redirect ? token.redirect : "");
+                if (!token.redirect || !(token.redirect.startsWith("http")))
+                    token.redirect =
+                        "http://localhost:" +
+                        app.address().port +
+                        "/" +
+                        (token.redirect ? token.redirect : "");
                 callback(this.createLink(token));
             });
         });
@@ -84,7 +88,7 @@ module.exports = {
             case ("nwjs"): {
                 return require("./modules/nwjs")(token, updates, Windowproperties);
             }
-            case ("raw"):{
+            case ("raw"): {
                 return require("./modules/raw")(token, updates, Windowproperties);
             }
             default: {

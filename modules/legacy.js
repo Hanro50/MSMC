@@ -13,12 +13,12 @@ module.exports.CreateLink = function (token) {
 //Callback function used with custom login flows
 module.exports.MSCallBack = function (code, MStoken, callback, updates = () => { }) {
     console.warn("[MSMC] deprecation warning: MSCallBack got renamed to authenticate and is an async based function!");
-    msmc.authenticate(code, MStoken, updates).then(callback);
+    msmc.authenticate(code, MStoken, updates).then(callback).catch(reason=>updates( {type: "Error", data: reason}));
 }
 //Used to refresh the login token of a msmc account 
 module.exports.MSRefresh = function (profile, callback, updates = () => { }, authToken) {
     console.warn("[MSMC] deprecation warning: MSRefresh got renamed to refresh and is an async based function!");
-    msmc.refresh(profile, updates, authToken).then(callback);
+    msmc.refresh(profile, updates, authToken).then(callback).catch(reason=>updates( {type: "Error", data: reason}));
 }
 //Used to check if tokens are still valid
 module.exports.Validate = (profile) => {
@@ -29,7 +29,7 @@ module.exports.Validate = (profile) => {
 module.exports.MSLogin = function (token, callback, updates) {
     console.warn("[MSMC] deprecation warning: MSLogin got renamed to login and got changed a fair bit!");
     return new Promise(rep => {
-        msmc.login(token, rep, updates).then(callback);
+        msmc.login(token, rep, updates).then(callback).catch(reason=>updates( {type: "Error", data: reason}));
     })
 }
 
@@ -53,4 +53,9 @@ module.exports.getElectron = () => {
 //NWjs integration
 module.exports.getNWjs = () => {
     return new GuiModule("nwjs");
+}
+
+//raw integration
+module.exports.getRaw = () => {
+    return new GuiModule("raw");
 }
