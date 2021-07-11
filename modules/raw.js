@@ -32,7 +32,7 @@ switch (os.type()) {
                             out = out.substr(out.indexOf("REG_SZ") + "REG_SZ".length).trim();
                             if (out.indexOf("\n") > 0)
                                 out = out.substr(0, out.indexOf("\n") - 1);
-                            if (fs.existsSync(out)) {start = out; break WE;} 
+                            if (fs.existsSync(out)) { start = out; break WE; }
                             else console.log("[MSMC] cannot find " + out)
                         }
                     } catch { };
@@ -52,7 +52,7 @@ switch (os.type()) {
     case 'Linux':
     default:
         const pathsL = process.env.PATH.split(":");
-        const compatibleL = ["chromium", "google-chrome", "microsoft-edge", "vivaldi", "brave-browser", "blisk-browser", "yandex-browser"]
+        const compatibleL = ["chromium", "google-chrome", "microsoft-edge", "vivaldi", "brave-browser", "blisk-browser", "yandex-browser", "firefox"]
         LE: {
             for (var i = 0; i < pathsL.length; i++) {
                 for (var i2 = 0; i2 < compatibleL.length; i2++) {
@@ -67,9 +67,10 @@ switch (os.type()) {
 function browserLoop(token, port, updates, browser) {
     return new Promise((resolve) => {
         const f3 = setInterval(() => {
-            BE.getFetch()("http://localhost:" + port + "/json/list").then(r => r.json()).then(out => {
+            BE.getFetch()("http://127.0.0.1:" + port + "/json/list").then(r => r.json()).then(out => {
                 for (var i = 0; i < out.length; i++) {
                     const loc = out[i].url;
+
                     if (loc && loc.startsWith(token.redirect)) {
                         try {
                             clearInterval(f3);
@@ -85,7 +86,8 @@ function browserLoop(token, port, updates, browser) {
                         }
                     }
                 }
-            }).catch(() => {
+            }).catch((err) => {
+                console.log(err)
                 clearInterval(f3);
                 browser.kill();
                 resolve({ type: "Cancelled" })
@@ -103,16 +105,24 @@ module.exports = (token, updates = () => { }, Windowproperties = defaultProperti
     console.warn("[MSMC] Using \"" + cmd + "\"");
     var redirect = msmc.createLink(token);
     return new Promise(resolve => {
-        const browser = spawn(cmd, ["--disable-restore-session-state","--disable-first-run-ui","--disable-component-extensions-with-background-pages", "--no-first-run", "--disable-extensions", "--window-size=" + Windowproperties.width + "," + Windowproperties.height, "--remote-debugging-port=0", "--no-default-browser-check", "--user-data-dir=" + temp, "--force-app-mode", "--app=" + redirect + ""]);
+        var browser;
+        if (cmd.includes("firefox")) {
+            if (fs.existsSync(temp)) exec("rm -R " + temp); fs.mkdirSync(temp);
+            browser = spawn(cmd, ["--remote-debugging-port=0", "-width", Windowproperties.width, "-height", Windowproperties.height, "--new-instance", "--profile", temp, redirect]);
+        } else
+            browser = spawn(cmd, ["--disable-restore-session-state", "--disable-first-run-ui", "--disable-component-extensions-with-background-pages", "--no-first-run", "--disable-extensions", "--window-size=" + Windowproperties.width + "," + Windowproperties.height, "--remote-debugging-port=0", "--no-default-browser-check", "--user-data-dir=" + temp, "--force-app-mode", "--app=" + redirect]);
         var firstrun = true;
         const ouput = (out) => {
             const cout = String(out.toString()).toLocaleLowerCase().trim();
             //console.log(cout)
-            if (firstrun && cout.startsWith("devtools listening on ws://127.0.0.1:")) {
+            console.log(cout)
+            if (firstrun && cout.startsWith("devtools listening on ws://")) {
                 //console.log("exec")
                 firstrun = false;
-                var data = cout.substr("devtools listening on ws://127.0.0.1:".length);
-                const port = data.substr(0, data.indexOf("/"));
+                var data = cout.substr("devtools listening on ws://".length);
+                const n = data.indexOf(":") + 1;
+                const port = data.substr(n, data.indexOf("/") - n);
+                console.log("http://127.0.0.1:" + port);
                 //console.log(out.toString())
                 resolve(browserLoop(token, port, updates, browser));
             }
