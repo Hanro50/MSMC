@@ -57,6 +57,46 @@ module.exports = {
 
         return false;
     },
+    //Used to get xbox profile information
+    async xboxProfile(XBLToken, updates = () => { }) {
+        const lbar = 100 / 2.5;
+        updates({ type: "Loading", data: "Getting xuid", percent: 0 });
+        var rxsts = await FETCH("https://xsts.auth.xboxlive.com/xsts/authorize", {
+            method: "post",
+            body: JSON.stringify({
+                Properties: { SandboxId: "RETAIL", UserTokens: [XBLToken] },
+                RelyingParty: "http://xboxlive.com",
+                TokenType: "JWT",
+            }),
+            headers: { "Content-Type": "application/json", Accept: "application/json" },
+        });
+        const json = await rxsts.json();
+        const xui = json.DisplayClaims.xui[0];
+        updates({ type: "Loading", data: "Getting profile info", percent: lbar * 1 });
+        var info = await FETCH("https://profile.xboxlive.com/users/batch/profile/settings",
+            {
+                method: "post",
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-xbl-contract-version": 2,
+                    Authorization: "XBL3.0 x=" + xui.uhs + ";" + json.Token,
+                },
+                body: JSON.stringify({ "userIds": [xui.xid], "settings": ["GameDisplayName", "GameDisplayPicRaw", "Gamerscore"] }),
+            });
+        updates({ type: "Loading", data: "Parsing profile info", percent: lbar * 2 });
+        // console.log(info);
+        const profile = await info.json();
+        // console.log(profile);
+        const settings = profile.profileUsers[0].settings;
+        updates({ type: "Loading", data: "Done!", percent: 100 });
+        return {
+            xuid: xui.xid,
+            gamerTag: xui.gtg,
+            name: settings.find(s => s.id == "GameDisplayName").value,
+            profilePictureURL: settings.find(s => s.id == "GameDisplayPicRaw").value,
+            score: settings.find(s => s.id == "Gamerscore").value,
+        }
+    },
 
     //Main Login flow implementation
     async get(body, updates = () => { }) {
@@ -84,6 +124,7 @@ module.exports = {
                 method: "post", body: body, headers: { "Content-Type": "application/x-www-form-urlencoded" }
             })
         ).json();
+
         //console.log(MS); //debug
         if (MS.error) {
             return error("(" + MS.error + ") => " + MS.error_description + "\nThis is likely due to an invalid refresh token. Please relog!");
@@ -122,10 +163,10 @@ module.exports = {
 
 
         var XSTS = await rxsts.json();
-        //console.log(XSTS); //debug
+
 
         loadBar(percent * 2.5, "Checking for errors");
-
+        //console.log(XSTS)
         if (XSTS.XErr) {
             var reason = "Unknown reason";
             switch (XSTS.XErr) {
@@ -141,6 +182,7 @@ module.exports = {
             };
             return error(reason);
         }
+        //console.log("XBL3.0 x=" + UserHash + ";" + XSTS.Token) //debug
         loadBar(percent * 3, "Logging into Minecraft");
         var rlogin_with_xbox = await FETCH(
             "https://api.minecraftservices.com/authentication/login_with_xbox",
@@ -155,6 +197,7 @@ module.exports = {
         if (webCheck(rlogin_with_xbox)) return error("Could not log into Minecraft", rlogin_with_xbox);
 
         var MCauth = await rlogin_with_xbox.json();
+        console.log(MCauth)
         const experationDate = Math.floor(Date.now() / 1000) + MCauth["expires_in"] - 100
 
 
@@ -168,14 +211,16 @@ module.exports = {
         });
 
         var profile = await r998.json();
-        //console.log(profile) //debug
+
         if (profile.error) {
-            return ({ type: "DemoUser", access_token: MCauth.access_token, reason: "User does not own minecraft" });
+            return ({ type: "DemoUser", access_token: MCauth.access_token, reason: "User does not own minecraft", getXbox: () => this.xboxProfile(XBLToken) });
         };
         profile._msmc = { refresh: MS.refresh_token, expires_by: experationDate, mcToken: MCauth.access_token };
         loadBar(100, "Done!");
-        return ({ type: "Success", access_token: MCauth.access_token, profile: profile });
+        return ({ type: "Success", access_token: MCauth.access_token, profile: profile, getXbox: (updates) => this.xboxProfile(XBLToken, updates) });
 
     }
+
+
 }
 

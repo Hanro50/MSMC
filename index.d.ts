@@ -40,6 +40,14 @@ export interface token {
 export interface profile {
     id: string, name: string, skins?: [], capes?: []
 }
+export interface xprofile{
+    xuid: string,
+    gamerTag: string,
+    name: string,
+    profilePictureURL: string,
+    score: string,
+}
+
 /**The return object that all the async login procedures return */
 export interface result {
     type: "Success" | "DemoUser" | "Authentication" | "Cancelled" | "Unknown"
@@ -51,6 +59,8 @@ export interface result {
     reason?: string,
     /**Used when there was a fetch rejection.*/
     data?: Response,
+    /**Get Xbox profile of user */
+    getXbox?: (updates?: (info: update) => void) => Promise<xprofile>;
 }
 
 /**The object returned to give you information about how the login process is progressing */
