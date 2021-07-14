@@ -16,7 +16,7 @@ module.exports = {
             uuid: profile.id,
             name: profile.name,
             meta:{
-                type:"xbox",
+                type:"msa",
                 demo:profile._msmc.demo
             },
             _msmc: profile._msmc,
