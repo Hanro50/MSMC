@@ -3,18 +3,25 @@ const BE = require("./backEnd");
 module.exports = {
     //Converts a result or player profile object to a mclc login object
     getAuth(profile) {
-        if (profile.profile)
+        if (profile.type) {
+            if (!profile.profile) {
+                throw { error: "Invalid profile" }
+            }
             profile = profile.profile;
-
-        const userProfile = {
+        }
+        
+        return {
             access_token: profile._msmc.mcToken,
             client_token: null,
             uuid: profile.id,
             name: profile.name,
+            meta:{
+                type:"xbox",
+                demo:profile._msmc.demo
+            },
             _msmc: profile._msmc,
             user_properties: "{}"
         };
-        return userProfile;
     },
     //Converts a mclc login object to a msmc profile object
     toProfile(profile) {
@@ -66,8 +73,7 @@ module.exports = {
             const data = await user.json();
 
             if (data.error) {
-                updates({ type: "Error", data: data });
-                return null;
+                throw data;
             };
 
             const userProfile = {

@@ -95,6 +95,7 @@ module.exports = {
             name: settings.find(s => s.id == "GameDisplayName").value,
             profilePictureURL: settings.find(s => s.id == "GameDisplayPicRaw").value,
             score: settings.find(s => s.id == "Gamerscore").value,
+            getAuth: () => "XBL3.0 x=" + xui.uhs + ";" + json.Token
         }
     },
 
@@ -110,7 +111,6 @@ module.exports = {
         };
 
         function error(reason, data) {
-            updates({ type: "Error", data: reason });
             return { type: "Authentication", reason: reason, data: data }
         };
 
@@ -211,11 +211,12 @@ module.exports = {
         });
 
         var profile = await r998.json();
-
-        if (profile.error) {
-            return ({ type: "DemoUser", access_token: MCauth.access_token, reason: "User does not own minecraft", getXbox: () => this.xboxProfile(XBLToken) });
-        };
         profile._msmc = { refresh: MS.refresh_token, expires_by: experationDate, mcToken: MCauth.access_token };
+        if (profile.error) {
+            profile._msmc.demo = true;
+            return ({ type: "DemoUser", access_token: MCauth.access_token, profile: { _msmc: profile._msmc, id: MCauth.username, name: 'player' }, reason: "User does not own minecraft", getXbox: () => this.xboxProfile(XBLToken) });
+        };
+
         loadBar(100, "Done!");
         return ({ type: "Success", access_token: MCauth.access_token, profile: profile, getXbox: (updates) => this.xboxProfile(XBLToken, updates) });
 

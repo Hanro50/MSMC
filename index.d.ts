@@ -4,7 +4,10 @@
  * Basically this is the prompt value in the request sent to Microsoft. This should only be important if you're using either the fastLaunch or launch functions under either Electron or NW.js
  */
 export type prompt = "login" | "none" | "consent" | "select_account";
-
+/**
+ * This library's supported gui frameworks. 
+ * (Raw requires no extra dependencies, use it if you're using some unknown framework!)
+ */
 export type framework = "electron" | "nwjs" | "raw";
 /**
  * The Oauth2 details needed to log you in. 
@@ -13,7 +16,6 @@ export type framework = "electron" | "nwjs" | "raw";
  * 1) https://docs.microsoft.com/en-us/graph/auth-register-app-v2
  * 2) https://docs.microsoft.com/en-us/graph/auth-v2-user#1-register-your-app
  * 3) https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps
- * 
  * 
  * Recommendations: 
  * 
@@ -40,12 +42,23 @@ export interface token {
 export interface profile {
     id: string, name: string, skins?: [], capes?: []
 }
-export interface xprofile{
+export interface xprofile {
+    /**The xuid that belongs to this user */
     xuid: string,
+    /**The user's gamer tag */
     gamerTag: string,
+    /**The user's username */
     name: string,
+    /**The user's profile picture's url */
     profilePictureURL: string,
+    /**The user's "Gamer score"*/
     score: string,
+    /**The auth token you need for an "Authorization" header non of the ms docs tell you about, 
+     * but which you absolutely need if you want to hit up any xbox live end points. 
+     * 
+     * I swear I will fork those fudging documents one of these days and make them a whole lot clearer then they are!!!! -Hanro50
+     */
+    getAuth?: () => string
 }
 
 /**The return object that all the async login procedures return */
@@ -66,19 +79,20 @@ export interface result {
 /**The object returned to give you information about how the login process is progressing */
 export interface update {
     /**
-     * Loading: This gives input with regards to how far along the login process is. <br>
-     * Rejection: This is given with a fetch error. You are given the fetch item as a data object. <br>
-     * Error: This is given with a normal Minecraft account error and will give you some user readable feedback. <br>
-     * Starting: This is fired once when the whole loading process is started. This is mainly for setting up loading bars and stuff like that. <br>
-     * Cancelled: When the user closes out of a pop-up (Electron / NW.js only)
+     * Starting: This is fired once when the whole loading process is started. This is mainly for setting up loading bars and stuff like that. 
+     * 
+     * Loading: TThis gives input with regards to how far along the login process is.
+     * 
+     * Error: This is given with a normal MC account error and will give you some user readable feedback.
      */
-    type: "Loading" | "Error" | "Starting",
-    /**Some information about the call. Like the component that's loading or the cause of the error. */
+    type: "Starting" | "Loading" | "Error",
+    /**Used by the loading call to inform you about the asset being loaded */
     data?: string,
-    /**Used by the Error type.*/
-    error?: result,
     /**Used to show how far along the object is in terms of loading*/
     percent?: number
+    /**Used by the Error type.*/
+    error?: result,
+
 }
 /**
  * Used by graphical Electron and NW.js integrations to set the properties of the generated pop-up
@@ -170,8 +184,9 @@ export declare function fastLaunch(type: framework, updates?: (info: update) => 
 export type mclcUser = {
     access_token: string;
     client_token?: string;
-    uuid?: string;
+    uuid: string;
     name?: string;
+    meta?: { type: "mojang" | "xbox", demo?: boolean };
     user_properties?: Partial<any>;
 }
 

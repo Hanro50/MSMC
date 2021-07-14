@@ -263,6 +263,31 @@ interface profile {
     id: string, name: string, skins?: [], capes?: []
 }
 ```
+## xprofile 
+This is an xbox account object. Used to allow for intergration with xbox related services and features. 
+For example getting a user's xbox profile picture.   
+
+```ts
+interface xprofile {
+    /**The xuid that belongs to this user */
+    xuid: string,
+    /**The user's gamer tag */
+    gamerTag: string,
+    /**The user's username */
+    name: string,
+    /**The user's profile picture's url */
+    profilePictureURL: string,
+    /**The user's "Gamer score"*/
+    score: string,
+    /**The auth token you need for an "Authorization" header non of the ms docs tell you about, 
+     * but which you absolutely need if you want to hit up any xbox live end points. 
+     * 
+     * I swear I will fork those fudging documents one of these days and make them a whole lot clearer then they are!!!! -Hanro50
+     */
+    getAuth?: () => string
+}
+```
+
 ## result
 The return object that all the async login procedures return<br>
 
@@ -278,7 +303,8 @@ Possible values for the 'type' parameter in this interface:
         <td>The user has been logged in and it has been verified that the user owns a licence to the game</td>
         <td>
             access_token&nbsp;:&nbsp;string<br>
-            profile&nbsp;:&nbsp;profile
+            profile&nbsp;:&nbsp;profile<br>
+            getXbox&nbsp;:&nbsp;{function}
         </td> 
     </tr>
     <tr>
@@ -287,7 +313,8 @@ Possible values for the 'type' parameter in this interface:
         <br>THIS IS ONLY MEANT TO BE USED FOR LAUNCHING THE GAME IN DEMO MODE</td>
         <td>
             access_token&nbsp;:&nbsp;string<br>
-            reason&nbsp;:&nbsp;string
+            reason&nbsp;:&nbsp;string<br>
+            getXbox&nbsp;:&nbsp;{function}
         </td>
     </tr>
     <tr>
@@ -327,6 +354,8 @@ The resulting typescript object.<br>
         reason?: string,
         /**Used when there was a fetch rejection.*/
         data?: Response,
+        /**Get Xbox profile of user */
+        getXbox?: (updates?: (info: update) => void) => Promise<xprofile>;
     }
 ```
 ## update
@@ -334,7 +363,7 @@ Used in the callback that is fired multiple times during the login process to gi
 
 ```ts
 interface update {
-    type: "Loading" | "Error" | "Starting" ; //See table below!
+    type:  "Starting" | "Loading" | "Error"; //See table below!
     /**Some information about the call. Like the component that's loading or the cause of the error. */
     data?: string;
     /**Used by the Error type.*/
@@ -343,12 +372,15 @@ interface update {
     percent?: number;
 }
 ```
-
 Possible values for the 'type' parameter:
     <table>
         <tr>
             <th>Value</th>
             <th>Cause</th>
+        </tr>
+         <tr>
+            <td>"Starting"</td>
+            <td>This is fired once when the whole loading process is started. This is mainly for setting up loading bars and stuff like that. </td>
         </tr>
         <tr>
             <td>"Loading" </td>
@@ -356,11 +388,8 @@ Possible values for the 'type' parameter:
         </tr>
         <tr>
             <td>"Error"</td>
-            <td>This is given with a normal MC account error and will give you some user readable feedback. </td>
-        </tr>
-        <tr>
-            <td>"Starting"</td>
-            <td>This is fired once when the whole loading process is started. This is mainly for setting up loading bars and stuff like that. </td>
+            <td>This is given with a normal MC account error and will give you some user readable feedback.<br>
+            [Only thrown with the versions of the auth functions returned by the "<a href=#getcallback>getCallback()</a>" wrapper] </td>
         </tr>
     </table>
 
@@ -492,7 +521,10 @@ function getExceptional(): {
 }
 ```
 ## getCallback
-Wraps the following functions and presents them in a similar style to the old 2.1.x series of msmc. The function provided as the callback is fired upon a successfull login.
+Wraps the following functions and presents them in a similar style to the old 2.1.x series of msmc. 
+In that you must provide the set of functions a callback function as a variable. 
+
+Also errors are sent to the update funtion that you provide similarly to the 2.1.x series of msmc. 
 
 ```ts
 export declare function getCallback(): {
