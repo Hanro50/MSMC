@@ -31,7 +31,7 @@ module.exports = (token, updates = () => { }, Windowproperties = defaultProperti
                 try {
                     mainWindow.close();
                 } catch {
-                    console.error("[MSMC] Failed to close window!");
+                    console.error("[MSMC]: Failed to close window!");
                 }
             };
         });

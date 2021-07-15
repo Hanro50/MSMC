@@ -1,9 +1,9 @@
 //Load optional dependencies
-try { var http = require("http"); } catch (er) { console.warn("[MSMC] Some sign in methods may not work due to missing http server support in enviroment"); };
+try { var http = require("http"); } catch (er) { console.warn("[MSMC]: Some sign in methods may not work due to missing http server support in enviroment"); };
 try { var FETCH = require("node-fetch"); } catch (err) { try { FETCH = fetch; } catch { }; };
 
 //Check if fetch is defined
-if (!FETCH) { console.warn("[MSMC] Could not automatically determine which version of fetch to use.\n[MSMC] Please use 'setFetch' to set this property manually"); };
+if (!FETCH) { console.warn("[MSMC]: Could not automatically determine which version of fetch to use.\n[MSMC]: Please use 'setFetch' to set this property manually"); };
 
 //This needs to be apart or we could end up with a memory leak!
 var app;
@@ -11,7 +11,7 @@ var app;
 module.exports = {
     //Used for the old/generic method of authentication
     setCallback(callback) {
-        if (!http) { console.error("[MSMC] Could not define http server, please use a different method!"); return; }
+        if (!http) { console.error("[MSMC]: Could not define http server, please use a different method!"); return; }
         try { if (app) { app.close(); } } catch { /*Ignore*/ }
         app = http.createServer((req, res) => {
             res.writeHead(200, { "Content-Type": "text/plain" });
@@ -46,12 +46,12 @@ module.exports = {
     //Load constants 
     errorCheck() {
         if (!FETCH) {
-            console.error("[MSMC] Could not automatically determine which version of fetch to use.");
-            console.error("[MSMC] Please use 'setFetch' to set this property manually");
+            console.error("[MSMC]: Could not automatically determine which version of fetch to use.");
+            console.error("[MSMC]: Please use 'setFetch' to set this property manually");
             return true;
         }
         if (typeof FETCH !== "function") {
-            console.error("[MSMC] The version of fetch provided is not a function!");
+            console.error("[MSMC]: The version of fetch provided is not a function!");
             return true;
         }
 
@@ -102,7 +102,7 @@ module.exports = {
     //Main Login flow implementation
     async get(body, updates = () => { }) {
         const percent = 100 / 5;
-        if (this.errorCheck()) { return Promise.reject("[MSMC] Error : no or invalid version of fetch available!"); };
+        if (this.errorCheck()) { return Promise.reject("[MSMC]: Error : no or invalid version of fetch available!"); };
         updates({ type: "Starting" });
 
         //console.log(Params); //debug
@@ -214,7 +214,7 @@ module.exports = {
         profile._msmc = { refresh: MS.refresh_token, expires_by: experationDate, mcToken: MCauth.access_token };
         if (profile.error) {
             profile._msmc.demo = true;
-            return ({ type: "DemoUser", access_token: MCauth.access_token, profile: { _msmc: profile._msmc, id: MCauth.username, name: 'player' }, reason: "User does not own minecraft", getXbox: () => this.xboxProfile(XBLToken) });
+            return ({ type: "DemoUser", access_token: MCauth.access_token, profile: { _msmc: profile._msmc, id: MCauth.username, name: 'Player' }, reason: "User does not own minecraft", getXbox: () => this.xboxProfile(XBLToken) });
         };
 
         loadBar(100, "Done!");

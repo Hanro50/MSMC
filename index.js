@@ -39,7 +39,7 @@ module.exports = {
     //Used to refresh the login token of a msmc account 
     refresh(profile, updates = () => { }, authToken) {
         if (!profile._msmc) {
-            console.error("[MSMC] This is not an msmc style profile object");
+            console.error("[MSMC]: This is not an msmc style profile object");
             return;
         };
         const refreshToken = profile._msmc.refresh ? profile._msmc.refresh : profile._msmc;
@@ -92,7 +92,7 @@ module.exports = {
                 return require("./modules/raw")(token, updates, Windowproperties);
             }
             default: {
-                throw new Error('[MSMC] Unknown library type');
+                throw new Error('[MSMC]: Unknown library type');
             }
         }
     },
@@ -101,10 +101,14 @@ module.exports = {
         return require("./modules/mclc");
     },
     errorCheck(result) {
-        return !(result.type == "Success")
+        return !(result.type == "Success" || result.type == "DemoUser")
+    },
+    isDemoUser(result) {
+        result = result.profile ? result.profile : result;
+        return result._msmc && !!result._msmc.demo;
     },
     loadLegacy() {
-        console.warn("[MSMC]: This adds compatibility for launchers that implement the callback structure of 2.1.x and earlier. \n" +
+        console.warn("[MSMC]:: This adds compatibility for launchers that implement the callback structure of 2.1.x and earlier. \n" +
             "New implementations should avoid using this as it will be removed with the 2.4.x series!");
         const legacy = require('./modules/legacy');
         Object.keys(legacy).forEach(e => {

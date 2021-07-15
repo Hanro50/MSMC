@@ -33,12 +33,12 @@ switch (os.type()) {
                             if (out.indexOf("\n") > 0)
                                 out = out.substr(0, out.indexOf("\n") - 1);
                             if (fs.existsSync(out)) { start = out; break WE; }
-                            else console.log("[MSMC] cannot find " + out)
+                            else console.log("[MSMC]: cannot find " + out)
                         }
                     } catch { };
                 }
             }
-            console.error("[MSMC] No Chromium browser was found")
+            console.error("[MSMC]: No Chromium browser was found")
         }
         break;
     case 'Darwin':
@@ -60,7 +60,7 @@ switch (os.type()) {
                     if (fs.existsSync(s)) { start = s; break LE; }
                 }
             }
-            console.error("[MSMC] No Chromium browser was found")
+            console.error("[MSMC]: No Chromium browser was found")
         }
 }
 
@@ -76,7 +76,7 @@ function browserLoop(token, port, updates, browser) {
                             clearInterval(f3);
                             browser.kill();
                         } catch {
-                            console.error("[MSMC] Failed to close window!");
+                            console.error("[MSMC]: Failed to close window!");
                         }
                         const urlParams = new URLSearchParams(loc.substr(loc.indexOf("?") + 1)).get("code");
                         if (urlParams) {
@@ -99,14 +99,15 @@ function browserLoop(token, port, updates, browser) {
 module.exports = (token, updates = () => { }, Windowproperties = defaultProperties) => {
     const cmd = Windowproperties.browserCMD ? Windowproperties.browserCMD : start;
     if (!cmd) {
-        throw new Error("[MSMC] Error : no chromium browser was set, cannot continue!");
+        throw new Error("[MSMC]: Error : no chromium browser was set, cannot continue!");
     }
-    console.warn("[MSMC] This setting is experimental");
-    console.warn("[MSMC] Using \"" + cmd + "\"");
+    console.warn("[MSMC]: This setting is experimental");
+    console.warn("[MSMC]: Using \"" + cmd + "\"");
     var redirect = msmc.createLink(token);
     return new Promise(resolve => {
         var browser;
         if (cmd.includes("firefox")) {
+            console.log("[MSMC]: Using firefox fallback {Linux only!}");
             if (fs.existsSync(temp)) exec("rm -R " + temp); fs.mkdirSync(temp);
             browser = spawn(cmd, ["--remote-debugging-port=0", "-width", Windowproperties.width, "-height", Windowproperties.height, "--new-instance", "--profile", temp, redirect]);
         } else
@@ -115,14 +116,14 @@ module.exports = (token, updates = () => { }, Windowproperties = defaultProperti
         const ouput = (out) => {
             const cout = String(out.toString()).toLocaleLowerCase().trim();
             //console.log(cout)
-            console.log(cout)
+            console.log("[MSMC]: " +cout)
             if (firstrun && cout.startsWith("devtools listening on ws://")) {
                 //console.log("exec")
                 firstrun = false;
                 var data = cout.substr("devtools listening on ws://".length);
                 const n = data.indexOf(":") + 1;
                 const port = data.substr(n, data.indexOf("/") - n);
-                console.log("http://127.0.0.1:" + port);
+                console.log("[MSMC]: http://127.0.0.1:" + port);
                 //console.log(out.toString())
                 resolve(browserLoop(token, port, updates, browser));
             }

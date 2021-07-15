@@ -508,6 +508,13 @@ Checks if a return value is valid and if the login procedure has been successful
 ```ts
 function errorCheck(result: result): Boolean;
 ```
+
+## isDemoUser
+Checks if a player object was created with a demo account. Useful for if you're using msmc without mclc and still want to implement demo account support.
+```ts
+function isDemoUser(profile: profile | result): Boolean;
+```
+
 ## getExceptional
 Wraps the following functions and causes each to throw a result object as an error on a failed login instead of passing back said result object
 

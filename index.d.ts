@@ -200,6 +200,12 @@ export declare function getMCLC(): {
 /**Checks if a return value is valid */
 export declare function errorCheck(result: result): Boolean;
 
+/**Checks if a return value is a demo account */
+export declare function isDemoUser(result: result): Boolean;
+
+/**Checks if a player object is a demo account */
+export declare function isDemoUser(profile: profile): Boolean;
+
 /**
  * @deprecated Will be removed by version 2.4.0 
  */
