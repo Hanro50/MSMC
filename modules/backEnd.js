@@ -219,9 +219,6 @@ module.exports = {
 
         loadBar(100, "Done!");
         return ({ type: "Success", access_token: MCauth.access_token, profile: profile, getXbox: (updates) => this.xboxProfile(XBLToken, updates) });
-
     }
-
-
 }
 

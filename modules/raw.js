@@ -16,6 +16,7 @@ const defaultProperties = {
     height: 650,
 }
 var start
+console.log("[MSMC]: OS Type => "+os.type());
 switch (os.type()) {
     case 'Windows_NT':
         const pathsW = ["HKEY_LOCAL_MACHINE", "HKEY_CURRENT_USER"]
@@ -41,7 +42,7 @@ switch (os.type()) {
         break;
     case 'Darwin':
         const loc = "/Applications/{0}.app/Contents/MacOS/{0}"
-        const compatibleD = ["Google\\ Chrome", "Microsoft\\ Edge", "Vivaldi", "Blisk", "Brave\\ Browser", "Yandex"]
+        const compatibleD = ["Google\\ Chrome","Google Chrome", "Microsoft\\ Edge","Microsoft Edge", "Vivaldi", "Blisk", "Brave\\ Browser", "Brave Browser", "Yandex"]
         for (var i2 = 0; i2 < compatibleD.length; i2++) {
             const s = loc.replace(/\{0\}/g, compatibleD[i2])
             if (fs.existsSync(s)) { start = s; break; }
