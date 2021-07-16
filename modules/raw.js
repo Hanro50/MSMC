@@ -15,7 +15,6 @@ const exec = require('child_process').execSync;
 const defaultProperties = {
     width: 500,
     height: 650,
-    resizable: false,
 }
 var start
 switch (os.type()) {
