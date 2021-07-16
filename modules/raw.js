@@ -1,6 +1,5 @@
 /**
  * EXPERIMENTAL!
- * Only compatible with Linux and Windows at the stage. 
  */
 const msmc = require('..');
 const BE = require("./backEnd");
