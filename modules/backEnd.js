@@ -164,9 +164,8 @@ module.exports = {
 
         var XSTS = await rxsts.json();
 
-
         loadBar(percent * 2.5, "Checking for errors");
-        //console.log(XSTS)
+        //console.log(XSTS); //debug
         if (XSTS.XErr) {
             var reason = "Unknown reason";
             switch (XSTS.XErr) {
@@ -197,9 +196,8 @@ module.exports = {
         if (webCheck(rlogin_with_xbox)) return error("Could not log into Minecraft", rlogin_with_xbox);
 
         var MCauth = await rlogin_with_xbox.json();
-        console.log(MCauth)
+        //console.log(MCauth) //debug
         const experationDate = Math.floor(Date.now() / 1000) + MCauth["expires_in"] - 100
-
 
         loadBar(percent * 4, "Fetching player profile");
         var r998 = await FETCH("https://api.minecraftservices.com/minecraft/profile", {
