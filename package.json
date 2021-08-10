@@ -1,6 +1,6 @@
 {
   "name": "msmc",
-  "version": "2.2.0-pre10",
+  "version": "2.2.0",
   "description": "A bare bones login library for Minecraft based projects to authenticate individuals with a Microsoft account.",
   "license": "MIT",
   "main": "index.js",
