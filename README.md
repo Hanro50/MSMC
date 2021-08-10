@@ -1,14 +1,4 @@
-﻿# 2.2.0 branch
-1) <strike>Async functions</strike><br>
-2) <strike>Legacy mode</strike><br>
-3) <strike>Update documentation</strike><br>
-4) Do a whole lot of bug testing <br>
-5) Update examples 
-6) Type script tuning
-
-NOTICE => 2.2.0 should be nearing a state of being production ready 
-
-# MSMC
+﻿# MSMC
 A bare bones login library for Minecraft based projects to authenticate individuals with a Microsoft account.
 
 # Support
