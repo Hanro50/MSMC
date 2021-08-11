@@ -508,7 +508,7 @@ function errorCheck(result: result): Boolean;
 
 ## isDemoUser
 Checks if a player object was created with a demo account. Useful for if you're using msmc without mclc and still want to implement demo account support.
-###### This should be automatic launch the game in demo mode when using msmc with mclc
+###### This function shouldn't be needed with MCLC as the profile object MSMC creates for MCLC contains some meta data that tells MCLC to launch the game in demo mode. 
 ```ts
 function isDemoUser(profile: profile | result): Boolean;
 ```
