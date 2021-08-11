@@ -1,6 +1,4 @@
-const MSMC = require("..");
-
-const BE = require("./backEnd");
+const MSMC = require("../..");
 const defaultProperties = {
     width: 500,
     height: 650,

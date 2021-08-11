@@ -34,15 +34,7 @@ module.exports = {
     getFetch() {
         return FETCH;
     },
-    //Load helper methods 
-    mojangAuthToken(prompt) {
-        const token = {
-            client_id: "00000000402b5328",
-            redirect: "https://login.live.com/oauth20_desktop.srf",
-        }
-        if (prompt) token.prompt = prompt;
-        return token;
-    },
+
     //Load constants 
     errorCheck() {
         if (!FETCH) {

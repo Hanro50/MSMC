@@ -1,5 +1,4 @@
-const MSMC = require("..");
-const BE = require("./backEnd");
+const MSMC = require("../..");
 const { BrowserWindow } = require("electron");
 
 const defaultProperties = {

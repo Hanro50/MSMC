@@ -2,7 +2,7 @@
 A bare bones login library for Minecraft based projects to authenticate individuals with a Microsoft account.
 
 # Support
-Atm you can get support via Discord (link below).
+At the momement you can get support via Discord (link below).
 <p>
    <a href="https://discord.gg/3hM8H7nQMA">
    <img src="https://img.shields.io/discord/861839919655944213?logo=discord"
@@ -406,6 +406,13 @@ fetchIn => A version of fetch
 ```ts
 function setFetch(fetchIn: any): void;
 ```
+## mojangAuthToken \<Advance users only>
+Gets a premade token with mojang's auth token already set up . <br>
+prompt => See the type definition for "prompt" for more information
+###### This token is owned and controlled by Mojang. Using it for anything other then Minecraft might get you an angry email from a lawyer eventually. 
+ ```ts
+export declare function mojangAuthToken(prompt: prompt): token;
+```
 ## createLink
 This function will create a login link based on the inputs provided. <br>
 Note that this function is called internally after the redirect has been formatted. Aka after "http://localhost:\<port\>/" is appended to the redirect. <br>
@@ -415,12 +422,12 @@ returns => A link you can plug into a web browser to send a user to a ms login p
 ```ts
 function createLink(token: token): String;
 ```
-## authenticate
+## authenticate \<Advance users only>
 Used when you want to implement your own login code, but still want msmc to handle authentication for you. <br>
 code => The code gotten from a successful login <br>
 MStoken => The Microsoft token object used to obtain the login code <br>
 updates => A callback that one can hook into to get updates on the login process<br>
-returns => A promise that will grant you a user profile and mojang login token<br>
+returns => A promise that will grant you a user profile and Mojang login token<br>
 ```ts
 function authenticate(code: string, MStoken: token, updates?: (info: update) => void): Promise<result>;
 ```
@@ -491,23 +498,24 @@ function getMCLC(): {
     validate: (profile: mclcUser) => Promise<Boolean>
     refresh: (profile: mclcUser) => Promise<mclcUser>
 };
-## errorCheck
 ```
+## errorCheck
 Checks if a return value is valid and if the login procedure has been successful
-
+###### Demo accounts will cause this function to return false. 
 ```ts
 function errorCheck(result: result): Boolean;
 ```
 
 ## isDemoUser
 Checks if a player object was created with a demo account. Useful for if you're using msmc without mclc and still want to implement demo account support.
+###### This should be automatic launch the game in demo mode when using msmc with mclc
 ```ts
 function isDemoUser(profile: profile | result): Boolean;
 ```
 
 ## getExceptional
 Wraps the following functions and causes each to throw a result object as an error on a failed login instead of passing back said result object
-
+###### See the docs for the normal async versions of these functions for a better idea of what they do
 ```ts
 function getExceptional(): {
     authenticate: (code: string, MStoken: token, updates?: (info: update) => void) => Promise<result>
@@ -522,7 +530,7 @@ Wraps the following functions and presents them in a similar style to the old 2.
 In that you must provide the set of functions a callback function as a variable. 
 
 Also errors are sent to the update funtion that you provide similarly to the 2.1.x series of msmc. 
-
+###### See the docs for the normal async versions of these functions for a better idea of what they do
 ```ts
 export declare function getCallback(): {
     authenticate: (callback: (r: result) => void, code: string, MStoken: token, updates?: (info: update) => void) => void
@@ -540,6 +548,7 @@ This is here to allow you to update without rewriting everything. New launchers 
 ```ts
 function loadLegacy(): void;
 ```
+
 # Final notes
 This module is ES6 compatible. [This mostly affects typescript users]
 # Credit

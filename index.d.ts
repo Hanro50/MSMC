@@ -109,7 +109,11 @@ export interface windowProperties {
  * @param fetchIn A version of fetch 
  */
 export declare function setFetch(fetchIn: any): void;
-
+/**
+ * Gets a premade token with mojang's auth. 
+ * @param prompt See the type definition for "prompt" for more information
+ */
+export declare function mojangAuthToken(prompt: prompt): token;
 /** 
  * This function will create a login link based on the inputs provided. <br>
  * Note that this function is called internally after the redirect has been formatted. Aka after "http://localhost:\<port\>/" is appended to the redirect. <br>
@@ -126,6 +130,7 @@ export declare function createLink(token: token): String;
  * @returns A link you can plug into a web browser to send a user to a ms login page
  */
 export declare function createLink(prompt: prompt): String;
+
 /**
  * Used when you want to implement your own login code, but still want MSMC to handle authentication for you. 
  * @param code The code gotten from a successful login 

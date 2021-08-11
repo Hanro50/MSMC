@@ -11,10 +11,18 @@ module.exports = {
     setFetch(fetchIn) {
         BE.setFetch(fetchIn);
     },
+    mojangAuthToken(prompt) {
+        const token = {
+            client_id: "00000000402b5328",
+            redirect: "https://login.live.com/oauth20_desktop.srf",
+        }
+        if (prompt) token.prompt = prompt;
+        return token;
+    },
     //Creates a login link
     createLink(token) {
         if (typeof token == String) {
-            token = BE.mojangAuthToken(token);
+            token = this.mojangAuthToken(token);
         }
         return (
             "https://login.live.com/oauth20_authorize.srf" +
@@ -43,7 +51,7 @@ module.exports = {
             return;
         };
         const refreshToken = profile._msmc.refresh ? profile._msmc.refresh : profile._msmc;
-        authToken = authToken ? authToken : BE.mojangAuthToken();
+        authToken = authToken ? authToken : this.mojangAuthToken();
         const body = (
             "client_id=" + authToken.client_id +
             (authToken.clientSecret ? "&client_secret=" + authToken.clientSecret : "") +
@@ -77,19 +85,19 @@ module.exports = {
     },
 
     fastLaunch(type, updates, prompt = "select_account", properties) {
-        return this.launch(type, BE.mojangAuthToken(prompt), updates, properties)
+        return this.launch(type, this.mojangAuthToken(prompt), updates, properties)
     },
 
     launch(type, token, updates, Windowproperties) {
         switch (type) {
             case ("electron"): {
-                return require("./modules/electron")(token, updates, Windowproperties);
+                return require("./modules/gui/electron")(token, updates, Windowproperties);
             }
             case ("nwjs"): {
-                return require("./modules/nwjs")(token, updates, Windowproperties);
+                return require("./modules/gui/nwjs")(token, updates, Windowproperties);
             }
             case ("raw"): {
-                return require("./modules/raw")(token, updates, Windowproperties);
+                return require("./modules/gui/raw")(token, updates, Windowproperties);
             }
             default: {
                 throw new Error('[MSMC]: Unknown library type');
@@ -122,6 +130,8 @@ module.exports = {
         return require("./modules/wrapper").callback;
     }
     ,
+    //Load helper methods 
+  
     default: module.exports
 }
 
