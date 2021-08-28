@@ -29,6 +29,7 @@ module.exports = {
     },
     //Checks if a mclc login object is still valid
     async validate(profile) {
+        const FETCH = BE.getFetch();
         if (profile._msmc) {
             return msmc.validate(his.toProfile(profile));
         }
