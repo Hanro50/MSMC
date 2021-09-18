@@ -9,6 +9,7 @@ const defaultProperties = {
 
 module.exports = (token, updates = () => { }, Windowproperties = defaultProperties) => {
     return new Promise(resolve => {
+        var ts = "Cancelled.GUI";
         var redirect = MSMC.createLink(token);
         const mainWindow = new BrowserWindow(Windowproperties);
         mainWindow.setMenu(null);
@@ -16,7 +17,7 @@ module.exports = (token, updates = () => { }, Windowproperties = defaultProperti
         const contents = mainWindow.webContents;
         var loading = false;
         mainWindow.on("close", () => {
-            if (!loading) { resolve({ type: "Cancelled" }) };
+            if (!loading) { resolve({ type: "Cancelled", translationString: ts }) };
         });
 
         contents.on("did-finish-load", () => {
@@ -26,6 +27,9 @@ module.exports = (token, updates = () => { }, Windowproperties = defaultProperti
                 if (urlParams) {
                     resolve(MSMC.authenticate(urlParams, token, updates));
                     loading = true;
+                }
+                else {
+                    ts = "Cancelled.Back";
                 }
                 try {
                     mainWindow.close();

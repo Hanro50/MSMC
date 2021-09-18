@@ -9,6 +9,11 @@ export type prompt = "login" | "none" | "consent" | "select_account";
  * (Raw requires no extra dependencies, use it if you're using some unknown framework!)
  */
 export type framework = "electron" | "nwjs" | "raw";
+
+/**
+ * Here for translators.
+ */
+export type ts = "Login.Success.DemoUser" | "Login.Success.User" | "Login.Fail.Relog" | "Login.Fail.Xbox" | "Login.Fail.MC" | "Account.Unknown" | "Account.UserNotFound" | "Account.UserNotAdult" | "Cancelled.GUI" | "Cancelled.Back";
 /**
  * The Oauth2 details needed to log you in. 
  * 
@@ -72,6 +77,8 @@ export interface result {
     reason?: string,
     /**Used when there was a fetch rejection.*/
     data?: Response,
+    /**Used to make translation easier */
+    translationString?: ts,
     /**Get Xbox profile of user */
     getXbox?: (updates?: (info: update) => void) => Promise<xprofile>;
 }

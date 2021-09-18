@@ -102,8 +102,8 @@ module.exports = {
             updates({ type: "Loading", data: asset, percent: number });
         };
 
-        function error(reason, data) {
-            return { type: "Authentication", reason: reason, data: data }
+        function error(reason, translationString, data) {
+            return { type: "Authentication", reason: reason, data: data, translationString: translationString }
         };
 
         function webCheck(response) {
@@ -119,7 +119,7 @@ module.exports = {
 
         //console.log(MS); //debug
         if (MS.error) {
-            return error("(" + MS.error + ") => " + MS.error_description + "\nThis is likely due to an invalid refresh token. Please relog!");
+            return error("(" + MS.error + ") => " + MS.error_description + "\nThis is likely due to an invalid refresh token. Please relog!", "Login.Fail.Relog", { error: MS.error, disc: MS.error_description });
         }
 
         loadBar(percent * 1, "Logging into Xbox Live");
@@ -137,7 +137,7 @@ module.exports = {
             headers: { "Content-Type": "application/json", Accept: "application/json" },
         });
 
-        if (webCheck(rxboxlive)) return error("Could not log into xbox", rxboxlive);
+        if (webCheck(rxboxlive)) return error("Could not log into xbox", "Login.Fail.Xbox", rxboxlive);
         var token = await rxboxlive.json();
         //console.log(token); //debug
         var XBLToken = token.Token;
@@ -160,22 +160,22 @@ module.exports = {
         //console.log(XSTS); //debug
         if (XSTS.XErr) {
             var reason = "Unknown reason";
-            var data = { type: "AccountError", text: "Unknown", ID: 0 };
+            var ts = "Unknown";
             switch (XSTS.XErr) {
                 case 2148916233: {
                     reason = "The account doesn't have an Xbox account.";
-                    data = { type: "AccountError", text: "UserNotFound", ID: 1 };
+                    ts = "UserNotFound";
                     break;
                 };
                 case 2148916238: {
-                    //Check MSMC's wiki pages on github if you keep getting this error. 
+                    //Check MSMC's wiki pages on github if you keep getting this error
                     reason =
                         "The account is a child (under 18) and cannot proceed unless the account is added to a Family by an adult.";
-                    data = { type: "AccountError", text: "UserNotAdult", ID: 2 };
+                    ts = "UserNotAdult";
                     break;
                 };
             };
-            return error(reason,data);
+            return error(reason, "Account." + ts);
         }
         //console.log("XBL3.0 x=" + UserHash + ";" + XSTS.Token) //debug
         loadBar(percent * 3, "Logging into Minecraft");
@@ -189,7 +189,7 @@ module.exports = {
                 headers: { "Content-Type": "application/json", Accept: "application/json" },
             }
         );
-        if (webCheck(rlogin_with_xbox)) return error("Could not log into Minecraft", rlogin_with_xbox);
+        if (webCheck(rlogin_with_xbox)) return error("Could not log into Minecraft", "Login.Fail.MC", rlogin_with_xbox);
 
         var MCauth = await rlogin_with_xbox.json();
         //console.log(MCauth) //debug
@@ -208,11 +208,11 @@ module.exports = {
         profile._msmc = { refresh: MS.refresh_token, expires_by: experationDate, mcToken: MCauth.access_token };
         if (profile.error) {
             profile._msmc.demo = true;
-            return ({ type: "DemoUser", access_token: MCauth.access_token, profile: { _msmc: profile._msmc, id: MCauth.username, name: 'Player' }, reason: "User does not own minecraft", getXbox: () => this.xboxProfile(XBLToken) });
+            return ({ type: "DemoUser", access_token: MCauth.access_token, profile: { _msmc: profile._msmc, id: MCauth.username, name: 'Player' }, translationString : "Login.Success.DemoUser", reason: "User does not own minecraft", getXbox: () => this.xboxProfile(XBLToken) });
         };
 
         loadBar(100, "Done!");
-        return ({ type: "Success", access_token: MCauth.access_token, profile: profile, getXbox: (updates) => this.xboxProfile(XBLToken, updates) });
+        return ({ type: "Success", access_token: MCauth.access_token, profile: profile, getXbox: (updates) => this.xboxProfile(XBLToken, updates), translationString : "Login.Success.User" });
     }
 }
 

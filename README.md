@@ -212,6 +212,60 @@ Used by the launch and fastLaunch functions to figure out what functions they sh
 ```ts
 type framework = "electron" | "nwjs" | "raw";
 ```
+
+## ts 
+This is mostly used to aid translators. In theory one could create an add-on package that took in these codes and translated the given output accordingly.
+```ts
+export type ts =  "Login.Success.User" | "Login.Success.DemoUser" | "Login.Fail.Relog" | "Login.Fail.Xbox" | "Login.Fail.MC" | "Account.Unknown" | "Account.UserNotFound" | "Account.UserNotAdult" | "Cancelled.GUI" | "Cancelled.Back";
+```
+
+<table>
+    <tr>
+        <th>Value</th>
+        <th>English translation</th>
+    </tr>
+    <tr>
+        <td>Login.Success.User</td>
+        <td>Success</td>
+   </tr>
+   <tr>
+        <td>Login.Success.DemoUser</td>
+        <td>You do not own Minecraft on this Microsoft Account</td>
+    </tr>
+    <tr>
+        <td>Login.Fail.Relog</td>
+        <td>Please relog</td>
+    </tr>
+    <tr>
+        <td>Login.Fail.Xbox</td>
+        <td>We failed to log you into your Xbox Account</td>
+    </tr>
+     <tr>
+        <td>Login.Fail.MC</td>
+        <td>We failed to log you into Minecraft with the given Xbox Account</td>
+    </tr>
+    <tr>
+        <td>Account.Unknown</td>
+        <td>We encountered an unknown error Attempting to get your Xbox One Security Token</td>
+    </tr>
+    <tr>
+        <td>Account.UserNotFound</td>
+        <td>The given Microsoft Account is not connected to a given Xbox Account</td>
+    </tr>
+    <tr>
+        <td>Account.UserNotAdult</td>
+        <td>According to Microsoft. You need to be an adult to log in from your current location.</td>
+    </tr>
+    <tr>
+        <td>Cancelled.GUI</td>
+        <td>The user dismissed the Login popup without logging in.</td>
+    </tr>
+    <tr>
+        <td>Cancelled.Back</td>
+        <td>The user dismissed the Login popup without logging in by clicking the back option or an error occured.</td>
+    </tr>
+</table>
+
 # Docs: Interfaces
 
 ## token
@@ -342,6 +396,8 @@ The resulting typescript object.<br>
         profile?: profile,
         /**Used with the error types */
         reason?: string,
+        /**Used to make translation easier */
+        translationString?: ts,
         /**Used when there was a fetch rejection.*/
         data?: Response,
         /**Get Xbox profile of user */

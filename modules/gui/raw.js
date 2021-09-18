@@ -81,7 +81,7 @@ function browserLoop(token, port, updates, browser) {
                         if (urlParams) {
                             resolve(MSMC.authenticate(urlParams, token, updates));
                         } else {
-                            resolve({ type: "Cancelled" })
+                            resolve({ type: "Cancelled", translationString:"Cancelled.Back"})
                         }
                     }
                 }
@@ -89,7 +89,7 @@ function browserLoop(token, port, updates, browser) {
                 console.log(err)
                 clearInterval(f3);
                 browser.kill();
-                resolve({ type: "Cancelled" })
+                resolve({ type: "Cancelled", translationString:"Cancelled.GUI" })
             })
         }, 500);
     });
