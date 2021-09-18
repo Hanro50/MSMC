@@ -160,18 +160,22 @@ module.exports = {
         //console.log(XSTS); //debug
         if (XSTS.XErr) {
             var reason = "Unknown reason";
+            var data = { type: "AccountError", text: "Unknown", ID: 0 };
             switch (XSTS.XErr) {
-                case "2148916233": {
+                case 2148916233: {
                     reason = "The account doesn't have an Xbox account.";
+                    data = { type: "AccountError", text: "UserNotFound", ID: 1 };
                     break;
                 };
-                case "2148916238": {
+                case 2148916238: {
+                    //Check MSMC's wiki pages on github if you keep getting this error. 
                     reason =
-                        "The account is a child (under 18) and cannot proceed unless the account is added to a Family by an adult. (FIX ME: This error should in theory never happen if the launcher's oauth token is set up correctly)";
+                        "The account is a child (under 18) and cannot proceed unless the account is added to a Family by an adult.";
+                    data = { type: "AccountError", text: "UserNotAdult", ID: 2 };
                     break;
                 };
             };
-            return error(reason);
+            return error(reason,data);
         }
         //console.log("XBL3.0 x=" + UserHash + ";" + XSTS.Token) //debug
         loadBar(percent * 3, "Logging into Minecraft");
