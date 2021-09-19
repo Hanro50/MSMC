@@ -64,7 +64,7 @@ module.exports = {
         return profile._msmc.expires_by && profile._msmc.mcToken && ((profile._msmc.expires_by - Math.floor(Date.now() / 1000)) > 0);
     },
     //Generic ms login flow
-    login(token, callback, updates) {
+    login(token, getlink, updates) {
         return new Promise((resolve) => {
             const app = BE.setCallback((Params) => {
                 this.authenticate(Params.get("code"), token, updates).then(c => { resolve(c); });
@@ -79,7 +79,7 @@ module.exports = {
                         app.address().port +
                         "/" +
                         (token.redirect ? token.redirect : "");
-                callback(this.createLink(token));
+                getlink(this.createLink(token));
             });
         });
     },
@@ -131,7 +131,7 @@ module.exports = {
     }
     ,
     //Load helper methods 
-  
+
     default: module.exports
 }
 

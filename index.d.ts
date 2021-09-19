@@ -166,11 +166,11 @@ export declare function validate(profile: profile): Boolean;
 /**
  * A generic login method. Useful if you aren't using electron or NW.js and want to make a terminal launcher or are using an unsupported framework
  * @param token Your MS Login token. Mainly your client ID, client secret (optional  | Depends how azure is set up) and a redirect (Do not include http://localhost:<port>/ as that's added for you!)
- * @param callback The URL needed to log in your user will be handled by the function you provide here. I recommend you send it off to a web browser or something similar
+ * @param getlink The URL needed to log in your user will be handled by the function you provide here. I recommend you send it off to a web browser or something similar
  * @param updates A callback that one can hook into to get updates on the login process
  * @returns A promise that will grant you a user profile and Mojang login token
  */
-export declare function login(token: token, callback: (info: string) => void, updates?: (info: update) => void): Promise<result>;
+export declare function login(token: token, getlink: (info: string) => void, updates?: (info: update) => void): Promise<result>;
 /**
  * Used with electron or nwjs to launch a pop-up that a user can use to sign in with
  * @param type The GUI framework this is compatible with
@@ -228,7 +228,7 @@ export declare function loadLegacy(): void;
 export declare function getExceptional(): {
     authenticate: (code: string, MStoken: token, updates?: (info: update) => void) => Promise<result>
     refresh: (profile: profile, updates?: (info: update) => void, MStoken?: token) => Promise<result>
-    login: (token: token, callback: (info: string) => void, updates?: (info: update) => void) => Promise<result>
+    login: (token: token, getlink: (info: string) => void, updates?: (info: update) => void) => Promise<result>
     launch: (type: framework, token: token, updates?: (info: update) => void, properties?: windowProperties) => Promise<result>
     fastLaunch: (type: framework, updates?: (info: update) => void, prompt?: prompt, properties?: windowProperties) => Promise<result>
 }
@@ -236,7 +236,7 @@ export declare function getExceptional(): {
 export declare function getCallback(): {
     authenticate: (callback: (r: result) => void, code: string, MStoken: token, updates?: (info: update) => void) => void
     refresh: (callback: (r: result) => void, profile: profile, updates?: (info: update) => void, MStoken?: token) => void
-    login: (callback: (r: result) => void, token: token, callback: (info: string) => void, updates?: (info: update) => void) => void
+    login: (callback: (r: result) => void, token: token, getlink: (info: string) => void, updates?: (info: update) => void) => void
     launch: (callback: (r: result) => void, type: framework, token: token, updates?: (info: update) => void, properties?: windowProperties) => void
     fastLaunch: (callback: (r: result) => void, type: framework, updates?: (info: update) => void, prompt?: prompt, properties?: windowProperties) => void
 }

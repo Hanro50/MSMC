@@ -506,11 +506,11 @@ return => Returns a boolean stating whether a set account is still valid <br>
 ## login
 A generic login method. Useful if you aren't using electron or NW.js and want to make a terminal launcher or are using an unsupported framework<br>
 token => Your MS Login token. Mainly your client ID, client secret (optional  | Depends how azure is set up) and a redirect (Do not include http://localhost:<port\>/ as that's added for you!)<br>
-callback => The callback will give you a link you can redirect a user to. <br>
+getlink => The callback will give you a link you can redirect a user to. <br>
 updates => A callback that one can hook into to get updates on the login process <br>
 returns => A promise that will grant you a user profile and Mojang login token<br>
 ```ts
- function login(token: token, callback: (info: string) => void, updates?: (info: update) => void): Promise<result>;
+ function login(token: token, getlink: (info: string) => void, updates?: (info: update) => void): Promise<result>;
 ```
 ## launch
 Used with electron or nwjs to launch a popup that a user can use to sign in with<br>
@@ -576,7 +576,7 @@ Wraps the following functions and causes each to throw a result object as an err
 function getExceptional(): {
     authenticate: (code: string, MStoken: token, updates?: (info: update) => void) => Promise<result>
     refresh: (profile: profile, updates?: (info: update) => void, MStoken?: token) => Promise<result>
-    login: (token: token, callback: (info: string) => void, updates?: (info: update) => void) => Promise<result>
+    login: (token: token, getlink: (info: string) => void, updates?: (info: update) => void) => Promise<result>
     launch: (type: framework, token: token, updates?: (info: update) => void, properties?: windowProperties) => Promise<result>
     fastLaunch: (type: framework, updates?: (info: update) => void, prompt?: prompt, properties?: windowProperties) => Promise<result>
 }
@@ -591,7 +591,7 @@ Also errors are sent to the update funtion that you provide similarly to the 2.1
 export declare function getCallback(): {
     authenticate: (callback: (r: result) => void, code: string, MStoken: token, updates?: (info: update) => void) => void
     refresh: (callback: (r: result) => void, profile: profile, updates?: (info: update) => void, MStoken?: token) => void
-    login: (callback: (r: result) => void, token: token, callback: (info: string) => void, updates?: (info: update) => void) => void
+    login: (callback: (r: result) => void, token: token, getlink: (info: string) => void, updates?: (info: update) => void) => void
     launch: (callback: (r: result) => void, type: framework, token: token, updates?: (info: update) => void, properties?: windowProperties) => void
     fastLaunch: (callback: (r: result) => void, type: framework, updates?: (info: update) => void, prompt?: prompt, properties?: windowProperties) => void
 }
