@@ -31,7 +31,7 @@ module.exports = {
     async validate(profile) {
         const FETCH = BE.getFetch();
         if (profile._msmc) {
-            return msmc.validate(his.toProfile(profile));
+            return msmc.validate(this.toProfile(profile));
         }
 
         const req = {
