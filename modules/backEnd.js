@@ -1,6 +1,28 @@
 //Load optional dependencies
+/**@type {fetch} */
+var FETCH
 try { var http = require("http"); } catch (er) { console.warn("[MSMC]: Some sign in methods may not work due to missing http server support in enviroment"); };
-try { var FETCH = require("node-fetch"); } catch (err) { try { FETCH = fetch; } catch { }; };
+//CommonJS
+try { FETCH = require("node-fetch"); } catch (err) {
+    try {
+        //ES6
+        const fw = import("node-fetch")
+            .then(f => {
+                FETCH = f.default;
+                console.log("[MSMC]: Set ES6 version")
+            })
+            .catch(e => {
+                console.error("[MSMC]: Could not set ES6 version");
+            });
+        FETCH = async (input, init) => {
+            console.warn("[MSMC]: Waiting for ES module to load");
+            try { (await fw); FETCH(input, init); } catch (e) { console.log(e) }
+        }; console.log("[MSMC]: Not using CommonJS version of Node-fetch, trying to get ES6 version");
+    } catch (err) {
+        //Browser->Limited support due to CORS
+        try { FETCH = fetch; console.log(err) } catch { };
+    };
+};
 
 //Check if fetch is defined
 if (!FETCH) { console.warn("[MSMC]: Could not automatically determine which version of fetch to use.\n[MSMC]: Please use 'setFetch' to set this property manually"); };
@@ -32,6 +54,7 @@ module.exports = {
     //Used internally to get fetch when needed
 
     getFetch() {
+
         return FETCH;
     },
 
@@ -208,11 +231,11 @@ module.exports = {
         profile._msmc = { refresh: MS.refresh_token, expires_by: experationDate, mcToken: MCauth.access_token };
         if (profile.error) {
             profile._msmc.demo = true;
-            return ({ type: "DemoUser", access_token: MCauth.access_token, profile: { _msmc: profile._msmc, id: MCauth.username, name: 'Player' }, translationString : "Login.Success.DemoUser", reason: "User does not own minecraft", getXbox: () => this.xboxProfile(XBLToken) });
+            return ({ type: "DemoUser", access_token: MCauth.access_token, profile: { _msmc: profile._msmc, id: MCauth.username, name: 'Player' }, translationString: "Login.Success.DemoUser", reason: "User does not own minecraft", getXbox: () => this.xboxProfile(XBLToken) });
         };
 
         loadBar(100, "Done!");
-        return ({ type: "Success", access_token: MCauth.access_token, profile: profile, getXbox: (updates) => this.xboxProfile(XBLToken, updates), translationString : "Login.Success.User" });
+        return ({ type: "Success", access_token: MCauth.access_token, profile: profile, getXbox: (updates) => this.xboxProfile(XBLToken, updates), translationString: "Login.Success.User" });
     }
 }
 
