@@ -1,6 +1,5 @@
 import msmc from "./index"
 export default msmc;
-
 export function setFetch(fetchIn) { return msmc.setFetch(fetchIn) }
 export function mojangAuthToken(prompt) { return msmc.mojangAuthToken(prompt) }
 export function createLink(token) { return msmc.createLink(token) }

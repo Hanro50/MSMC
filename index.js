@@ -115,24 +115,11 @@ module.exports = {
         result = result.profile ? result.profile : result;
         return result._msmc && !!result._msmc.demo;
     },
-    loadLegacy() {
-        console.warn("[MSMC]:: This adds compatibility for launchers that implement the callback structure of 2.1.x and earlier. \n" +
-            "New implementations should avoid using this as it will be removed with the 2.4.x series!");
-        const legacy = require('./modules/legacy');
-        Object.keys(legacy).forEach(e => {
-            module.exports[e] = legacy[e];
-        });
-    },
     getExceptional() {
         return require("./modules/wrapper").exceptional;
     },
     getCallback() {
         return require("./modules/wrapper").callback;
-    }
-    ,
-    //Load helper methods 
-
+    },
     default: module.exports
 }
-
-//ES6 compatibility 
