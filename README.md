@@ -596,15 +596,6 @@ export declare function getCallback(): {
     fastLaunch: (callback: (r: result) => void, type: framework, updates?: (info: update) => void, prompt?: prompt, properties?: windowProperties) => void
 }
 ```
-
-## loadLegacy
-For launchers built against version 2.1.x series of this gui. <br>
-This is here to allow you to update without rewriting everything. New launchers should avoid using it! <br>
-###### Will be removed by version 2.4.0
-```ts
-function loadLegacy(): void;
-```
-
 # Final notes
 This module is ES6 compatible. [This mostly affects typescript users]
 # Credit

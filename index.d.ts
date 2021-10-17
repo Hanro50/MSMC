@@ -219,10 +219,6 @@ export declare function isDemoUser(result: result): Boolean;
 export declare function isDemoUser(profile: profile): Boolean;
 
 /**
- * @deprecated Will be removed by version 2.4.0 
- */
-export declare function loadLegacy(): void;
-/**
  * Wraps the following functions and causes each to throw a result object as an error on a failed login instead of passing back said result object
  */
 export declare function getExceptional(): {

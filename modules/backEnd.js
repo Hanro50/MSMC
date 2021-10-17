@@ -2,8 +2,15 @@
 /**@type {fetch} */
 var FETCH
 try { var http = require("http"); } catch (er) { console.warn("[MSMC]: Some sign in methods may not work due to missing http server support in enviroment"); };
+
+
 //CommonJS
 try { FETCH = require("node-fetch"); } catch (err) {
+    //Browser->Limited support due to CORS
+    const fallback = () => {
+        try { FETCH = fetch; console.log(err) }
+        catch { console.warn("[MSMC]: Could not automatically determine which version of fetch to use.\n[MSMC]: Please use 'setFetch' to set this property manually"); };
+    }
     try {
         //ES6
         const fw = import("node-fetch")
@@ -13,19 +20,15 @@ try { FETCH = require("node-fetch"); } catch (err) {
             })
             .catch(e => {
                 console.error("[MSMC]: Could not set ES6 version");
+                fallback()
             });
         FETCH = async (input, init) => {
             console.warn("[MSMC]: Waiting for ES module to load");
             try { (await fw); FETCH(input, init); } catch (e) { console.log(e) }
-        }; console.log("[MSMC]: Not using CommonJS version of Node-fetch, trying to get ES6 version");
-    } catch (err) {
-        //Browser->Limited support due to CORS
-        try { FETCH = fetch; console.log(err) } catch { };
-    };
+        };
+        console.log("[MSMC]: Not using CommonJS version of Node-fetch, trying to get ES6 version");
+    } catch (err) { fallback(); };
 };
-
-//Check if fetch is defined
-if (!FETCH) { console.warn("[MSMC]: Could not automatically determine which version of fetch to use.\n[MSMC]: Please use 'setFetch' to set this property manually"); };
 
 //This needs to be apart or we could end up with a memory leak!
 var app;
