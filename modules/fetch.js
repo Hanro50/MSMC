@@ -2,29 +2,31 @@
  * We'll switch over to ES6 when we see a demand. 
  * Also technically this is a commonjs wrapper for a ES6 module. 
  * Fudge the wiki who said this shouldn't be possible*/
-async function get(module) {
+async function get(mod) {
+
     try {
-        const def = require(module)
+        const def = require(mod)
         return def.default || def;
-    } catch {
-        return await import(module);
+    } catch (e) {
+        return await import(mod);
     }
 }
 
 async function fw() {
-    var fetchImp = ["node-fetch", "electron-fetch", "cross-fetch"]
-    for (var i = 0; i < fetchImp.length; i++) {
-        const key = fetchImp[i]
-        try {
-            module.exports = await get(key);
-            console.log("[MSMC]: Loaded " + key);
-            return;
-        } catch { }
-    }
     try {
+        /**NW.js kept crashing...so this gets bumped up again */
         module.exports = fetch;
         console.warn("[MSMC]: Loaded native Fetch");
     } catch {
+        var fetchImp = ["node-fetch", "electron-fetch", "cross-fetch"]
+        for (var i = 0; i < fetchImp.length; i++) {
+            const key = fetchImp[i]
+            try {
+                module.exports = await get(key);
+                console.log("[MSMC]: Loaded " + key);
+                return;
+            } catch { }
+        }
         console.warn("[MSMC]: Could not automatically determine which version of fetch to use");
         console.warn("[MSMC]: Please use 'setFetch' to set this property manually [" + (process ? process.version : navigator.userAgent) + "]");
     }
