@@ -1,5 +1,6 @@
 const msmc = require("..");
 const BE = require("./backEnd");
+
 module.exports = {
     //Converts a result or player profile object to a mclc login object
     getAuth(profile) {
@@ -9,15 +10,15 @@ module.exports = {
             }
             profile = profile.profile;
         }
-        
+
         return {
             access_token: profile._msmc.mcToken,
             client_token: null,
             uuid: profile.id,
             name: profile.name,
-            meta:{
-                type:"msa",
-                demo:profile._msmc.demo
+            meta: {
+                type: "msa",
+                demo: profile._msmc.demo
             },
             _msmc: profile._msmc,
             user_properties: "{}"
@@ -29,11 +30,10 @@ module.exports = {
     },
     //Checks if a mclc login object is still valid
     async validate(profile) {
-        const FETCH = BE.getFetch();
         if (profile._msmc) {
-            return msmc.validate(this.toProfile(profile));
+            return msmc.validate(self.toProfile(profile));
         }
-
+        const FETCH = BE.getFetch();
         const req = {
             "accessToken": profile.access_token,
             "clientToken": profile.client_token
@@ -52,7 +52,7 @@ module.exports = {
     async refresh(profile, updates = (info) => { console.log(info) }, authToken) {
         const FETCH = BE.getFetch();
         if (profile._msmc) {
-            return this.getAuth(await msmc.refresh(this.toProfile(profile), updates, authToken));
+            return self.getAuth(await msmc.refresh(self.toProfile(profile), updates, authToken));
         } else {
             updates({ type: "Starting" });
             updates({ type: "Loading", data: "Refreshing Mojang account", percent: 50 });
@@ -90,3 +90,4 @@ module.exports = {
         }
     }
 }
+const self = module.exports; 

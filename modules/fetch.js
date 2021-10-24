@@ -2,14 +2,11 @@
  * We'll switch over to ES6 when we see a demand. 
  * Also technically this is a commonjs wrapper for a ES6 module. 
  * Fudge the wiki who said this shouldn't be possible*/
-async function get(mod) {
 
-    try {
-        const def = require(mod)
-        return def.default || def;
-    } catch (e) {
-        return await import(mod);
-    }
+async function get(mod) {
+    var def;
+    try { def = require(mod); } catch { def = await import(mod); }
+    return def.default || def;
 }
 
 async function fw() {
@@ -29,6 +26,14 @@ async function fw() {
         }
         console.warn("[MSMC]: Could not automatically determine which version of fetch to use");
         console.warn("[MSMC]: Please use 'setFetch' to set this property manually [" + (process ? process.version : navigator.userAgent) + "]");
+        module.exports = async () => {
+            throw ({
+                type: "Runtime Error",
+                reason: "Could not automatically determine which version of fetch to use",
+                solution: "Please use 'setFetch' to set this property manually",
+                env: process ? { type: process.title, version: process.version } : { type: navigator.vendor, userAgent: navigator.userAgent }
+            });
+        };
     }
 }
 
@@ -36,9 +41,8 @@ const loader = fw();
 module.exports = async (input, init) => {
     console.warn("[MSMC]: Waiting for fetch module to load");
     try {
-        (await loader);
-        module.exports(input, init);
-    } catch {
+        (await loader); return module.exports(input, init);
+    } catch (e) {
         console.error("[MSMC]: No Fetch implementation present");
     }
 }

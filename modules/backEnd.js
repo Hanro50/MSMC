@@ -91,7 +91,7 @@ module.exports = {
     //Main Login flow implementation
     async get(body, updates = () => { }) {
         const percent = 100 / 5;
-        if (this.errorCheck()) { return Promise.reject("[MSMC]: Error : no or invalid version of fetch available!"); };
+        if (self.errorCheck()) { return Promise.reject("[MSMC]: Error : no or invalid version of fetch available!"); };
         updates({ type: "Starting" });
 
         //console.log(Params); //debug
@@ -108,11 +108,12 @@ module.exports = {
         };
 
         loadBar(percent * 0, "Getting Login Token");
-        var MS = await (
-            await FETCH("https://login.live.com/oauth20_token.srf", {
-                method: "post", body: body, headers: { "Content-Type": "application/x-www-form-urlencoded" }
-            })
-        ).json();
+        var MS_Raw = await FETCH("https://login.live.com/oauth20_token.srf", {
+            method: "post", body: body, headers: { "Content-Type": "application/x-www-form-urlencoded" }
+        })
+
+        if (webCheck(MS_Raw)) return error("Could not log into Microsoft", "Login.Fail.MS", rxboxlive);
+        var MS = await MS_Raw.json();
 
         //console.log(MS); //debug
         if (MS.error) {
@@ -205,11 +206,12 @@ module.exports = {
         profile._msmc = { refresh: MS.refresh_token, expires_by: experationDate, mcToken: MCauth.access_token };
         if (profile.error) {
             profile._msmc.demo = true;
-            return ({ type: "DemoUser", access_token: MCauth.access_token, profile: { _msmc: profile._msmc, id: MCauth.username, name: 'Player' }, translationString: "Login.Success.DemoUser", reason: "User does not own minecraft", getXbox: () => this.xboxProfile(XBLToken) });
+            return ({ type: "DemoUser", access_token: MCauth.access_token, profile: { _msmc: profile._msmc, id: MCauth.username, name: 'Player' }, translationString: "Login.Success.DemoUser", reason: "User does not own minecraft", getXbox: () => self.xboxProfile(XBLToken) });
         };
 
         loadBar(100, "Done!");
-        return ({ type: "Success", access_token: MCauth.access_token, profile: profile, getXbox: (updates) => this.xboxProfile(XBLToken, updates), translationString: "Login.Success.User" });
+        return ({ type: "Success", access_token: MCauth.access_token, profile: profile, getXbox: (updates) => self.xboxProfile(XBLToken, updates), translationString: "Login.Success.User" });
     }
 }
 
+const self = module.exports; 

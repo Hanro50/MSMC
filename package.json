@@ -1,6 +1,6 @@
 {
   "name": "msmc",
-  "version": "3.0.0",
+  "version": "3.0.0-pre0",
   "description": "A bare bones login library for Minecraft based projects to authenticate individuals with a Microsoft account.",
   "license": "MIT",
   "main": "index.js",
@@ -23,6 +23,7 @@
     "modules/mclc.js",
     "modules/backEnd.js",
     "modules/wrapper.js",
+    "modules/fetch.js",
     "modules/gui/raw.js",
     "modules/gui/nwjs.js",
     "modules/gui/electron.js"
@@ -41,7 +42,31 @@
     "es6",
     "commonjs"
   ],
-  "optionalDependencies": {
-    "node-fetch": "^3 || ^2"
+  "engines": {
+    "node": ">=10.19.0"
+  },
+  "peerDependencies": {
+    "nw": "^0",
+    "electron": "^15",
+    "minecraft-launcher-core": "^3",
+    "node-fetch": "*",
+    "electron-fetch": "*"
+  },
+  "peerDependenciesMeta": {
+    "nw": {
+      "optional": true
+    },
+    "electron": {
+      "optional": true
+    },
+    "minecraft-launcher-core": {
+      "optional": true
+    },
+    "node-fetch": {
+      "optional": true
+    },
+    "electron-fetch": {
+      "optional": true
+    }
   }
 }

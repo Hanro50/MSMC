@@ -548,11 +548,16 @@ This serves as a drop in replacement for the validate function in MCLC's Authent
 
 This serves as a drop in replacement for the refreshAuth function in MCLC's Authenticator component. This will refresh vanilla and MSMC accounts. A hidden \_msmc variable is used to determine how an account should be refreshed so please avoid removing that somehow since the Mojang method of refreshing accounts is not compatible with MSMC signed in accounts.
 
+### toProfile \<Advance users only>
+
+This converts mclc profile objects back into msmc ones. It should be noted that mclc profile objects created with mclc's native authenticator module should not be passed to this function as it will likely result in an error upon converting them back to mclc profile objects. 
+
 ```ts
 function getMCLC(): {
     getAuth: (info: result) => Promise<mclcUser>
     validate: (profile: mclcUser) => Promise<Boolean>
     refresh: (profile: mclcUser) => Promise<mclcUser>
+    toProfile: (profile: mclcUser) => profile
 };
 ```
 ## errorCheck

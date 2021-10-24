@@ -13,7 +13,7 @@ export type framework = "electron" | "nwjs" | "raw";
 /**
  * Here for translators.
  */
-export type ts = "Login.Success.DemoUser" | "Login.Success.User" | "Login.Fail.Relog" | "Login.Fail.Xbox" | "Login.Fail.MC" | "Account.Unknown" | "Account.UserNotFound" | "Account.UserNotAdult" | "Cancelled.GUI" | "Cancelled.Back";
+export type ts = "Login.Success.DemoUser" | "Login.Success.User" | "Login.Fail.MS" | "Login.Fail.Relog" | "Login.Fail.Xbox" | "Login.Fail.MC" | "Account.Unknown" | "Account.UserNotFound" | "Account.UserNotAdult" | "Cancelled.GUI" | "Cancelled.Back";
 /**
  * The Oauth2 details needed to log you in. 
  * 
@@ -204,9 +204,10 @@ export type mclcUser = {
 
 /**Used with the Minecraft Launcher core library, special thanks for Luuxis */
 export declare function getMCLC(): {
-    getAuth: (info: result) => Promise<mclcUser>
+    getAuth: (info: result) => mclcUser
     validate: (profile: mclcUser) => Promise<Boolean>
     refresh: (profile: mclcUser) => Promise<mclcUser>
+    toProfile: (profile: mclcUser) => profile
 }
 
 /**Checks if a return value is valid */
