@@ -276,13 +276,13 @@ export type ts =  "Login.Success.User" | "Login.Success.DemoUser" | "Login.Fail.
 
 > The Oauth2 details needed to log you in.
 
-> Resources
+### Resources
 > 
 > 1. https://docs.microsoft.com/en-us/graph/auth-register-app-v2
 > 2. https://docs.microsoft.com/en-us/graph/auth-v2-user#1-register-your-app
 > 3. https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps
 
-> Recommendations:
+### Recommendations:
 > 
 > 1. If all of this seems confusing. Use the <a href="#fastlaunch">fastLaunch</a> method. Since doing so will allow you to skip this mess!
 >
@@ -290,14 +290,12 @@ export type ts =  "Login.Success.User" | "Login.Success.DemoUser" | "Login.Fail.
 > 
 > 3. set the redirect to "http://localhost/...", With localhost specifically Microsoft does not check port numbers.
    This means that http://localhost:1/... to http://localhost:65535/... are all the same redirect to MS. (http://localhost/... == http://localhost:80/... btw)
->  
->   This library does not allow you to set the port manually, due to the extreme risk of unforeseen bugs popping up.
 > 
 > 4. If you set the redirect to, for example, "http://localhost/Rainbow/Puppy/Unicorns/hl3/confirmed" then the variable {redirect} needs to equal "Rainbow/Puppy/Unicorns/hl3/confirmed".
 >
 > 5. Basically the redirect field is equal to your redirect URL you gave Microsoft without the "http://localhost/" part.
    Please keep this in mind or you'll get weird errors as a mismatch here will still work...sort of.
-
+###### This library does not allow you to set the port manually, due to the extreme risk of unforeseen bugs popping up.
 ```ts
 interface token {
     client_id: string;
