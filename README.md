@@ -1,28 +1,31 @@
 ﻿# MSMC
-A bare bones login library for Minecraft based projects to authenticate individuals with a Microsoft account.
+> A bare bones login library for Minecraft based projects to authenticate individuals with a Microsoft account.
 
 # Support
-At the momement you can get support via Discord (link below).
 <p>
    <a href="https://discord.gg/3hM8H7nQMA">
    <img src="https://img.shields.io/discord/861839919655944213?logo=discord"
       alt="chat on Discord"></a>
 </p>
+
+> At the momement you can get support via Discord (link above).
+
    
 # Supported gui frameworks
-If you're using MSMC with one of the frameworks below. The behaviour each framework displays should be identical. 
+> If you're using MSMC with one of the frameworks below. The behaviour each framework displays should be identical. 
 Mainly each will generate a pop-up that can be used by the end user to login. In-line logins, where the main window of your app is redirected to allow a user to log in should be implemented manually. Check the wiki page for more information! {Coming soon!}
 
 ## "Raw"
-This is not a framework as this method takes advantage off the chromium based web browsers a user will likely already have on their machine. 
+
+> This is not a framework as this method takes advantage off the chromium based web browsers a user will likely already have on their machine. 
 Windows already ships with one, Microsoft edge, and you're in full control of you launcher’s dependencies on Linux.
 
-Chromium based web browser that are compatible with this method:
+> Chromium based web browser that are compatible with this method:
 Google Chrome, Microsoft Edge, Vivaldi, Blisk, Brave Browser, Yandex (Only Mac/Linux), Chromium (Linux only)
 No additional dependencies needed! 
-###### Raw doesn't respect the "resizable" window property
+
 ### Example 
-Please note that the example is running under node and was tested running under node
+
    ```js
 const msmc = require("msmc");
 const fetch = require("node-fetch");
@@ -45,11 +48,13 @@ msmc.fastLaunch("raw",
         console.log("We failed to log someone in because : "+reason);
     })
 ```
+###### 1) Raw was tested running under pure node 
+###### 2) Raw doesn't respect the "resizable" window property
 ## NW.js
-You should use the require method to load this module. Loading it by linking directly to the index.js file from the browser side of things may lead to unintended 
+> You should use the require method to load this module. Loading it by linking directly to the index.js file from the browser side of things may lead to unintended 
 errors and glitches our testing did not account for. 
 ### Example 
-If you noticed that this and the raw gui framework has the same example bar the change of the word "raw" to "nwjs". That's more due to the new architecture in 2.2.0 allowing us to streamline documentation. 
+> If you noticed that this and the raw gui framework has the same example bar the change of the word "raw" to "nwjs". That's more due to the new architecture in 2.2.0 allowing us to streamline documentation. 
    ```js
 const msmc = require("msmc");
 const fetch = require("node-fetch");
@@ -73,11 +78,11 @@ msmc.fastLaunch("nwjs",
     })
 ```
 ## Electron
-It is recommended to run the code for this library on the back-end side of electron. This is mainly due to security and the fast launch methods using functions and objects not available on the front end of electron. 
-
-Do note that some frameworks that use electron as a base might not have these issues, but it is still something you should consider if you're having issues.
+> It is recommended to run the code for this library on the back-end side of electron. This is mainly due to security and the fast launch methods using functions and objects not available on the front end of electron. 
+> 
+> Do note that some frameworks that use electron as a base might not have these issues, but it is still something you should consider if you're having issues.
 ### Example 
-This is a code sample for electron should be added to your main.js file.
+> This is a code sample for electron should be added to your main.js file.
 ```js
 app.whenReady().then(() => {
   ...
@@ -105,7 +110,7 @@ app.whenReady().then(() => {
 
 ## MCLC example
 
-A basic example of how to hook this library into <a href="https://github.com/Pierce01/MinecraftLauncher-core#readme">Mincraft Launcher core</a> to launch Minecraft
+> A basic example of how to hook this library into <a href="https://github.com/Pierce01/MinecraftLauncher-core#readme">Mincraft Launcher core</a> to launch Minecraft
 
 ```js
 const { Client, Authenticator } = require('minecraft-launcher-core');
@@ -153,7 +158,7 @@ msmc.fastLaunch("raw",
 ```
 
 ## Pure Node Example:
-This is the set-up you'd use if you where only using node or an incompatible gui framework. Like writing a terminal based minecraft launcher!
+> This is the set-up you'd use if you where only using node or an incompatible gui framework. Like writing a terminal based minecraft launcher!
 ```js
 const MSMC = require("msmc");
 MSMC.login({ client_id: "<token>" }, 
@@ -186,17 +191,16 @@ MSMC.login({ client_id: "<token>" },
 # Docs: Types
 
 ## prompt
+> Basically this is the prompt value in the request sent to Microsoft. This should only be important if you're using either the fastLaunch or Launch functions under either Electron or NW.js
 
-For more information. Check out Microsoft's support page: https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-auth-code-flow#request-an-authorization-code
-
-Basically this is the prompt value in the request sent to Microsoft. This should only be important if you're using either the fastLaunch or Launch functions under either Electron or NW.js
-
+###### For more information. Check out <a href="https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-auth-code-flow#request-an-authorization-code">Microsoft's support page</a>: 
 ```ts
 type prompt = "login" | "none" | "consent" | "select_account";
 ```
 
+
 ## mclcUser
- A copy of the user object mclc uses
+> A copy of the user object mclc uses
 ```ts
 type mclcUser = {
     access_token: string;
@@ -207,14 +211,14 @@ type mclcUser = {
 }
 ```
 ## framework
-A list of gui frameworks supported by this library.
+> A list of gui frameworks supported by this library.
 Used by the launch and fastLaunch functions to figure out what functions they should target.
 ```ts
 type framework = "electron" | "nwjs" | "raw";
 ```
 
 ## ts 
-This is mostly used to aid translators. In theory one could create an add-on package that took in these codes and translated the given output accordingly.
+> This is mostly used to aid translators. In theory one could create an add-on package that took in these codes and translated the given output accordingly.
 ```ts
 export type ts =  "Login.Success.User" | "Login.Success.DemoUser" | "Login.Fail.Relog" | "Login.Fail.Xbox" | "Login.Fail.MC" | "Account.Unknown" | "Account.UserNotFound" | "Account.UserNotAdult" | "Cancelled.GUI" | "Cancelled.Back";
 ```
@@ -270,26 +274,28 @@ export type ts =  "Login.Success.User" | "Login.Success.DemoUser" | "Login.Fail.
 
 ## token
 
-The Oauth2 details needed to log you in.
+> The Oauth2 details needed to log you in.
 
-Resources
+> Resources
+> 
+> 1. https://docs.microsoft.com/en-us/graph/auth-register-app-v2
+> 2. https://docs.microsoft.com/en-us/graph/auth-v2-user#1-register-your-app
+> 3. https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps
 
-1. https://docs.microsoft.com/en-us/graph/auth-register-app-v2
-2. https://docs.microsoft.com/en-us/graph/auth-v2-user#1-register-your-app
-3. https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps
-
-Recommendations:
-
-1. Use "Mobile and desktop applications" as your type setting and make sure to set it up to only use "Personal Microsoft accounts only".
-   You're not a university!
-
-2. set the redirect to "http://localhost/...", With localhost specifically Microsoft does not check port numbers.
+> Recommendations:
+> 
+> 1. If all of this seems confusing. Use the <a href="#fastlaunch">fastLaunch</a> method. Since doing so will allow you to skip this mess!
+>
+> 2. Use "Mobile and desktop applications" as your type setting and make sure to set it up to only use "Personal Microsoft accounts only". <b>You're not a university!</b>
+> 
+> 3. set the redirect to "http://localhost/...", With localhost specifically Microsoft does not check port numbers.
    This means that http://localhost:1/... to http://localhost:65535/... are all the same redirect to MS. (http://localhost/... == http://localhost:80/... btw)
-   This library does not allow you to set the port manually, due to the extreme risk of unforeseen bugs popping up.
-
-3. If you set the redirect to, for example, "http://localhost/Rainbow/Puppy/Unicorns/hl3/confirmed" then the variable {redirect} needs to equal "Rainbow/Puppy/Unicorns/hl3/confirmed".
-
-4. Basically the redirect field is equal to your redirect URL you gave Microsoft without the "http://localhost/" part.
+>  
+>   This library does not allow you to set the port manually, due to the extreme risk of unforeseen bugs popping up.
+> 
+> 4. If you set the redirect to, for example, "http://localhost/Rainbow/Puppy/Unicorns/hl3/confirmed" then the variable {redirect} needs to equal "Rainbow/Puppy/Unicorns/hl3/confirmed".
+>
+> 5. Basically the redirect field is equal to your redirect URL you gave Microsoft without the "http://localhost/" part.
    Please keep this in mind or you'll get weird errors as a mismatch here will still work...sort of.
 
 ```ts
@@ -301,14 +307,14 @@ interface token {
 }
 ```
 ## profile 
-A version of a Minecraft profile you'd get from the auth end points
+> A version of a Minecraft profile you'd get from the auth end points
 ```ts
 interface profile {
     id: string, name: string, skins?: [], capes?: []
 }
 ```
 ## xprofile 
-This is an xbox account object. Used to allow for intergration with xbox related services and features. 
+> This is an xbox account object. Used to allow for intergration with xbox related services and features. 
 For example getting a user's xbox profile picture.   
 
 ```ts
@@ -333,9 +339,10 @@ interface xprofile {
 ```
 
 ## result
-The return object that all the async login procedures return<br>
+>The return object that all the async login procedures return<br>
 
-Possible values for the 'type' parameter in this interface:
+>Possible values for the 'type' parameter in this interface:
+
 <table>
     <tr>
         <th>Value</th>
@@ -385,7 +392,7 @@ Possible values for the 'type' parameter in this interface:
     </tr>
 </table>
 
-The resulting typescript object.<br> 
+> The resulting typescript object.<br> 
 
 ```ts
     interface result {
@@ -405,7 +412,7 @@ The resulting typescript object.<br>
     }
 ```
 ## update
-Used in the callback that is fired multiple times during the login process to give the user feedback on how far along the login process is
+> Used in the callback that is fired multiple times during the login process to give the user feedback on how far along the login process is
 
 ```ts
 interface update {
@@ -418,8 +425,10 @@ interface update {
     percent?: number;
 }
 ```
-Possible values for the 'type' parameter:
-    <table>
+
+> Possible values for the 'type' parameter:
+
+<table>
         <tr>
             <th>Value</th>
             <th>Cause</th>
@@ -441,10 +450,12 @@ Possible values for the 'type' parameter:
 
 ## windowProperties
 
-Window properties is set to any to avoid needing both nw.js and electron loaded as developer dependencies<br>
+> Window properties is set to any to avoid needing both nw.js and electron loaded as developer dependencies<br>
 The common properties between both libraries has been backed into the type information for this interface however<br>
-See <a href="https://www.electronjs.org/docs/api/browser-window#new-browserwindowoptions">this</a> resource for Electron, if you want to know what options are available <br>
-See <a href="https://nwjs.readthedocs.io/en/latest/References/Manifest%20Format/#window-subfields">this</a> resource for NW.js, if you want to know the available options<br>
+>
+> See <a href="https://www.electronjs.org/docs/api/browser-window#new-browserwindowoptions">this</a> resource for Electron, if you want to know what options are available <br>
+> 
+> See <a href="https://nwjs.readthedocs.io/en/latest/References/Manifest%20Format/#window-subfields">this</a> resource for NW.js, if you want to know the available options<br>
 
 ```ts
 interface windowProperties {
@@ -455,31 +466,36 @@ interface windowProperties {
 }
 ```
 # Docs: Functions
-
 ## setFetch
-An override to manually define which version of fetch should be used <br>
+> An override to manually define which version of fetch should be used <br>
+
 fetchIn => A version of fetch 
 ```ts
 function setFetch(fetchIn: any): void;
 ```
 ## mojangAuthToken \<Advance users only>
-Gets a premade token with mojang's auth token already set up . <br>
+> Gets a premade token with mojang's auth token already set up . <br>
+
 prompt => See the type definition for "prompt" for more information
 ###### This token is owned and controlled by Mojang. Using it for anything other then Minecraft might get you an angry email from a lawyer eventually. 
  ```ts
 export declare function mojangAuthToken(prompt: prompt): token;
 ```
 ## createLink
-This function will create a login link based on the inputs provided. <br>
-Note that this function is called internally after the redirect has been formatted. Aka after "http://localhost:\<port\>/" is appended to the redirect. <br>
-This is done to allow us to create the "fastLaunch" methods which don't rely on an internal http server<br>
+> This function will create a login link based on the inputs provided. <br>
+> 
+> Note that this function is called internally after the redirect has been formatted. Aka after "http://localhost:\<port\>/" is appended to the redirect. <br>
+> 
+> This is done to allow us to create the "fastLaunch" methods which don't rely on an internal http server<br>
+
 token => Your MS Login token. Mainly your client ID, client secret (optional  | Depends how azure is set up) and a redirect;<br>
 returns => A link you can plug into a web browser to send a user to a ms login page
 ```ts
 function createLink(token: token): String;
 ```
 ## authenticate \<Advance users only>
-Used when you want to implement your own login code, but still want msmc to handle authentication for you. <br>
+> Used when you want to implement your own login code, but still want msmc to handle authentication for you. <br>
+
 code => The code gotten from a successful login <br>
 MStoken => The Microsoft token object used to obtain the login code <br>
 updates => A callback that one can hook into to get updates on the login process<br>
@@ -488,7 +504,8 @@ returns => A promise that will grant you a user profile and Mojang login token<b
 function authenticate(code: string, MStoken: token, updates?: (info: update) => void): Promise<result>;
 ```
 ## refresh
-Used to refresh login tokens. It is recommended to do this at start up after calling validate to check if the client token needs a refresh<br>
+> Used to refresh login tokens. It is recommended to do this at start up after calling validate to check if the client token needs a refresh<br>
+
 profile => Player profile. Similar to the one you'd normally get with the Mojang login<br>
 updates => A callback that one can hook into to get updates on the login process<br>
 MStoken => Microsoft token object used to obtain the login code  (Optional, will use the vanilla client token if it doesn't have anything)<br>
@@ -497,14 +514,16 @@ returns => A promise that will grant you an updated user profile and Mojang logi
 function refresh(profile: profile, updates?: (info: update) => void, MStoken?: token): Promise<result>;
 ```
 ## validate
-Checks if a profile object is still valid<br>
+> Checks if a profile object is still valid<br>
+
 profile => Player profile. Similar to the one you'd normally get with the Mojang login<br>
 return => Returns a boolean stating whether a set account is still valid <br>
 ```ts
  function validate(profile: profile): Boolean;
 ```
 ## login
-A generic login method. Useful if you aren't using electron or NW.js and want to make a terminal launcher or are using an unsupported framework<br>
+> A generic login method. Useful if you aren't using electron or NW.js and want to make a terminal launcher or are using an unsupported framework<br>
+
 token => Your MS Login token. Mainly your client ID, client secret (optional  | Depends how azure is set up) and a redirect (Do not include http://localhost:<port\>/ as that's added for you!)<br>
 getlink => The callback will give you a link you can redirect a user to. <br>
 updates => A callback that one can hook into to get updates on the login process <br>
@@ -513,7 +532,8 @@ returns => A promise that will grant you a user profile and Mojang login token<b
  function login(token: token, getlink: (info: string) => void, updates?: (info: update) => void): Promise<result>;
 ```
 ## launch
-Used with electron or nwjs to launch a popup that a user can use to sign in with<br>
+> Used with electron or nwjs to launch a popup that a user can use to sign in with<br>
+
 type => The GUI framework this is compatible with <br>
 token => Your MS Login token. Mainly your client ID, client secret<br>
 updates => A callback that one can hook into to get updates on the login process<br>
@@ -523,7 +543,8 @@ returns => A promise that will grant you a user profile and mojang login token<b
  function launch(type: framework, token: token, updates?: (info: update) => void, properties?: windowProperties): Promise<result>;
 ```
 ## fastLaunch
-Mimics the vanilla launcher in how it works. Like launch in creates a pop-up a user can log in with
+> Mimics the vanilla launcher in how it works. Like launch in creates a pop-up a user can log in with
+
 type => The GUI framework this is compatible with <br>
 updates => A callback that one can hook into to get updates on the login process<br>
 prompt => See the type definition for "prompt" for more information<br>
@@ -534,23 +555,21 @@ function fastLaunch(type: framework, updates?: (info: update) => void, prompt?: 
 ```
 ## getMCLC
 
-Replaces some of the functions the Authenticator component in MCLC.
+> Replaces some of the functions the Authenticator component in MCLC.
 
 ### getAuth
 
-This serves as a MSMC friendly version of getAuth function in MCLC's Authenticator component. Translating the information MSMC gets into something mclc can comprehend. This does however not work with normal Mojang accounts
+> This serves as a MSMC friendly version of getAuth function in MCLC's Authenticator component. Translating the information MSMC gets into something mclc can comprehend. This does however not work with normal Mojang accounts
 
 ### validate
 
-This serves as a drop in replacement for the validate function in MCLC's Authenticator component. This works with Mojang and Microsoft accounts. 
+> This serves as a drop in replacement for the validate function in MCLC's Authenticator component. This works with Mojang and Microsoft accounts. 
 
 ### refresh
-
-This serves as a drop in replacement for the refreshAuth function in MCLC's Authenticator component. This will refresh vanilla and MSMC accounts. A hidden \_msmc variable is used to determine how an account should be refreshed so please avoid removing that somehow since the Mojang method of refreshing accounts is not compatible with MSMC signed in accounts.
+> This serves as a drop in replacement for the refreshAuth function in MCLC's Authenticator component. This will refresh vanilla and MSMC accounts. A hidden \_msmc variable is used to determine how an account should be refreshed so please avoid removing that somehow since the Mojang method of refreshing accounts is not compatible with MSMC signed in accounts.
 
 ### toProfile \<Advance users only>
-
-This converts mclc profile objects back into msmc ones. It should be noted that mclc profile objects created with mclc's native authenticator module should not be passed to this function as it will likely result in an error upon converting them back to mclc profile objects. 
+> This converts mclc profile objects back into msmc ones. It should be noted that mclc profile objects created with mclc's native authenticator module should not be passed to this function as it will likely result in an error upon converting them back to mclc profile objects. 
 
 ```ts
 function getMCLC(): {
@@ -561,21 +580,21 @@ function getMCLC(): {
 };
 ```
 ## errorCheck
-Checks if a return value is valid and if the login procedure has been successful
+> Checks if a return value is valid and if the login procedure has been successful
 ###### Demo accounts will cause this function to return false. 
 ```ts
 function errorCheck(result: result): Boolean;
 ```
 
 ## isDemoUser
-Checks if a player object was created with a demo account. Useful for if you're using msmc without mclc and still want to implement demo account support.
+> Checks if a player object was created with a demo account. Useful for if you're using msmc without mclc and still want to implement demo account support.
 ###### This function shouldn't be needed with MCLC as the profile object MSMC creates for MCLC contains some meta data that tells MCLC to launch the game in demo mode. 
 ```ts
 function isDemoUser(profile: profile | result): Boolean;
 ```
 
 ## getExceptional
-Wraps the following functions and causes each to throw a result object as an error on a failed login instead of passing back said result object
+> Wraps the following functions and causes each to throw a result object as an error on a failed login instead of passing back said result object
 ###### See the docs for the normal async versions of these functions for a better idea of what they do
 ```ts
 function getExceptional(): {
@@ -587,10 +606,10 @@ function getExceptional(): {
 }
 ```
 ## getCallback
-Wraps the following functions and presents them in a similar style to the old 2.1.x series of msmc. 
+> Wraps the following functions and presents them in a similar style to the old 2.1.x series of msmc. 
 In that you must provide the set of functions a callback function as a variable. 
-
-Also errors are sent to the update funtion that you provide similarly to the 2.1.x series of msmc. 
+> 
+> Also errors are sent to the update funtion that you provide similarly to the 2.1.x series of msmc. 
 ###### See the docs for the normal async versions of these functions for a better idea of what they do
 ```ts
 export declare function getCallback(): {
@@ -601,9 +620,19 @@ export declare function getCallback(): {
     fastLaunch: (callback: (r: result) => void, type: framework, updates?: (info: update) => void, prompt?: prompt, properties?: windowProperties) => void
 }
 ```
+# Dependencies: Fetch
+> An implementation of the fetch API needs to be provided by your launcher to MSMC. The reason this is not a fixed dependency is because multiple libraries satisfy this requirement. 
+### NWJS
+> If you're already using this GUI framework. A variant of Fetch is already available in global scope and will thus be selected by msmc automatically. <b>You do not need to manually add fetch.</b>
+### Electron 
+> Electron does not provide an implementation of fetch to the node backend. It is recommended not to use the implementation of fetch provided by the frontend. This is mostly due to potential issues with cores you'll have if you ignore this warning. 
+### Recommended
+> Two fetch implementations msmc is tested against is <a href="https://www.npmjs.com/package/node-fetch">node-fetch</a> and <a href="https://www.npmjs.com/package/electron-fetch">electron-fetch</a>. If either are present then MSMC will pull them down automatically. If you however want to specify an implementation of fetch msmc should use. Please see the <a href="#setfetch">setFetch</a> function for more information!.  
+
+
 # Final notes
-This module is ES6 compatible. [This mostly affects typescript users]
+> This module is ES6 compatible. [This mostly affects typescript users]
 # Credit
-Based off the Oauth2 flow outline on <a href="https://wiki.vg/Microsoft_Authentication_Scheme"> this site</a>
+> Based off the Oauth2 flow outline on <a href="https://wiki.vg/Microsoft_Authentication_Scheme"> this site</a>
 ###### Please report any type file bugs asap
 
