@@ -197,9 +197,9 @@ export type mclcUser = {
     access_token: string;
     client_token?: string;
     uuid: string;
-    xuid?: string;
+
     name?: string;
-    meta?: { type: "mojang" | "xbox", demo?: boolean };
+    meta?: { type: "mojang" | "xbox", xuid?: string, demo?: boolean };
     user_properties?: Partial<any>;
 }
 
@@ -238,7 +238,17 @@ export declare function getCallback(): {
     launch: (callback: (r: result) => void, type: framework, token: token, updates?: (info: update) => void, properties?: windowProperties) => void
     fastLaunch: (callback: (r: result) => void, type: framework, updates?: (info: update) => void, prompt?: prompt, properties?: windowProperties) => void
 }
-
+/**
+ * Set the path where the machineID file should be stored. 
+ * Will use the process root dir if not specified!
+ */
+export declare function setIDPath(path?: string | null | false): void;
+/**
+ * Generate or obtain a machine ID for this PC. Should be unique for every installation. 
+ * The vanilla client wants this property at times, so that is why it is here.
+ * See the 1.18 launch parameters!
+ */
+export declare function getMachineID(): string;
 
 /**
  * ES 6 compatibility for typescript

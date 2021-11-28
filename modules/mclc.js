@@ -13,11 +13,11 @@ module.exports = {
 
         return {
             access_token: profile._msmc.mcToken,
-            client_token: null,
+            client_token: msmc.getMachineID(),
             uuid: profile.id,
             name: profile.name,
-            xuid: profile.xuid,
             meta: {
+                xuid: profile.xuid,
                 type: "msa",
                 demo: profile._msmc.demo
             },

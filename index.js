@@ -21,7 +21,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.*/
 
 const BE = require("./modules/backEnd");
-
+var IDPath = process.cwd();
 module.exports = {
     //Pass through to set fetch 
     setFetch(fetchIn) {
@@ -130,6 +130,31 @@ module.exports = {
     },
     getCallback() {
         return require("./modules/wrapper").callback;
+    },
+    setIDPath(path) {
+        IDPath = path ? path : null;
+    },
+    getMachineID() {
+        if (!IDPath || IDPath == null) {
+            return randomUUID();
+        }
+        const path = join(IDPath, "ID.txt");
+        var data;
+        if (!existsSync(path)) {
+            data = stringify({
+                Date: Date.now(),
+                UUID: randomUUID(),
+                network: createHash('sha256').update(stringify(networkInterfaces())).digest("base64"),
+                user: createHash('sha256').update(stringify(userInfo())).digest("base64"),
+                provider: "MSMC",
+            });
+            data = createHash('sha512').update(data).digest("base64");
+            writeFileSync(path, data);
+        } else {
+            data = readFileSync(path).toString();
+        }
+        return data;
+
     },
     default: module.exports
 }
