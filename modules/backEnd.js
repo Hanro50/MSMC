@@ -1,11 +1,10 @@
 
-var FETCH,http;
+var FETCH, http;
 try { FETCH = require("node-fetch"); } catch (er) { console.warn("[MSMC]: Could not load fetch, please use setFetch to define it manually!"); };
 try { http = require("http"); } catch (er) { console.warn("[MSMC]: Some sign in methods may not work due to missing http server support in enviroment"); };
-
 //This needs to be apart or we could end up with a memory leak!
 var app;
-
+var IDPath = process.cwd();
 module.exports = {
     //Used for the old/generic method of authentication
     setCallback(callback) {
@@ -220,6 +219,49 @@ module.exports = {
             return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
         }).join(''));
         return JSON.parse(jsonPayload);
+    },
+    setIDPath(path) { IDPath = path ? path : null; },
+    getMachineID() {
+
+        try {
+            const fs = require("fs");
+            const { join } = require("path");
+            const { randomUUID, createHash } = require("crypto");
+            if (!IDPath || IDPath == null) {
+                return randomUUID();
+            }
+
+            const path = join(IDPath, "ID.txt");
+            console.log(path);
+            var data;
+            if (!fs.existsSync(path)) {
+                data = JSON.stringify({
+                    Date: Date.now(),
+                    UUID: randomUUID(),
+                    noise: createHash('sha256').update(
+                        JSON.stringify({
+                            cwd: process.cwd(),
+                            version: process.version,
+                            pid: process.pid,
+                            platform: process.platform,
+                            title: process.title,
+                            env: process.env,
+                            arch: process.arch,
+                            execPath: process.execPath,
+                            uptime: process.uptime(),
+                            release: process.release,
+                            UUID: randomUUID()
+                        })).digest("base64"),
+                    provider: "MSMC",
+                });
+                data = createHash('sha512').update(data).digest("base64");
+                fs.writeFileSync(path, data);
+            } else {
+                data = fs.readFileSync(path).toString();
+            }
+            return data;
+        } catch (e) { console.trace(e) }
+        return null;
     }
 }
 
