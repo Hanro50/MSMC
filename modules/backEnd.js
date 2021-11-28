@@ -1,9 +1,7 @@
-//Load optional dependencies
-/**@type {fetch} */
-var FETCH = require("./fetch");
-try { var http = require("http"); } catch (er) { console.warn("[MSMC]: Some sign in methods may not work due to missing http server support in enviroment"); };
 
-
+var FETCH,http;
+try { FETCH = require("node-fetch"); } catch (er) { console.warn("[MSMC]: Could not load fetch, please use setFetch to define it manually!"); };
+try { http = require("http"); } catch (er) { console.warn("[MSMC]: Some sign in methods may not work due to missing http server support in enviroment"); };
 
 //This needs to be apart or we could end up with a memory leak!
 var app;
@@ -148,6 +146,7 @@ module.exports = {
                 RelyingParty: "rp://api.minecraftservices.com/",
                 TokenType: "JWT",
             }),
+            //"rp://api.minecraftservices.com/",
             headers: { "Content-Type": "application/json", Accept: "application/json" },
         });
 
@@ -182,7 +181,7 @@ module.exports = {
             {
                 method: "post",
                 body: JSON.stringify({
-                    identityToken: "XBL3.0 x=" + UserHash + ";" + XSTS.Token,
+                    identityToken: "XBL3.0 x=" + UserHash + ";" + XSTS.Token
                 }),
                 headers: { "Content-Type": "application/json", Accept: "application/json" },
             }
@@ -202,7 +201,9 @@ module.exports = {
             },
         });
 
+        loadBar(percent * 4.5, "Extracting XUID and parsing player object");
         var profile = await r998.json();
+        profile.xuid = self.parseJwt(MCauth.access_token).xuid;
         profile._msmc = { refresh: MS.refresh_token, expires_by: experationDate, mcToken: MCauth.access_token };
         if (profile.error) {
             profile._msmc.demo = true;
@@ -211,7 +212,15 @@ module.exports = {
 
         loadBar(100, "Done!");
         return ({ type: "Success", access_token: MCauth.access_token, profile: profile, getXbox: (updates) => self.xboxProfile(XBLToken, updates), translationString: "Login.Success.User" });
+    },
+    parseJwt(token) {
+        var base64Url = token.split('.')[1];
+        var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        var jsonPayload = decodeURIComponent(Buffer.from(base64, "base64").toString("utf8").split('').map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
     }
 }
 
-const self = module.exports; 
+const self = module.exports;

@@ -16,6 +16,7 @@ module.exports = {
             client_token: null,
             uuid: profile.id,
             name: profile.name,
+            xuid: profile.xuid,
             meta: {
                 type: "msa",
                 demo: profile._msmc.demo
@@ -26,7 +27,7 @@ module.exports = {
     },
     //Converts a mclc login object to a msmc profile object
     toProfile(profile) {
-        return { "name": profile.name, "id": profile.uuid, "_msmc": profile._msmc };
+        return { "name": profile.name,"xuid":profile.xuid, "id": profile.uuid, "_msmc": profile._msmc };
     },
     //Checks if a mclc login object is still valid
     async validate(profile) {

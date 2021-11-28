@@ -1,8 +1,24 @@
-/*Copyright 2021 Hanro50
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-End license text.*/
+/*MIT License
+
+Copyright (c) 2021 Hanro
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.*/
 
 const BE = require("./modules/backEnd");
 
@@ -15,14 +31,14 @@ module.exports = {
         const token = {
             client_id: "00000000402b5328",
             redirect: "https://login.live.com/oauth20_desktop.srf",
+            prompt: prompt
         }
-        if (prompt) token.prompt = prompt;
         return token;
     },
     //Creates a login link
     createLink(token) {
         if (typeof token == String) {
-            token = this.mojangAuthToken(token);
+            token = self.mojangAuthToken(token);
         }
         return (
             "https://login.live.com/oauth20_authorize.srf" +
@@ -51,7 +67,7 @@ module.exports = {
             return;
         };
         const refreshToken = profile._msmc.refresh ? profile._msmc.refresh : profile._msmc;
-        authToken = authToken ? authToken : this.mojangAuthToken();
+        authToken = authToken ? authToken : self.mojangAuthToken();
         const body = (
             "client_id=" + authToken.client_id +
             (authToken.clientSecret ? "&client_secret=" + authToken.clientSecret : "") +
@@ -67,7 +83,7 @@ module.exports = {
     login(token, getlink, updates) {
         return new Promise((resolve) => {
             const app = BE.setCallback((Params) => {
-                this.authenticate(Params.get("code"), token, updates).then(c => { resolve(c); });
+                self.authenticate(Params.get("code"), token, updates).then(c => { resolve(c); });
             })
             app.addListener("listening", () => {
                 if (String(token.redirect).startsWith("/")) {
@@ -79,29 +95,23 @@ module.exports = {
                         app.address().port +
                         "/" +
                         (token.redirect ? token.redirect : "");
-                getlink(this.createLink(token));
+                getlink(self.createLink(token));
             });
         });
     },
 
     fastLaunch(type, updates, prompt = "select_account", properties) {
-        return this.launch(type, this.mojangAuthToken(prompt), updates, properties)
+        return self.launch(type, self.mojangAuthToken(prompt), updates, properties)
     },
 
     launch(type, token, updates, Windowproperties) {
+        const dynReq = typeof __webpack_require__ === "function" ? __non_webpack_require__ : require;
         switch (type) {
-            case ("electron"): {
-                return require("./modules/gui/electron")(token, updates, Windowproperties);
-            }
-            case ("nwjs"): {
-                return require("./modules/gui/nwjs")(token, updates, Windowproperties);
-            }
-            case ("raw"): {
-                return require("./modules/gui/raw")(token, updates, Windowproperties);
-            }
-            default: {
-                throw new Error('[MSMC]: Unknown library type');
-            }
+            case ("electron"): return dynReq("./modules/gui/electron")(token, updates, Windowproperties);
+            case ("nwjs"): return dynReq("./modules/gui/nwjs")(token, updates, Windowproperties);
+            case ("raw"): return dynReq("./modules/gui/raw")(token, updates, Windowproperties);
+            default: throw new Error('[MSMC]: Unknown library type');
+
         }
     },
     //MCLC integration
@@ -123,3 +133,8 @@ module.exports = {
     },
     default: module.exports
 }
+/**
+ * @type {this}
+ */
+const self = module.exports;
+

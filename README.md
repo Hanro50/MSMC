@@ -1,14 +1,16 @@
 ﻿# MSMC
-> A bare bones login library for Minecraft based projects to authenticate individuals with a Microsoft account.
+<pre>
+A bare bones login library for Minecraft based projects to authenticate individuals with a Microsoft account.
+</pre>
 
 # Support
-<p>
+<div>
    <a href="https://discord.gg/3hM8H7nQMA">
    <img src="https://img.shields.io/discord/861839919655944213?logo=discord"
       alt="chat on Discord"></a>
-</p>
+</div>
 
-> At the momement you can get support via Discord (link above).
+ At the momement you can get support via Discord (link above).
 
    
 # Supported gui frameworks
@@ -205,6 +207,7 @@ type prompt = "login" | "none" | "consent" | "select_account";
 type mclcUser = {
     access_token: string;
     client_token?: string;
+    xuid?: string;
     uuid?: string;
     name?: string;
     user_properties?: Partial<any>;
@@ -308,7 +311,7 @@ interface token {
 > A version of a Minecraft profile you'd get from the auth end points
 ```ts
 interface profile {
-    id: string, name: string, skins?: [], capes?: []
+    id: string, name: string, skins?: [], capes?: [],xuid: string;
 }
 ```
 ## xprofile 

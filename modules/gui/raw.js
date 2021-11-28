@@ -66,36 +66,31 @@ switch (os.type()) {
 function browserLoop(token, port, updates, browser) {
     return new Promise((resolve) => {
         const call = () => {
-            browser.kill();
+            try {
+                clearInterval(f3);
+                process.removeListener("exit", call);
+                browser.kill();
+            } catch {
+                console.error("[MSMC]: Failed to close window!");
+            }
         }
-        const end = process.on("exit",call)
+        const end = process.on("exit", call)
         const f3 = setInterval(() => {
-
             BE.getFetch()("http://127.0.0.1:" + port + "/json/list").then(r => r.json()).then(out => {
                 for (var i = 0; i < out.length; i++) {
                     const loc = out[i].url;
-
                     if (loc && loc.startsWith(token.redirect)) {
-                        try {
-                            clearInterval(f3);
-                            process.removeListener("exit",call)
-                            browser.kill();
-                        } catch {
-                            console.error("[MSMC]: Failed to close window!");
-                        }
                         const urlParams = new URLSearchParams(loc.substr(loc.indexOf("?") + 1)).get("code");
-                        if (urlParams) {
+                        if (urlParams)
                             resolve(MSMC.authenticate(urlParams, token, updates));
-                        } else {
-                            resolve({ type: "Cancelled", translationString: "Cancelled.Back" })
-                        }
+                        else
+                            resolve({ type: "Cancelled", translationString: "Cancelled.Back" });
+                        call();
                     }
                 }
             }).catch((err) => {
                 console.log(err)
-                clearInterval(f3);
-                process.removeListener("exit",call)
-                browser.kill();
+                call();
                 resolve({ type: "Cancelled", translationString: "Cancelled.GUI" })
             })
         }, 500);

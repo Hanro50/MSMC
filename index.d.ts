@@ -45,7 +45,7 @@ export interface token {
 
 /**A version of a Minecraft profile you'd get from the auth end points */
 export interface profile {
-    id: string, name: string, skins?: [], capes?: []
+    id: string, name: string, skins?: [], capes?: [], xuid: string
 }
 export interface xprofile {
     /**The xuid that belongs to this user */
@@ -197,6 +197,7 @@ export type mclcUser = {
     access_token: string;
     client_token?: string;
     uuid: string;
+    xuid?: string;
     name?: string;
     meta?: { type: "mojang" | "xbox", demo?: boolean };
     user_properties?: Partial<any>;
