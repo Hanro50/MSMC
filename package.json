@@ -46,6 +46,12 @@
     "node": ">=10.19.0"
   },
   "dependencies": {
-    "node-fetch":  ">=2.6.1"
-  }
+    "node-fetch": ">=2.6.1"
+  },
+  "funding": [
+    {
+      "type": "paypal",
+      "url": "https://paypal.me/hanro50"
+    }
+  ]
 }
