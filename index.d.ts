@@ -239,18 +239,6 @@ export declare function getCallback(): {
     fastLaunch: (callback: (r: result) => void, type: framework, updates?: (info: update) => void, prompt?: prompt, properties?: windowProperties) => void
 }
 /**
- * Set the path where the machineID file should be stored. 
- * Will use the process root dir if not specified!
- */
-export declare function setIDPath(path?: string | null | false): void;
-/**
- * Generate or obtain a machine ID for this PC. Should be unique for every installation. 
- * The vanilla client wants this property at times, so that is why it is here.
- * See the 1.18 launch parameters!
- */
-export declare function getMachineID(): string;
-
-/**
  * ES 6 compatibility for typescript
  * These lines of code where a royal pain in the behind to get working.
  */

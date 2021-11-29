@@ -131,13 +131,6 @@ module.exports = {
     getCallback() {
         return require("./modules/wrapper").callback;
     },
-    setIDPath(path) {
-        BE.setIDPath(path);
-    },
-    getMachineID() {
-        return BE.getMachineID();
-
-    },
     default: module.exports
 }
 /**

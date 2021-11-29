@@ -10,10 +10,9 @@ module.exports = {
             }
             profile = profile.profile;
         }
-
         return {
             access_token: profile._msmc.mcToken,
-            client_token: msmc.getMachineID(),
+            client_token: null,
             uuid: profile.id,
             name: profile.name,
             meta: {
@@ -27,7 +26,7 @@ module.exports = {
     },
     //Converts a mclc login object to a msmc profile object
     toProfile(profile) {
-        return { "name": profile.name,"xuid":profile.xuid, "id": profile.uuid, "_msmc": profile._msmc };
+        return { "name": profile.name, "xuid": profile.meta ? profile.meta.xuid : null, "id": profile.uuid, "_msmc": profile._msmc };
     },
     //Checks if a mclc login object is still valid
     async validate(profile) {
@@ -91,4 +90,4 @@ module.exports = {
         }
     }
 }
-const self = module.exports; 
+const self = module.exports;

@@ -635,21 +635,6 @@ export declare function getCallback(): {
 ### Recommended
 > Two fetch implementations msmc is tested against is <a href="https://www.npmjs.com/package/node-fetch">node-fetch</a> and <a href="https://www.npmjs.com/package/electron-fetch">electron-fetch</a>. If either are present then MSMC will pull them down automatically. If you however want to specify an implementation of fetch msmc should use. Please see the <a href="#setfetch">setFetch</a> function for more information!.  
 
-## setIDPath
-> Set the path where the machineID file should be stored. Will use the process root cwd path if not specified!
->
-> Setting the path to null will disable this function completely. Generating a unique value every time the machine ID function is called. Useful for privacy focused applications. 
-```ts
-export declare function setIDPath(path: string): void;
-```
-
-## getMachineID
-> Generate or obtain a machine ID for this PC. Should be unique for every installation.  The vanilla client wants this property at times, so that is why it is here. See the 1.18 launch parameters!
-###### Used internally by the MCLC module. 
-```ts 
-export declare function getMachineID(): string;
-```
-
 # Final notes
 > This module includes a ES6 layer.
 # Credit
