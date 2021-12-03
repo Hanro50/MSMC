@@ -131,6 +131,31 @@ module.exports = {
     getCallback() {
         return require("./modules/wrapper").callback;
     },
+    mkES6() {
+        var es6 = "\/\*\*Generated\*\/\nimport msmc from \"./index.js\"\nexport default msmc;\nconsole.log(\"[MSMC]: Loading in ES6 mode!\")";
+
+        for (var id in self) {
+            try {
+                if (typeof (self[id]) == "function" && id != "mkES6") {
+                    /**@type {string} */
+                    const func = self[id].toString();
+                    const strFunc = func.substr(0, func.indexOf("{\n"))
+                    es6 += "\nexport function "
+                        + strFunc
+                        + "{return msmc."
+                        + strFunc.trim().replace(/\=.*?\}/g, "").replace(/\=.*?\".*?\"/g, "")
+                        + ";};";
+                }
+            } catch (err) {
+                console.error(err)
+                result.push(id + ": Not accessible");
+            }
+        }
+        console.log(es6);
+
+    },
+
+
     default: module.exports
 }
 /**

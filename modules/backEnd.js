@@ -201,13 +201,13 @@ module.exports = {
 
         loadBar(percent * 4.5, "Extracting XUID and parsing player object");
         var profile = await r998.json();
-        profile.xuid = self.parseJwt(MCauth.access_token).xuid;
+        const xuid = self.parseJwt(MCauth.access_token).xuid;
         profile._msmc = { refresh: MS.refresh_token, expires_by: experationDate, mcToken: MCauth.access_token };
         if (profile.error) {
             profile._msmc.demo = true;
-            return ({ type: "DemoUser", access_token: MCauth.access_token, profile: { _msmc: profile._msmc, id: MCauth.username, name: 'Player' }, translationString: "Login.Success.DemoUser", reason: "User does not own minecraft", getXbox: () => self.xboxProfile(XBLToken) });
+            return ({ type: "DemoUser", access_token: MCauth.access_token, profile: { xuid: xuid, _msmc: profile._msmc, id: MCauth.username, name: 'Player' }, translationString: "Login.Success.DemoUser", reason: "User does not own minecraft", getXbox: () => self.xboxProfile(XBLToken) });
         };
-
+        profile.xuid = xuid;
         loadBar(100, "Done!");
         return ({ type: "Success", access_token: MCauth.access_token, profile: profile, getXbox: (updates) => self.xboxProfile(XBLToken, updates), translationString: "Login.Success.User" });
     },
