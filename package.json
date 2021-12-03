@@ -1,10 +1,8 @@
 {
   "name": "msmc",
-  "version": "3.0.0-pre4",
+  "version": "3.0.0-pre5",
   "description": "A bare bones login library for Minecraft based projects to authenticate individuals with a Microsoft account.",
   "license": "MIT",
-  "main": "index.js",
-  "module": "index.mjs",
   "exports": {
     ".": {
       "import": "./index.mjs",
@@ -24,13 +22,12 @@
     "index.d.ts",
     "index.js",
     "index.mjs",
-    "modules/mclc.js",
     "modules/backEnd.js",
+    "modules/mclc.js",
     "modules/wrapper.js",
-    "modules/fetch.js",
-    "modules/gui/raw.js",
+    "modules/gui/electron.js",
     "modules/gui/nwjs.js",
-    "modules/gui/electron.js"
+    "modules/gui/raw.js"
   ],
   "homepage": "https://github.com/Hanro50/MSMC/",
   "scripts": {
