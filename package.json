@@ -1,6 +1,6 @@
 {
   "name": "msmc",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "A bare bones login library for Minecraft based projects to authenticate individuals with a Microsoft account.",
   "license": "MIT",
   "exports": {
@@ -21,6 +21,7 @@
   "files": [
     "index.d.ts",
     "index.js",
+    "tests.mjs",
     "index.mjs",
     "modules/backEnd.js",
     "modules/mclc.js",
@@ -31,7 +32,7 @@
   ],
   "homepage": "https://github.com/Hanro50/MSMC/",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node tests.mjs"
   },
   "keywords": [
     "msmc",

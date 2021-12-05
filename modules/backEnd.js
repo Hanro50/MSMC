@@ -1,7 +1,7 @@
 
 var FETCH, http;
-try { FETCH = require("node-fetch"); } catch (er) { console.warn("[MSMC]: Could not load fetch, please use setFetch to define it manually!"); };
-try { http = require("http"); } catch (er) { console.warn("[MSMC]: Some sign in methods may not work due to missing http server support in enviroment"); };
+try { FETCH = require("node-fetch"); } catch (er) { console.warn("[MSMC]: Could not load fetch, please use setFetch to define it manually!"); }
+try { http = require("http"); } catch (er) { console.warn("[MSMC]: Some sign in methods may not work due to missing http server support in enviroment"); }
 //This needs to be apart or we could end up with a memory leak!
 var app;
 module.exports = {
@@ -28,7 +28,6 @@ module.exports = {
     //Used internally to get fetch when needed
 
     getFetch() {
-
         return FETCH;
     },
 
@@ -85,23 +84,23 @@ module.exports = {
     },
 
     //Main Login flow implementation
-    async get(body, updates = () => { }) {
+    async get(body, updates = console.log) {
         const percent = 100 / 5;
-        if (self.errorCheck()) { return Promise.reject("[MSMC]: Error : no or invalid version of fetch available!"); };
+        if (self.errorCheck()) { return Promise.reject("[MSMC]: Error : no or invalid version of fetch available!"); }
         updates({ type: "Starting" });
 
         //console.log(Params); //debug
         function loadBar(number, asset) {
             updates({ type: "Loading", data: asset, percent: number });
-        };
+        }
 
         function error(reason, translationString, data) {
             return { type: "Authentication", reason: reason, data: data, translationString: translationString }
-        };
+        }
 
         function webCheck(response) {
             return (response.status >= 400)
-        };
+        }
 
         loadBar(percent * 0, "Getting Login Token");
         var MS_Raw = await FETCH("https://login.live.com/oauth20_token.srf", {
@@ -168,8 +167,8 @@ module.exports = {
                         "The account is a child (under 18) and cannot proceed unless the account is added to a Family by an adult.";
                     ts = "UserNotAdult";
                     break;
-                };
-            };
+                }
+            }
             return error(reason, "Account." + ts);
         }
         //console.log("XBL3.0 x=" + UserHash + ";" + XSTS.Token) //debug
@@ -206,7 +205,7 @@ module.exports = {
         if (profile.error) {
             profile._msmc.demo = true;
             return ({ type: "DemoUser", access_token: MCauth.access_token, profile: { xuid: xuid, _msmc: profile._msmc, id: MCauth.username, name: 'Player' }, translationString: "Login.Success.DemoUser", reason: "User does not own minecraft", getXbox: () => self.xboxProfile(XBLToken) });
-        };
+        }
         profile.xuid = xuid;
         loadBar(100, "Done!");
         return ({ type: "Success", access_token: MCauth.access_token, profile: profile, getXbox: (updates) => self.xboxProfile(XBLToken, updates), translationString: "Login.Success.User" });

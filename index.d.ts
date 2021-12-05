@@ -207,7 +207,7 @@ export type mclcUser = {
 export declare function getMCLC(): {
     getAuth: (info: result) => mclcUser
     validate: (profile: mclcUser) => Promise<Boolean>
-    refresh: (profile: mclcUser) => Promise<mclcUser>
+    refresh: (profile: mclcUser, updates?: (info: update) => void, MStoken?: token) => Promise<mclcUser>
     toProfile: (profile: mclcUser) => profile
 }
 

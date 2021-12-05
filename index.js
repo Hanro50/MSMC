@@ -65,7 +65,7 @@ module.exports = {
         if (!profile._msmc) {
             console.error("[MSMC]: This is not an msmc style profile object");
             return;
-        };
+        }
         const refreshToken = profile._msmc.refresh ? profile._msmc.refresh : profile._msmc;
         authToken = authToken ? authToken : self.mojangAuthToken();
         const body = (
@@ -105,6 +105,7 @@ module.exports = {
     },
 
     launch(type, token, updates, Windowproperties) {
+        // eslint-disable-next-line no-undef
         const dynReq = typeof __webpack_require__ === "function" ? __non_webpack_require__ : require;
         switch (type) {
             case ("electron"): return dynReq("./modules/gui/electron")(token, updates, Windowproperties);
@@ -132,7 +133,7 @@ module.exports = {
         return require("./modules/wrapper").callback;
     },
     mkES6() {
-        var es6 = "\/\*\*Generated\*\/\nimport msmc from \"./index.js\"\nexport default msmc;\nconsole.log(\"[MSMC]: Loading in ES6 mode!\")";
+        var es6 = "/**Generated*/\nimport msmc from \"./index.js\"\nexport default msmc;\nconsole.log(\"[MSMC]: Loading in ES6 mode!\")";
 
         for (var id in self) {
             try {
@@ -143,12 +144,11 @@ module.exports = {
                     es6 += "\nexport function "
                         + strFunc
                         + "{return msmc."
-                        + strFunc.trim().replace(/\=.*?\}/g, "").replace(/\=.*?\".*?\"/g, "")
+                        + strFunc.trim().replace(/=.*?\}/g, "").replace(/=.*?".*?"/g, "")
                         + ";};";
                 }
             } catch (err) {
                 console.error(err)
-                result.push(id + ": Not accessible");
             }
         }
         console.log(es6);

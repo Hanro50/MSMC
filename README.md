@@ -86,7 +86,8 @@ msmc.fastLaunch("nwjs",
 > 
 > Do note that some frameworks that use electron as a base might not have these issues, but it is still something you should consider if you're having issues.
 ### Example 
-> This is a code sample for electron should be added to your main.js file.
+> This is a code sample for electron should be added to your main.js file. 
+> NOTE: Only pass the profile object and the raw xprofile object you get back from the "getXbox" command included in the final object returned by msmc. Passing the entire object returned by msmc may cause issues. 
 ```js
 app.whenReady().then(() => {
   ...
@@ -580,12 +581,12 @@ function fastLaunch(type: framework, updates?: (info: update) => void, prompt?: 
 > This converts mclc profile objects back into msmc ones. It should be noted that mclc profile objects created with mclc's native authenticator module should not be passed to this function as it will likely result in an error upon converting them back to mclc profile objects. 
 
 ```ts
-function getMCLC(): {
-    getAuth: (info: result) => Promise<mclcUser>
+export declare function getMCLC(): {
+    getAuth: (info: result) => mclcUser
     validate: (profile: mclcUser) => Promise<Boolean>
-    refresh: (profile: mclcUser) => Promise<mclcUser>
+    refresh: (profile: mclcUser, updates?: (info: update) => void, MStoken?: token) => Promise<mclcUser>
     toProfile: (profile: mclcUser) => profile
-};
+}
 ```
 ## errorCheck
 > Checks if a return value is valid and if the login procedure has been successful

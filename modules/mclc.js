@@ -1,6 +1,9 @@
 const msmc = require("..");
 const BE = require("./backEnd");
 
+var getUUID;
+try { getUUID = require("crypto").randomUUID } catch { getUUID = () => null }
+
 module.exports = {
     //Converts a result or player profile object to a mclc login object
     getAuth(profile) {
@@ -12,7 +15,7 @@ module.exports = {
         }
         return {
             access_token: profile._msmc.mcToken,
-            client_token: null,
+            client_token: getUUID(),
             uuid: profile.id,
             name: profile.name,
             meta: {
@@ -49,7 +52,7 @@ module.exports = {
         return r.status == 204
     },
 
-    async refresh(profile, updates = (info) => { console.log(info) }, authToken) {
+    async refresh(profile, updates = console.log, authToken) {
         const FETCH = BE.getFetch();
         if (profile._msmc) {
             return self.getAuth(await msmc.refresh(self.toProfile(profile), updates, authToken));
@@ -75,7 +78,7 @@ module.exports = {
 
             if (data.error) {
                 throw data;
-            };
+            }
 
             const userProfile = {
                 access_token: data.accessToken,
