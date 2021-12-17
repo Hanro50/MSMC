@@ -3,6 +3,7 @@ import msmc from "./index.mjs";
 console.log("Testing Raw. This should test most of the underlying code")
 const L = await fastLaunch('raw', console.log);
 console.log(L);
+
 const mclc = getMCLC().getAuth(L);
 console.log(mclc);
 const r = await getMCLC().refresh(mclc, console.log);

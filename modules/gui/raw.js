@@ -9,7 +9,7 @@ const fs = require('fs')
 const os = require("os");
 
 const temp = path.join(os.tmpdir(), "msmc");
-const { spawn, execSync: exec } = require('child_process');
+const { spawn, execSync: exec, ChildProcess } = require('child_process');
 
 var firefox = false;
 const defaultProperties = {
@@ -21,12 +21,13 @@ console.log("[MSMC]: OS Type => " + os.type());
 switch (os.type()) {
     case 'Windows_NT':
         const pathsW = ["HKEY_LOCAL_MACHINE", "HKEY_CURRENT_USER"]
-        const locW = pathsW[i] + "\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\"
         const compatibleW = ["msedge.exe", "chrome.exe", "vivaldi.exe", "brave.exe", "blisk.exe"]
         WE: {
             for (var i2 = 0; i2 < compatibleW.length; i2++) {
                 for (var i = 0; i < pathsW.length; i++) {
+                    const locW = pathsW[i] + "\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\"
                     try {
+                        console.log("reg query \"" + locW + compatibleW[i2] + "\"")
                         var out = exec("reg query \"" + locW + compatibleW[i2] + "\"").toString();
                         if (!out.startsWith("ERROR")) {
                             out = out.substr(out.indexOf("REG_SZ") + "REG_SZ".length).trim();
@@ -67,14 +68,20 @@ switch (os.type()) {
             console.error("[MSMC]: No compatible browser was found")
         }
 }
-
+/**
+ * @param {ChildProcess} browser
+ */
 function browserLoop(token, port, updates, browser) {
     return new Promise((resolve) => {
         const call = () => {
             try {
                 clearInterval(f3);
                 process.removeListener("exit", call);
-                browser.kill();
+                if (os.type()=="Windows_NT"){
+                    exec("taskkill /pid "+browser.pid);
+                }else{
+                    browser.kill();
+                }
             } catch {
                 console.error("[MSMC]: Failed to close window!");
             }
@@ -117,13 +124,12 @@ module.exports = (token, updates = () => { }, Windowproperties = defaultProperti
             if (fs.existsSync(temp)) exec("rm -R " + temp); fs.mkdirSync(temp);
             browser = spawn(cmd, ["--profile", temp, "-kiosk", redirect, "--remote-debugging-port=0", "--new-instance"]);
         } else browser = spawn(cmd, ["--disable-restore-session-state", "--disable-first-run-ui", "--disable-component-extensions-with-background-pages", "--no-first-run", "--disable-extensions", "--window-size=" + Windowproperties.width + "," + Windowproperties.height, "--remote-debugging-port=0", "--no-default-browser-check", "--user-data-dir=" + temp, "--force-app-mode", "--app=" + redirect]);
+        
         var firstrun = true;
         const ouput = (out) => {
             const cout = String(out.toString()).toLocaleLowerCase().trim();
-            //console.log(cout)
             console.log("[MSMC][Browser]: " + cout)
             if (firstrun && cout.startsWith("devtools listening on ws://")) {
-                //console.log("exec")
                 firstrun = false;
                 var data = cout.substr("devtools listening on ws://".length);
                 const n = data.indexOf(":") + 1;
