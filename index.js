@@ -100,13 +100,23 @@ module.exports = {
         });
     },
 
-    fastLaunch(type, updates, prompt = "select_account", properties) {
+    fastLaunch(type="auto", updates, prompt = "select_account", properties) {
         return self.launch(type, self.mojangAuthToken(prompt), updates, properties)
     },
 
     launch(type, token, updates, Windowproperties) {
         // eslint-disable-next-line no-undef
         const dynReq = typeof __webpack_require__ === "function" ? __non_webpack_require__ : require;
+
+        if (type =="auto"){
+            if(!!process && !!process.versions && !!process.versions.electron) {
+                type = 'electron';
+            } else if(!!process && !!process.versions && !!process.versions.nw) {
+                type = 'nwjs';
+            } else {
+                type = 'browser';
+            }
+        }
         switch (type) {
             case ("electron"): return dynReq("./modules/gui/electron")(token, updates, Windowproperties);
             case ("nwjs"): return dynReq("./modules/gui/nwjs")(token, updates, Windowproperties);
