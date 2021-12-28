@@ -77,9 +77,9 @@ function browserLoop(token, port, updates, browser) {
             try {
                 clearInterval(f3);
                 process.removeListener("exit", call);
-                if (os.type()=="Windows_NT"){
-                    exec("taskkill /pid "+browser.pid);
-                }else{
+                if (os.type() == "Windows_NT") {
+                    exec("taskkill /pid " + browser.pid);
+                } else {
                     browser.kill();
                 }
             } catch {
@@ -124,7 +124,7 @@ module.exports = (token, updates = () => { }, Windowproperties = defaultProperti
             if (fs.existsSync(temp)) exec("rm -R " + temp); fs.mkdirSync(temp);
             browser = spawn(cmd, ["--profile", temp, "-kiosk", redirect, "--remote-debugging-port=0", "--new-instance"]);
         } else browser = spawn(cmd, ["--disable-restore-session-state", "--disable-first-run-ui", "--disable-component-extensions-with-background-pages", "--no-first-run", "--disable-extensions", "--window-size=" + Windowproperties.width + "," + Windowproperties.height, "--remote-debugging-port=0", "--no-default-browser-check", "--user-data-dir=" + temp, "--force-app-mode", "--app=" + redirect]);
-        
+
         var firstrun = true;
         const ouput = (out) => {
             const cout = String(out.toString()).toLocaleLowerCase().trim();
@@ -138,7 +138,9 @@ module.exports = (token, updates = () => { }, Windowproperties = defaultProperti
                 resolve(browserLoop(token, port, updates, browser));
             }
         }
-        browser.stdout.on('data', ouput)
-        browser.stderr.on('data', ouput)
+        if (!Windowproperties.suppress) {
+            browser.stdout.on('data', ouput)
+            browser.stderr.on('data', ouput)
+        }
     });
 }

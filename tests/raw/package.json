@@ -1,0 +1,14 @@
+{
+    "name": "launcher",
+    "version": "0.0.1",
+    "main": "index.js",
+    "devDependencies": {
+        "nwjs-types": "^1.0.0"
+    },
+    "dependencies": {
+        "msmc": "file:../../."
+    },
+    "scripts": {
+        "start": "node tests.mjs"
+    }
+}

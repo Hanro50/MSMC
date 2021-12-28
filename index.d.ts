@@ -8,7 +8,7 @@ export type prompt = "login" | "none" | "consent" | "select_account";
  * This library's supported gui frameworks. 
  * (Raw requires no extra dependencies, use it if you're using some unknown framework!)
  */
-export type framework = "auto"|"electron" | "nwjs" | "raw";
+export type framework = "auto" | "electron" | "nwjs" | "raw";
 
 /**
  * Here for translators.
@@ -107,7 +107,10 @@ export interface update {
 export interface windowProperties {
     width: number,
     height: number,
+    /**Raw ignores this property!*/
     resizable?: boolean,
+    /**Raw only: Stops MSMC from passing through the browser console log*/
+    suppress?: boolean,
     [key: string]: any
 }
 

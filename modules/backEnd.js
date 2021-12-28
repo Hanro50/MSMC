@@ -1,9 +1,10 @@
 
 var FETCH, http;
-try { FETCH = require("node-fetch"); } catch (er) {console.log(er); console.warn("[MSMC]: Could not load fetch, please use setFetch to define it manually!"); }
+try { FETCH = typeof fetch == 'function' ? fetch : require("node-fetch"); } catch (er) { console.log(er); console.warn("[MSMC]: Could not load fetch, please use setFetch to define it manually!"); }
 try { http = require("http"); } catch (er) { console.warn("[MSMC]: Some sign in methods may not work due to missing http server support in enviroment"); }
 //This needs to be apart or we could end up with a memory leak!
 var app;
+
 module.exports = {
     //Used for the old/generic method of authentication
     setCallback(callback) {

@@ -114,14 +114,14 @@ module.exports = {
             } else if (!!process && !!process.versions && !!process.versions.nw) {
                 type = 'nwjs';
             } else {
-                type = 'browser';
+                type = 'raw';
             }
         }
         switch (type) {
-            case ("electron"): return dynReq("./modules/gui/electron")(token, updates, Windowproperties);
-            case ("nwjs"): return dynReq("./modules/gui/nwjs")(token, updates, Windowproperties);
-            case ("raw"): return dynReq("./modules/gui/raw")(token, updates, Windowproperties);
-            default: throw new Error('[MSMC]: Unknown library type');
+            case ("electron"): return dynReq("./modules/gui/electron.js")(token, updates, Windowproperties);
+            case ("nwjs"): return dynReq("./modules/gui/nwjs.js")(token, updates, Windowproperties);
+            case ("raw"): return dynReq("./modules/gui/raw.js")(token, updates, Windowproperties);
+            default: return launch("auto", token, updates, Windowproperties);
 
         }
     },
