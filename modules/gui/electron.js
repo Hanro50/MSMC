@@ -1,5 +1,7 @@
 const MSMC = require("../..");
-const { BrowserWindow } = require("electron");
+const dynReq = typeof __webpack_require__ === "function" ? __non_webpack_require__ : require;
+
+const { BrowserWindow } = dynReq("electron");
 
 const defaultProperties = {
     width: 500,

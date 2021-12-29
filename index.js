@@ -106,7 +106,6 @@ module.exports = {
 
     launch(type, token, updates, Windowproperties) {
         // eslint-disable-next-line no-undef
-        const dynReq = typeof __webpack_require__ === "function" ? __non_webpack_require__ : require;
 
         if (type == "auto") {
             if (!!process && !!process.versions && !!process.versions.electron) {
@@ -118,9 +117,9 @@ module.exports = {
             }
         }
         switch (type) {
-            case ("electron"): return dynReq("./modules/gui/electron.js")(token, updates, Windowproperties);
-            case ("nwjs"): return dynReq("./modules/gui/nwjs.js")(token, updates, Windowproperties);
-            case ("raw"): return dynReq("./modules/gui/raw.js")(token, updates, Windowproperties);
+            case ("electron"): return require("./modules/gui/electron.js")(token, updates, Windowproperties);
+            case ("nwjs"): return require("./modules/gui/nwjs.js")(token, updates, Windowproperties);
+            case ("raw"): return require("./modules/gui/raw.js")(token, updates, Windowproperties);
             default: return launch("auto", token, updates, Windowproperties);
 
         }
