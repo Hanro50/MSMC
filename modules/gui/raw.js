@@ -21,7 +21,7 @@ console.log("[MSMC]: OS Type => " + os.type());
 switch (os.type()) {
     case 'Windows_NT':
         const pathsW = ["HKEY_LOCAL_MACHINE", "HKEY_CURRENT_USER"]
-        const compatibleW = ["msedge.exe", "chrome.exe", "vivaldi.exe", "brave.exe", "blisk.exe"]
+        const compatibleW = ["chrome.exe", "vivaldi.exe", "brave.exe", "blisk.exe", "msedge.exe"]
         WE: {
             for (var i2 = 0; i2 < compatibleW.length; i2++) {
                 for (var i = 0; i < pathsW.length; i++) {
