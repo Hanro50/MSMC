@@ -28,7 +28,7 @@ switch (os.type()) {
                     const locW = pathsW[i] + "\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\"
                     try {
                         console.log("reg query \"" + locW + compatibleW[i2] + "\"")
-                        var out = exec("reg query \"" + locW + compatibleW[i2] + "\"").toString();
+                        var out = exec("\"C:\\Windows\\System32\\reg.exe\" query \"" + locW + compatibleW[i2] + "\"").toString();
                         if (!out.startsWith("ERROR")) {
                             out = out.substr(out.indexOf("REG_SZ") + "REG_SZ".length).trim();
                             if (out.indexOf("\n") > 0)
