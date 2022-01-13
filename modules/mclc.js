@@ -1,9 +1,14 @@
 const msmc = require("..");
 const BE = require("./backEnd");
-
-var getUUID;
-try { getUUID = require("crypto").randomUUID } catch { getUUID = () => null }
-
+function getUUID() {
+    var result = ""
+    for (var i = 0; i <= 4; i++) {
+        result += (Math.floor(Math.random() * 16777216 )+1048576).toString(16);
+        if (i < 4)result += "-"
+    }
+    return result;
+}
+console.log(getUUID())
 module.exports = {
     //Converts a result or player profile object to a mclc login object
     getAuth(profile) {
