@@ -1,6 +1,6 @@
 {
   "name": "msmc",
-  "version": "3.0.5",
+  "version": "3.0.6",
   "description": "A bare bones login library for Minecraft based projects to authenticate individuals with a Microsoft account.",
   "license": "MIT",
   "exports": {
@@ -49,8 +49,10 @@
   "engines": {
     "node": ">=10.19.0"
   },
+  "devDependencies": {
+    "@types/webpack": "^5.28.0"
+  },
   "dependencies": {
-    "@types/webpack": "^5.28.0",
     "node-fetch": "2.x"
   },
   "funding": [
