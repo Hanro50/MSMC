@@ -21,14 +21,14 @@ console.log("[MSMC]: OS Type => " + os.type());
 switch (os.type()) {
     case 'Windows_NT':
         const pathsW = ["HKEY_LOCAL_MACHINE", "HKEY_CURRENT_USER"]
-        const compatibleW = ["msedge.exe", "chrome.exe", "vivaldi.exe", "brave.exe", "blisk.exe"]
+        const compatibleW = ["chrome.exe", "vivaldi.exe", "brave.exe", "blisk.exe", "msedge.exe"]
         WE: {
             for (var i2 = 0; i2 < compatibleW.length; i2++) {
                 for (var i = 0; i < pathsW.length; i++) {
                     const locW = pathsW[i] + "\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\"
                     try {
                         console.log("reg query \"" + locW + compatibleW[i2] + "\"")
-                        var out = exec("reg query \"" + locW + compatibleW[i2] + "\"").toString();
+                        var out = exec("\"C:\\Windows\\System32\\reg.exe\" query \"" + locW + compatibleW[i2] + "\"").toString();
                         if (!out.startsWith("ERROR")) {
                             out = out.substr(out.indexOf("REG_SZ") + "REG_SZ".length).trim();
                             if (out.indexOf("\n") > 0)
