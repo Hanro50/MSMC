@@ -25,8 +25,6 @@ Mainly each will generate a pop-up that can be used by the end user to login. In
 const msmc = require("msmc");
 msmc.fastLaunch("auto"...
 ```
-
-
 ## "Raw"
 
 > This is not a framework as this method takes advantage off the chromium based web browsers a user will likely already have on their machine. 
@@ -38,7 +36,7 @@ No additional dependencies needed!
 
 ### Example 
 
-   ```js
+```js
 const msmc = require("msmc");
 const fetch = require("node-fetch");
 //msmc's testing enviroment sometimes runs into this issue that it can't load node fetch
@@ -200,6 +198,32 @@ MSMC.login({ client_id: "<token>" },
         console.log("We failed to log someone in because : "+reason);
     })
 ```
+
+## inline login \<advance>
+> Potentially usefull when you want to use MSMC for something beyond launching minecraft or are simply seeking to implement an inline login method. 
+> 
+> Whatever the case, this is usefull if you solely want to use MSMC as a specialised oauth2 client for whatever reason. Do note that the vanilla token will likely no longer work as you will likely need to define a custom redirect URL. 
+> 
+> Due to this being for advance users only. Please note that the example here will not produce working code if copied and pasted directly.
+```js
+const msmc = require("msmc");
+const token = {
+    client_id: "Your clientID from your token here",
+    clientSecret: "<OPTIONAL> Your secret, typically needed for websites",
+    redirect: "The redirect back to your website",
+    prompt: "login" | "none" | "consent" | "select_account"
+}
+const link = msmc.createLink(token);
+...
+//Handle redirecting the client to the link provided by link variable here and the callback to get the data returned by the get request microsoft sent back to you here.
+...
+const code = "The code returned by that afformentioned get request";
+//We're going to leave out the update variable here. See the entry for this function for more information.
+msmc.authenticate(code,token).then(result=>{
+    //Handle the result object as you would from any other login callback msmc uses
+});
+```
+###### Recommend spinning up an HTTP/HTTPS server for this.   
 
 # Docs: Types
 
