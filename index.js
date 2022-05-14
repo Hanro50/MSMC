@@ -108,6 +108,7 @@ module.exports = {
         // eslint-disable-next-line no-undef
 
         if (type == "auto") {
+            console.warn("The 'auto' gui framework is deprecated!!")
             if (!!process && !!process.versions && !!process.versions.electron) {
                 type = 'electron';
             } else if (!!process && !!process.versions && !!process.versions.nw) {

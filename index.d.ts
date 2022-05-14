@@ -58,7 +58,7 @@ export interface xprofile {
     profilePictureURL: string,
     /**The user's "Gamer score"*/
     score: string,
-    /**Gets a user's friends list */
+    /**Gets a user's friend list */
     getFriends?: () => promise<xprofile[]>;
     /**The auth token you need for an "Authorization" header non of the ms docs tell you about, 
      * but which you absolutely need if you want to hit up any xbox live end points. 
@@ -177,6 +177,10 @@ export declare function validate(profile: profile): Boolean;
  */
 export declare function login(token: token, getlink: (info: string) => void, updates?: (info: update) => void): Promise<result>;
 /**
+ * @deprecated This 'type' parameter might cause some unforseen behaviour. It is thus marked for removal...
+ */
+export declare function launch(type: "auto", token: token, updates?: (info: update) => void, properties?: windowProperties): Promise<result>;
+/**
  * Used with electron or nwjs to launch a pop-up that a user can use to sign in with
  * @param type The GUI framework this is compatible with
  * @param token Basic MS token info
@@ -186,6 +190,10 @@ export declare function login(token: token, getlink: (info: string) => void, upd
  */
 export declare function launch(type: framework, token: token, updates?: (info: update) => void, properties?: windowProperties): Promise<result>;
 
+/**
+ * @deprecated This 'type' parameter might cause some unforseen behaviour. It is thus marked for removal...
+ */
+export declare function fastLaunch(type: "auto", updates?: (info: update) => void, prompt?: prompt, properties?: windowProperties): Promise<result>;
 /**
  * Memics the vanilla launcher in how it works. Like launch in creates a popup a user can log in with
  * @param type The GUI framework this is compatible with

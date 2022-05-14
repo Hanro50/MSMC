@@ -79,7 +79,7 @@ module.exports = {
     },
     //Used to get xbox profile information
     async xboxProfile(XBLToken, updates = () => { }) {
-        const lbar = 100 / 4;
+        const lbar = 100 / 2.5;
         updates({ type: "Loading", data: "Getting xuid", percent: 0 });
         var rxsts = await FETCH("https://xsts.auth.xboxlive.com/xsts/authorize", {
             method: "post",
@@ -111,9 +111,7 @@ module.exports = {
         // console.log(info);
         const profile = await info.json();
         // console.log(profile);
-        updates({ type: "Loading", data: "Getting friends...", percent: lbar * 3 });
-
-
+    
         const user = self.parseUsr(profile.profileUsers[0], auth);
         //user.friends = await self.getFriendList(auth, user.xuid)
         user.getAuth = () => auth;
