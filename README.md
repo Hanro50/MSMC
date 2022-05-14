@@ -18,14 +18,6 @@
 # Supported gui frameworks
 > If you're using MSMC with one of the frameworks below. The behaviour each framework displays should be identical. 
 Mainly each will generate a pop-up that can be used by the end user to login. In-line logins, where the main window of your app is redirected to allow a user to log in should be implemented manually. Check the wiki page for more information! {Coming soon!}
-## "Auto" <DEPRECATED!>
-> This framework is not a framework. Instead it tells MSMC to attempt detecting the optimal framework it should be using itself. Still in testing.
-###### Due to the risk of badly behaving code. This framework is marked for removal
-```js
-...
-const msmc = require("msmc");
-msmc.fastLaunch("auto"...
-```
 ## "Raw"
 
 > This is not a framework as this method takes advantage off the chromium based web browsers a user will likely already have on their machine. 
