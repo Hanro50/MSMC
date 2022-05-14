@@ -8,7 +8,7 @@ export type prompt = "login" | "none" | "consent" | "select_account";
  * This library's supported gui frameworks. 
  * (Raw requires no extra dependencies, use it if you're using some unknown framework!)
  */
-export type framework = "electron" | "nwjs" | "raw";
+export type framework = "auto" | "electron" | "nwjs" | "raw";
 
 /**
  * Here for translators.

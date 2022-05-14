@@ -100,12 +100,23 @@ module.exports = {
         });
     },
 
-    fastLaunch(type, updates, prompt = "select_account", properties) {
+    fastLaunch(type = "auto", updates, prompt = "select_account", properties) {
         return self.launch(type, self.mojangAuthToken(prompt), updates, properties)
     },
 
     launch(type, token, updates, Windowproperties) {
         // eslint-disable-next-line no-undef
+
+        if (type == "auto") {
+            console.warn("The 'auto' gui framework is deprecated!!")
+            if (!!process && !!process.versions && !!process.versions.electron) {
+                type = 'electron';
+            } else if (!!process && !!process.versions && !!process.versions.nw) {
+                type = 'nwjs';
+            } else {
+                type = 'raw';
+            }
+        }
         switch (type) {
             case ("electron"): return require("./modules/gui/electron.js")(token, updates, Windowproperties);
             case ("nwjs"): return require("./modules/gui/nwjs.js")(token, updates, Windowproperties);
