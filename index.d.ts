@@ -58,6 +58,8 @@ export interface xprofile {
     profilePictureURL: string,
     /**The user's "Gamer score"*/
     score: string,
+    /**Gets a user's friends list */
+    getFriends?: () => promise<xprofile[]>;
     /**The auth token you need for an "Authorization" header non of the ms docs tell you about, 
      * but which you absolutely need if you want to hit up any xbox live end points. 
      * 

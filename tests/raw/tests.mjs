@@ -2,6 +2,8 @@ import { fastLaunch, getMCLC} from "msmc";
 import msmc from "msmc";
 console.log("Testing Raw. This should test most of the underlying code")
 const L = await fastLaunch('auto', console.log);
+console.log(await L.getXbox(console.log));
+/*
 console.log(L);
 
 const mclc = getMCLC().getAuth(L);

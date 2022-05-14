@@ -1,9 +1,13 @@
 
-var FETCH, http;
-try { FETCH = typeof fetch == 'function' ? fetch : require("node-fetch"); } catch (er) { console.log(er); console.warn("[MSMC]: Could not load fetch, please use setFetch to define it manually!"); }
+var http;
+const FETCH = require("node-fetch");
+//try { FETCH = typeof fetch == 'function' ? fetch : require("node-fetch"); } catch (er) { console.log(er); console.warn("[MSMC]: Could not load fetch, please use setFetch to define it manually!"); }
 try { http = require("http"); } catch (er) { console.warn("[MSMC]: Some sign in methods may not work due to missing http server support in enviroment"); }
 //This needs to be apart or we could end up with a memory leak!
 var app;
+
+
+
 
 module.exports = {
     //Used for the old/generic method of authentication
@@ -42,9 +46,40 @@ module.exports = {
 
         return false;
     },
+
+    parseUsr(user, auth) {
+        console.log(user)
+        return {
+            xuid: user.id,
+            gamerTag: user.settings.find(s => s.id == "Gamertag")?.value,
+            name: user.settings.find(s => s.id == "GameDisplayName")?.value,
+            profilePictureURL: user.settings.find(s => s.id == "GameDisplayPicRaw").value,
+            score: user.settings.find(s => s.id == "Gamerscore").value,
+            getFriends: () => getFriendList(auth, user.id)
+        }
+    },
+
+    async getFriendList(auth, xuid) {
+        if (typeof auth == "function") auth = auth();
+        let friendsRaw = await FETCH(`https://profile.xboxlive.com/users/xuid(${xuid})/profile/settings/people/people?settings=GameDisplayName,GameDisplayPicRaw,Gamerscore,Gamertag`,
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-xbl-contract-version": 2,
+                    Authorization: auth,
+                },
+            });
+        const friends = await friendsRaw.json();
+        let R = [];
+        console.log(friends)
+        friends.profileUsers.forEach(element => {
+            R.push(self.parseUsr(element, auth));
+        });
+        return R;
+    },
     //Used to get xbox profile information
     async xboxProfile(XBLToken, updates = () => { }) {
-        const lbar = 100 / 2.5;
+        const lbar = 100 / 4;
         updates({ type: "Loading", data: "Getting xuid", percent: 0 });
         var rxsts = await FETCH("https://xsts.auth.xboxlive.com/xsts/authorize", {
             method: "post",
@@ -57,6 +92,8 @@ module.exports = {
         });
         const json = await rxsts.json();
         const xui = json.DisplayClaims.xui[0];
+        const auth = `XBL3.0 x=${xui.uhs};${json.Token}`
+
         updates({ type: "Loading", data: "Getting profile info", percent: lbar * 1 });
         var info = await FETCH("https://profile.xboxlive.com/users/batch/profile/settings",
             {
@@ -64,24 +101,24 @@ module.exports = {
                 headers: {
                     "Content-Type": "application/json",
                     "x-xbl-contract-version": 2,
-                    Authorization: "XBL3.0 x=" + xui.uhs + ";" + json.Token,
+                    Authorization: auth,
                 },
-                body: JSON.stringify({ "userIds": [xui.xid], "settings": ["GameDisplayName", "GameDisplayPicRaw", "Gamerscore"] }),
+                body: JSON.stringify({ "userIds": [xui.xid], "settings": ["GameDisplayName", "GameDisplayPicRaw", "Gamerscore", "Gamertag"] }),
             });
+
+
         updates({ type: "Loading", data: "Parsing profile info", percent: lbar * 2 });
         // console.log(info);
         const profile = await info.json();
         // console.log(profile);
-        const settings = profile.profileUsers[0].settings;
+        updates({ type: "Loading", data: "Getting friends...", percent: lbar * 3 });
+
+
+        const user = self.parseUsr(profile.profileUsers[0], auth);
+        //user.friends = await self.getFriendList(auth, user.xuid)
+        user.getAuth = () => auth;
         updates({ type: "Loading", data: "Done!", percent: 100 });
-        return {
-            xuid: xui.xid,
-            gamerTag: xui.gtg,
-            name: settings.find(s => s.id == "GameDisplayName").value,
-            profilePictureURL: settings.find(s => s.id == "GameDisplayPicRaw").value,
-            score: settings.find(s => s.id == "Gamerscore").value,
-            getAuth: () => "XBL3.0 x=" + xui.uhs + ";" + json.Token
-        }
+        return user
     },
 
     //Main Login flow implementation
@@ -123,7 +160,7 @@ module.exports = {
                 Properties: {
                     AuthMethod: "RPS",
                     SiteName: "user.auth.xboxlive.com",
-                    RpsTicket: "d=" + MS.access_token // your access token from step 2 here
+                    RpsTicket: `d=${MS.access_token}` // your access token from step 2 here
                 },
                 RelyingParty: "http://auth.xboxlive.com",
                 TokenType: "JWT"
@@ -179,7 +216,7 @@ module.exports = {
             {
                 method: "post",
                 body: JSON.stringify({
-                    identityToken: "XBL3.0 x=" + UserHash + ";" + XSTS.Token
+                    identityToken: `XBL3.0 x=${UserHash};${XSTS.Token}`
                 }),
                 headers: { "Content-Type": "application/json", Accept: "application/json" },
             }
@@ -195,7 +232,7 @@ module.exports = {
             headers: {
                 "Content-Type": "application/json",
                 Accept: "application/json",
-                Authorization: "Bearer " + MCauth.access_token,
+                Authorization: `Bearer ${MCauth.access_token}`,
             },
         });
 
