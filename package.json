@@ -47,7 +47,7 @@
     "commonjs"
   ],
   "engines": {
-    "node": ">=10.19.0"
+    "node": ">=14.17.3"
   },
   "devDependencies": {
     "@types/webpack": "^5.28.0"
