@@ -127,21 +127,6 @@ export declare function setFetch(fetchIn: any): void;
  * @param prompt See the type definition for "prompt" for more information
  */
 export declare function mojangAuthToken(prompt: prompt): token;
-/**
- * Gets the friendlist from a set xprofile of a set user. 
- * @param profile The xprofile of the user you want to get the friendlist from
- * @deprecated Function has been moved! Check the xbox module. Will be removed in 3.2.0
- */
-export declare function getFriendlist(profile: xprofile): Promise<xprofile[]>;
-/**
- * Gets the friendlist from a set user based on thier xbox id  
- * @param auth The auth header needed to use the endpoint
- * @param xuid The user's xbox ID <If blank the result will be from the user the token belongs to>
- * @deprecated Function has been moved! Check the xbox module. Will be removed in 3.2.0
- */
-export declare function getFriendlist(auth: string | (() => string), xuid?: string): Promise<xprofile[]>;
-
-
 /** 
  * This function will create a login link based on the inputs provided. <br>
  * Note that this function is called internally after the redirect has been formatted. Aka after "http://localhost:\<port\>/" is appended to the redirect. <br>
@@ -239,37 +224,40 @@ export declare function getMCLC(): {
     refresh: (profile: mclcUser, updates?: (info: update) => void, MStoken?: token) => Promise<mclcUser>
     toProfile: (profile: mclcUser) => profile
 }
-/**Xbox live specific endpoints. */
-export declare function getXbox(): {
+
+declare namespace xbox {
     /**
      * Checks if the Xbox live access token is still valid! 
      * @param result The old result object
      */
-    validate: (result: result) => Boolean;
+    function validate(result: result): Boolean;
     /**
      * A partial refresh on the xbox related tokens. 
      * @param result The old result object
      */
-    refresh: (result: result, msToken: token) => Promise<result>;
+    function refresh(result: result, msToken?: token): Promise<result>;
     /**
      * Returns a list of xprofile objects belonging to a set user's friendlist
      * @param profile The xprofile who's friendlist you want to read
      */
-    getFriendlist: (profile: xprofile) => Promise<xprofile[]>;
+    function getFriendlist(profile: xprofile): Promise<xprofile[]>;
     /**
      * Returns a list of xprofile objects belonging to a set user's friendlist
      * @param auth The auth header needed to use the endpoint
      * @param xuid The user's xbox ID or xprofile object you want the friendlist from <If blank the result will be from the user the token belongs to>
      */
-    getFriendlist: (auth: string | (() => string), xuid?: string | xprofile) => Promise<xprofile[]>;
+    function getFriendlist(auth: string | (() => string), xuid?: string | xprofile): Promise<xprofile[]>;
     /**
      * Gets the xprofile from a set user based on thier xbox id  
      * @param auth The auth header needed to use the endpoint
      * @param xuid The user's xbox ID <If blank the result will be from the user the token belongs to>
      */
-    getXProfile: (auth: string | (() => string), xuid?: string) => Promise<xprofile>;
+    function getXProfile(auth: string | (() => string), xuid?: string): Promise<xprofile>;
 
 }
+
+/**Xbox live specific endpoints. */
+export declare function getXbox(): typeof xbox;
 /**Checks if a return value is valid */
 export declare function errorCheck(result: result): Boolean;
 

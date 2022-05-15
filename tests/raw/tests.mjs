@@ -1,10 +1,11 @@
-import { fastLaunch, getFriendlist, getMCLC } from "msmc";
+import { fastLaunch, getMCLC, getXbox } from "msmc";
 import msmc from "msmc";
 msmc.mkES6();
 console.log("Testing Raw. This should test most of the underlying code")
 const L = await fastLaunch('raw', console.log);
+console.log(L)
 const P = await L.getXbox(console.log);
-console.log(P, await P.getFriends(), await getFriendlist(P.getAuth));
+console.log(P, await P.getFriends(), await getXbox().getFriendlist(P.getAuth));
 
 
 let R = [];

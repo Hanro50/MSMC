@@ -644,6 +644,49 @@ function errorCheck(result: result): Boolean;
 ```ts
 function isDemoUser(profile: profile | result): Boolean;
 ```
+## getXbox \<Beta> \<Advance users only>
+This module exposes some of the more advance lower level Xbox live related function calls in MSMC, it also builds upon them somewhat. Since MSMC already contains a fully functional purpose built Oauth2 client for interfacing with Microsoft's Xbox live service. In short the main goal of this module is for deeper integration of Xbox live features, such as friend lists, into your launcher. 
+
+A simple example would be say a menu that displayed which of a user's friends are online. Do note MSMC does not provide everything you need to get this going, but I hope this is atleast enought for you to make that a reality. Features will be added to this module based on what is demanded.   
+### validate
+> Checks if the Xbox live access token is still valid. The xbox tokens have a shorter life then the normal Minecraft token. Meaning that it can become invalid while the minecraft token is still valid.  
+
+result=> The resulting object from a previous login call. 
+```ts 
+function validate: (result: result) => Boolean;
+```
+### refresh
+> A partial refresh on the xbox related tokens. This is faster then a normal refresh as it does not refresh the entire refresh object. Only the parts of the token related to this module. 
+
+result=> The resulting object from a previous login call. 
+msToken<br>
+msToken=> The original token you used to log the user in with. Leave blank if you used any of the fastlaunch methods to do that. 
+```ts 
+function refresh: (result: result, msToken?: token) => Promise<result>;
+```
+### getFriendlist 
+> Returns a list of xprofile objects belonging to a set user's friendlist. The first varient of this function is the same as calling xprofile.getFriends().
+
+overload 1:<br>
+> In reality this is just an alternative path to call xprofile.getFriends.
+
+profile => The xprofile of the user you want to get the friendlist of. 
+
+overload 2:<br>
+auth => The auth header needed to use this endpoint<br>
+xuid => The ID of the user who's friendlist you want. If left empty it will present the user the auth header belongs to's friendlist.  
+```ts
+function getFriendlist: (profile: xprofile) => Promise<xprofile[]>;
+function getFriendlist: (auth: string | (() => string), xuid?: string | xprofile) => Promise<xprofile[]>;
+```
+### getXProfile
+> Used to convert xuid's into xprofile objects. In theory can be used serverside. Sending just the auth object as a header then calling this function serverside to ensure the client is who it says it is.   
+
+auth => The auth header needed to use this endpoint<br>
+xuid => The ID of the user who's friendlist you want. If left empty it will present the user the auth header belongs to's friendlist.  
+```ts 
+function getXProfile: (auth: string | (() => string), xuid?: string) => Promise<xprofile>;
+```
 
 ## getExceptional
 > Wraps the following functions and causes each to throw a result object as an error on a failed login instead of passing back said result object

@@ -1,4 +1,3 @@
-
 var http;
 const FETCH = require("node-fetch");
 //try { FETCH = typeof fetch == 'function' ? fetch : require("node-fetch"); } catch (er) { console.log(er); console.warn("[MSMC]: Could not load fetch, please use setFetch to define it manually!"); }
@@ -6,9 +5,15 @@ try { http = require("http"); } catch (er) { console.warn("[MSMC]: Some sign in 
 //This needs to be apart or we could end up with a memory leak!
 var app;
 
-
-
-
+function loadBar(update, percent, data) {
+    update({ type: "Loading", data, percent })
+}
+function error(reason, translationString, data, getXbox) {
+    return { type: "Authentication", reason: reason, data: data, translationString: translationString, getXbox }
+}
+function webCheck(response) {
+    return (response.status >= 400)
+}
 module.exports = {
     //Used for the old/generic method of authentication
     setCallback(callback) {
@@ -60,60 +65,26 @@ module.exports = {
     },
 
     async getFriendList(auth, xuid) {
-        const target = xuid ? `xuid(${xuid})` : "me";
-        if (typeof auth == "function") auth = auth();
-        let friendsRaw = await FETCH(`https://profile.xboxlive.com/users/${target}/profile/settings/people/people?settings=GameDisplayName,GameDisplayPicRaw,Gamerscore,Gamertag`,
-            {
-                headers: {
-                    "Content-Type": "application/json",
-                    "x-xbl-contract-version": 2,
-                    Authorization: auth,
-                },
-            });
-        const friends = await friendsRaw.json();
+        const friends = await self.xGet("/profile/settings/people/people?settings=GameDisplayName,GameDisplayPicRaw,Gamerscore,Gamertag", auth, xuid)
         let R = [];
-        console.log("friends", friends, "friends")
         friends.profileUsers.forEach(element => {
             R.push(self.parseUsr(element, auth));
         });
         return R;
     },
     //Used to get xbox profile information
-    async xboxProfile(XBLToken, updates = () => { }) {
+    async xProfile(XBLToken, updates = () => { }) {
         const lbar = 100 / 2.5;
-        updates({ type: "Loading", data: "Getting xuid", percent: 0 });
-        var rxsts = await FETCH("https://xsts.auth.xboxlive.com/xsts/authorize", {
-            method: "post",
-            body: JSON.stringify({
-                Properties: { SandboxId: "RETAIL", UserTokens: [XBLToken] },
-                RelyingParty: "http://xboxlive.com",
-                TokenType: "JWT",
-            }),
-            headers: { "Content-Type": "application/json", Accept: "application/json" },
-        });
-        const json = await rxsts.json();
+        updates({ type: "Loading", data: "Authenticating", percent: 0 });
+        const json = await self.xLogin(XBLToken);
         const xui = json.DisplayClaims.xui[0];
-        console.log(xui)
-
+        //console.log(xui)
         const auth = `XBL3.0 x=${xui.uhs};${json.Token}`
         console.log(json.Token)
         updates({ type: "Loading", data: "Getting profile info", percent: lbar * 1 });
-        var info = await FETCH("https://profile.xboxlive.com/users/batch/profile/settings",
-            {
-                method: "post",
-                headers: {
-                    "Content-Type": "application/json",
-                    "x-xbl-contract-version": 2,
-                    Authorization: auth,
-                },
-                body: JSON.stringify({ "userIds": [xui.xid], "settings": ["GameDisplayName", "GameDisplayPicRaw", "Gamerscore", "Gamertag"] }),
-            });
-
+        const profile = await self.xGet("/profile/settings?settings=GameDisplayName,GameDisplayPicRaw,Gamerscore,Gamertag", auth)
 
         updates({ type: "Loading", data: "Parsing profile info", percent: lbar * 2 });
-        // console.log(info);
-        const profile = await info.json();
-        // console.log(profile);
 
         const user = self.parseUsr(profile.profileUsers[0], auth);
         //user.friends = await self.getFriendList(auth, user.xuid)
@@ -122,77 +93,33 @@ module.exports = {
         return user
     },
 
-
-    //Main Login flow implementation
-    async get(body, updates = console.log) {
-        const percent = 100 / 5;
-        if (self.errorCheck()) { return Promise.reject("[MSMC]: Error : no or invalid version of fetch available!"); }
-        updates({ type: "Starting" });
-
-        //console.log(Params); //debug
-        function loadBar(number, asset) {
-            updates({ type: "Loading", data: asset, percent: number });
-        }
-
-        function error(reason, translationString, data) {
-            return { type: "Authentication", reason: reason, data: data, translationString: translationString }
-        }
-
-        function webCheck(response) {
-            return (response.status >= 400)
-        }
-
-        loadBar(percent * 0, "Getting Login Token");
-        var MS_Raw = await FETCH("https://login.live.com/oauth20_token.srf", {
-            method: "post", body: body, headers: { "Content-Type": "application/x-www-form-urlencoded" }
-        })
-
-        if (webCheck(MS_Raw)) return error("Could not log into Microsoft", "Login.Fail.MS", rxboxlive);
-        var MS = await MS_Raw.json();
-
-        //console.log(MS); //debug
-        if (MS.error) {
-            return error("(" + MS.error + ") => " + MS.error_description + "\nThis is likely due to an invalid refresh token. Please relog!", "Login.Fail.Relog", { error: MS.error, disc: MS.error_description });
-        }
-        const ms_exp = Math.floor(Date.now() / 1000) + MS["expires_in"] - 100
-
-        loadBar(percent * 1, "Logging into Xbox Live");
-        var rxboxlive = await FETCH("https://user.auth.xboxlive.com/user/authenticate", {
-            method: "post",
-            body: JSON.stringify({
-                Properties: {
-                    AuthMethod: "RPS",
-                    SiteName: "user.auth.xboxlive.com",
-                    RpsTicket: `d=${MS.access_token}` // your access token from step 2 here
+    async xGet(enpoint, auth, xuid) {
+        const target = xuid ? `xuid(${xuid})` : "me";
+        if (typeof auth == "function") auth = auth();
+        let profileRaw = await FETCH(`https://profile.xboxlive.com/users/${target}/${enpoint}`,
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-xbl-contract-version": 2,
+                    Authorization: auth,
                 },
-                RelyingParty: "http://auth.xboxlive.com",
-                TokenType: "JWT"
-            }),
-            headers: { "Content-Type": "application/json", Accept: "application/json" },
-        });
+            });
+        return await profileRaw.json();
+    },
 
-        if (webCheck(rxboxlive)) return error("Could not log into xbox", "Login.Fail.Xbox", rxboxlive);
-        var token = await rxboxlive.json();
-        //console.log(token); //debug
-        var XBLToken = token.Token;
-        var UserHash = token.DisplayClaims.xui[0].uhs;
-        loadBar(percent * 2, "Getting a Xbox One Security Token");
+    async xAuth(XBLToken, RelyingParty = "http://xboxlive.com") {
         var rxsts = await FETCH("https://xsts.auth.xboxlive.com/xsts/authorize", {
             method: "post",
             body: JSON.stringify({
                 Properties: { SandboxId: "RETAIL", UserTokens: [XBLToken] },
-                RelyingParty: "rp://api.minecraftservices.com/",
+                RelyingParty,
                 TokenType: "JWT",
             }),
-            //"rp://api.minecraftservices.com/",
             headers: { "Content-Type": "application/json", Accept: "application/json" },
         });
-
+        if (webCheck(rxsts)) return error("Could authenticate with xbox live", "Login.Fail.MC", rlogin_with_xbox);
 
         var XSTS = await rxsts.json();
-
-        loadBar(percent * 2.5, "Checking for errors");
-        //console.log(XSTS); //debug
         if (XSTS.XErr) {
             var reason = "Unknown reason";
             var ts = "Unknown";
@@ -221,25 +148,90 @@ module.exports = {
             }
             return error(reason, `Account.${ts}`);
         }
-        //console.log("XBL3.0 x=" + UserHash + ";" + XSTS.Token) //debug
-        loadBar(percent * 3, "Logging into Minecraft");
+        console.log(XSTS.DisplayClaims)
+        return `XBL3.0 x=${XSTS.DisplayClaims.xui[0].uhs};${XSTS.Token}`
+    },
+
+    async xLogin(body, updates = console.log) {
+        const percent = 100 / 4;
+        updates({ type: "Starting" });
+        loadBar(updates, percent * 1, "Authenticating with Microsoft");
+        var MS_Raw = await FETCH("https://login.live.com/oauth20_token.srf", {
+            method: "post", body: body, headers: { "Content-Type": "application/x-www-form-urlencoded" }
+        })
+        if (webCheck(MS_Raw)) return error("Could not authenticate with Microsoft", "Login.Fail.MC", MS_Raw);
+
+        var MS = await MS_Raw.json();
+        loadBar(updates, percent * 3, "Getting Xbox live Login Token");
+        var rxboxlive = await FETCH("https://user.auth.xboxlive.com/user/authenticate", {
+            method: "post",
+            body: JSON.stringify({
+                Properties: {
+                    AuthMethod: "RPS",
+                    SiteName: "user.auth.xboxlive.com",
+                    RpsTicket: `d=${MS.access_token}` // your access token from step 2 here
+                },
+                RelyingParty: "http://auth.xboxlive.com",
+                TokenType: "JWT"
+            }),
+            headers: { "Content-Type": "application/json", Accept: "application/json" },
+        });
+        if (webCheck(rxboxlive)) return error("Could get Xbox live token", "Login.Fail.MC", rxboxlive);
+
+        var token = await rxboxlive.json();
+        var XBLToken = token.Token;
+
+        loadBar(updates, 100, "Done!");
+        const ms_xp = Math.floor(Date.now() / 1000) + MS["expires_in"] - 100
+
+        return { MS, XBLToken, ms_xp }
+    },
+
+async mcLogin(xToken){
+
+},
+
+
+    //Main Login flow implementation
+    async get(body, updates = console.log) {
+        const percent = 100 / 4;
+        if (self.errorCheck()) { return Promise.reject("[MSMC]: Error : no or invalid version of fetch available!"); }
+        updates({ type: "Starting" });
+
+        //console.log(Params); //debug
+        // function loadBar,updates(number, asset) { updates({ type: "Loading", data: asset, percent: number }); }
+
+        const xToken = await this.xLogin(body, updates)
+        if (xToken.type) return xToken;
+        const auth = await this.xAuth(xToken.XBLToken, "rp://api.minecraftservices.com/")
+        if (auth.type) return xToken;
+        const getXbox = () => {
+            const auth = this.xAuth(xToken.XBLToken)
+            return {
+                xToken,
+                getXProfile: async () => await this.xGet('/profile/settings?settings=GameDisplayName,GameDisplayPicRaw,Gamerscore,Gamertag', auth)
+            }
+
+        }
+
+        loadBar(updates, percent * 1, "Logging into Minecraft");
         var rlogin_with_xbox = await FETCH(
             "https://api.minecraftservices.com/authentication/login_with_xbox",
             {
                 method: "post",
                 body: JSON.stringify({
-                    identityToken: `XBL3.0 x=${UserHash};${XSTS.Token}`
+                    identityToken: auth
                 }),
                 headers: { "Content-Type": "application/json", Accept: "application/json" },
             }
         );
-        if (webCheck(rlogin_with_xbox)) return error("Could not log into Minecraft", "Login.Fail.MC", rlogin_with_xbox);
+        if (webCheck(rlogin_with_xbox)) return error("Could not log into Minecraft", "Login.Fail.MC", rlogin_with_xbox, getXbox);
 
         var MCauth = await rlogin_with_xbox.json();
         //console.log(MCauth) //debug
         const experationDate = Math.floor(Date.now() / 1000) + MCauth["expires_in"] - 100
 
-        loadBar(percent * 4, "Fetching player profile");
+        loadBar(updates, percent * 2, "Fetching player profile");
         var r998 = await FETCH("https://api.minecraftservices.com/minecraft/profile", {
             headers: {
                 "Content-Type": "application/json",
@@ -248,18 +240,21 @@ module.exports = {
             },
         });
 
-        loadBar(percent * 4.5, "Extracting XUID and parsing player object");
-        var profile = await r998.json();
+        loadBar(updates, percent * 3, "Extracting XUID and parsing player object");
+        var MCprofile = await r998.json();
         const xuid = self.parseJwt(MCauth.access_token).xuid;
-        
-        profile._msmc = { refresh: MS.refresh_token, expires_by: experationDate, ms_exp: ms_exp, mcToken: MCauth.access_token };
-        if (profile.error) {
-            profile._msmc.demo = true;
-            return ({ type: "DemoUser", access_token: MCauth.access_token, profile: { xuid: xuid, _msmc: profile._msmc, id: MCauth.username, name: 'Player' }, translationString: "Login.Success.DemoUser", reason: "User does not own minecraft", getXbox: () => self.xboxProfile(XBLToken) });
+
+        const _msmc = { refresh: xToken.MS.refresh_token, expires_by: experationDate, mcToken: MCauth.access_token };
+        if (MCprofile.error) {
+            _msmc.demo = true;
+            const profile = { xuid: xuid, _msmc: profile._msmc, id: MCauth.username, name: 'Player', _msmc };
+
+            return ({ type: "DemoUser", access_token: MCauth.access_token, profile: Demoprofile, translationString: "Login.Success.DemoUser", reason: "User does not own minecraft", getXbox });
         }
-        profile.xuid = xuid;
-        loadBar(100, "Done!");
-        return ({ type: "Success", access_token: MCauth.access_token, profile: profile, getXbox: (updates) => self.xboxProfile(XBLToken, updates), translationString: "Login.Success.User" });
+        const profile = { ...MCprofile, _msmc }
+        loadBar(updates, 100, "Done!");
+        //   console.log(XBLToken);
+        return ({ type: "Success", access_token: MCauth.access_token, profile: profile, translationString: "Login.Success.User", getXbox });
     },
     parseJwt(token) {
         var base64Url = token.split('.')[1];

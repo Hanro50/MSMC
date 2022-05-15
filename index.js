@@ -133,10 +133,6 @@ module.exports = {
     getXbox() {
         return require("./modules/xbox")
     },
-    getFriendlist(auth, xuid) {
-        console.warn("This function has been moved to the Xbox module!")
-        return this.getXbox().getFriendlist(auth, xuid);
-    },
     errorCheck(result) {
         return !(result.type == "Success" || result.type == "DemoUser")
     },

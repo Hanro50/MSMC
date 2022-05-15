@@ -13,8 +13,6 @@ export function fastLaunch(type = "auto", updates, prompt = "select_account", pr
 export function launch(type, token, updates, Windowproperties) {return msmc.launch(type, token, updates, Windowproperties);};
 export function getMCLC() {return msmc.getMCLC();};
 export function getXbox() {return msmc.getXbox();};
-/**@deprecated Function moved! */
-export function getFriendlist(auth, xuid) {return msmc.getFriendlist(auth, xuid);};
 export function errorCheck(result) {return msmc.errorCheck(result);};
 export function isDemoUser(result) {return msmc.isDemoUser(result);};
 export function getExceptional() {return msmc.getExceptional();};

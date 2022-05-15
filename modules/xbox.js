@@ -8,7 +8,7 @@ module.exports = {
      * @param {import('..').result } result 
      * @returns 
      */
-     validate(result) {
+    validate(result) {
         let profile = result.profile;
         return result.getXbox && profile && profile._msmc.ms_exp && ((profile._msmc.ms_exp - Math.floor(Date.now() / 1000)) > 0);
     },
@@ -73,17 +73,7 @@ module.exports = {
         return BE.getFriendList(auth, xuid);
     },
     async getXProfile(auth, xuid) {
-        const target = xuid ? `xuid(${xuid})` : "me";
-        if (typeof auth == "function") auth = auth();
-        let profileRaw = await BE.getFetch()(`https://profile.xboxlive.com/users/${target}/profile/settings?settings=GameDisplayName,GameDisplayPicRaw,Gamerscore,Gamertag`,
-            {
-                headers: {
-                    "Content-Type": "application/json",
-                    "x-xbl-contract-version": 2,
-                    Authorization: auth,
-                },
-            });
-        const profile = await profileRaw.json();
+        const profile = await BE.getXProfile("/profile/settings?settings=GameDisplayName,GameDisplayPicRaw,Gamerscore,Gamertag", xuid);
         return BE.parseUsr(profile.profileUsers[0], auth);
     },
 }
