@@ -8,12 +8,12 @@ export type prompt = "login" | "none" | "consent" | "select_account";
  * This library's supported gui frameworks. 
  * (Raw requires no extra dependencies, use it if you're using some unknown framework!)
  */
-export type framework = "auto" | "electron" | "nwjs" | "raw";
+export type framework = "electron" | "nwjs" | "raw";
 
 /**
  * Here for translators.
  */
-export type ts = "Login.Success.DemoUser" | "Login.Success.User" | "Login.Fail.MS" | "Login.Fail.Relog" | "Login.Fail.Xbox" | "Login.Fail.MC" | "Account.Unknown" | "Account.UserNotFound" | "Account.UserNotAdult" | "Cancelled.GUI" | "Cancelled.Back";
+export type ts = "Login.Success.DemoUser" | "Login.Success.User" | "Login.Fail.MS" | "Login.Fail.Relog" | "Login.Fail.Xbox" | "Login.Fail.MC" | "Account.Unknown" | "Account.UserNotFound" | "Account.BannedCountry" | "Account.ChildInSouthKorea" | "Account.UserNotAdult" | "Cancelled.GUI" | "Cancelled.Back";
 /**
  * The Oauth2 details needed to log you in. 
  * 
@@ -59,7 +59,7 @@ export interface xprofile {
     /**The user's "Gamer score"*/
     score: string,
     /**Gets a user's friend list */
-    getFriends?: () => promise<xprofile[]>;
+    getFriends?: () => Promise<xprofile[]>;
     /**The auth token you need for an "Authorization" header non of the ms docs tell you about, 
      * but which you absolutely need if you want to hit up any xbox live end points. 
      * 
@@ -119,6 +119,7 @@ export interface windowProperties {
 /**
  * An override to manually define which version of fetch should be used 
  * @param fetchIn A version of fetch 
+ * @deprecated No longer needed due to msmc always defaulting to node-fetch. 
  */
 export declare function setFetch(fetchIn: any): void;
 /**
@@ -126,6 +127,21 @@ export declare function setFetch(fetchIn: any): void;
  * @param prompt See the type definition for "prompt" for more information
  */
 export declare function mojangAuthToken(prompt: prompt): token;
+/**
+ * Gets the friendlist from a set xprofile of a set user. 
+ * @param profile The xprofile of the user you want to get the friendlist from
+ * @deprecated Function has been moved! Check the xbox module. Will be removed in 3.2.0
+ */
+export declare function getFriendlist(profile: xprofile): Promise<xprofile[]>;
+/**
+ * Gets the friendlist from a set user based on thier xbox id  
+ * @param auth The auth header needed to use the endpoint
+ * @param xuid The user's xbox ID <If blank the result will be from the user the token belongs to>
+ * @deprecated Function has been moved! Check the xbox module. Will be removed in 3.2.0
+ */
+export declare function getFriendlist(auth: string | (() => string), xuid?: string): Promise<xprofile[]>;
+
+
 /** 
  * This function will create a login link based on the inputs provided. <br>
  * Note that this function is called internally after the redirect has been formatted. Aka after "http://localhost:\<port\>/" is appended to the redirect. <br>
@@ -177,7 +193,7 @@ export declare function validate(profile: profile): Boolean;
  */
 export declare function login(token: token, getlink: (info: string) => void, updates?: (info: update) => void): Promise<result>;
 /**
- * @deprecated This 'type' parameter might cause some unforseen behaviour. It is thus marked for removal...
+ * @deprecated The 'auto' type parameter might cause some unforseen behaviour. It is thus marked for removal...
  */
 export declare function launch(type: "auto", token: token, updates?: (info: update) => void, properties?: windowProperties): Promise<result>;
 /**
@@ -223,7 +239,37 @@ export declare function getMCLC(): {
     refresh: (profile: mclcUser, updates?: (info: update) => void, MStoken?: token) => Promise<mclcUser>
     toProfile: (profile: mclcUser) => profile
 }
+/**Xbox live specific endpoints. */
+export declare function getXbox(): {
+    /**
+     * Checks if the Xbox live access token is still valid! 
+     * @param result The old result object
+     */
+    validate: (result: result) => Boolean;
+    /**
+     * A partial refresh on the xbox related tokens. 
+     * @param result The old result object
+     */
+    refresh: (result: result, msToken: token) => Promise<result>;
+    /**
+     * Returns a list of xprofile objects belonging to a set user's friendlist
+     * @param profile The xprofile who's friendlist you want to read
+     */
+    getFriendlist: (profile: xprofile) => Promise<xprofile[]>;
+    /**
+     * Returns a list of xprofile objects belonging to a set user's friendlist
+     * @param auth The auth header needed to use the endpoint
+     * @param xuid The user's xbox ID or xprofile object you want the friendlist from <If blank the result will be from the user the token belongs to>
+     */
+    getFriendlist: (auth: string | (() => string), xuid?: string | xprofile) => Promise<xprofile[]>;
+    /**
+     * Gets the xprofile from a set user based on thier xbox id  
+     * @param auth The auth header needed to use the endpoint
+     * @param xuid The user's xbox ID <If blank the result will be from the user the token belongs to>
+     */
+    getXProfile: (auth: string | (() => string), xuid?: string) => Promise<xprofile>;
 
+}
 /**Checks if a return value is valid */
 export declare function errorCheck(result: result): Boolean;
 

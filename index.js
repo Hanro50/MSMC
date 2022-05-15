@@ -25,6 +25,7 @@ const BE = require("./modules/backEnd");
 module.exports = {
     //Pass through to set fetch 
     setFetch(fetchIn) {
+        console.warn("[MSMC]: The 'setFetch' method is deprecated!")
         BE.setFetch(fetchIn);
     },
     mojangAuthToken(prompt) {
@@ -108,7 +109,7 @@ module.exports = {
         // eslint-disable-next-line no-undef
 
         if (type == "auto") {
-            console.warn("The 'auto' gui framework is deprecated!!")
+            console.warn("[MSMC] The 'auto' gui framework is deprecated!!")
             if (!!process && !!process.versions && !!process.versions.electron) {
                 type = 'electron';
             } else if (!!process && !!process.versions && !!process.versions.nw) {
@@ -128,6 +129,13 @@ module.exports = {
     //MCLC integration
     getMCLC() {
         return require("./modules/mclc");
+    },
+    getXbox() {
+        return require("./modules/xbox")
+    },
+    getFriendlist(auth, xuid) {
+        console.warn("This function has been moved to the Xbox module!")
+        return this.getXbox().getFriendlist(auth, xuid);
     },
     errorCheck(result) {
         return !(result.type == "Success" || result.type == "DemoUser")

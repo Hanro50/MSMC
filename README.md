@@ -301,6 +301,14 @@ export type ts =  "Login.Success.User" | "Login.Success.DemoUser" | "Login.Fail.
         <td>The given Microsoft Account is not connected to a given Xbox Account</td>
     </tr>
     <tr>
+        <td>Account.BannedCountry</td>
+        <td>The login is from an account that hails from a country where Xbox Live is not available</td>
+    </tr>
+    <tr>
+        <td>Account.ChildInSouthKorea</td>
+        <td>The account needs adult verification on Xbox page. (South Korea)</td>
+    </tr>
+    <tr>
         <td>Account.UserNotAdult</td>
         <td>According to Microsoft. You need to be an adult to log in from your current location.</td>
     </tr>

@@ -55,13 +55,14 @@ module.exports = {
             name: user.settings.find(s => s.id == "GameDisplayName")?.value,
             profilePictureURL: user.settings.find(s => s.id == "GameDisplayPicRaw").value,
             score: user.settings.find(s => s.id == "Gamerscore").value,
-            getFriends: () => getFriendList(auth, user.id)
+            getFriends: () => self.getFriendList(auth, user.id)
         }
     },
 
     async getFriendList(auth, xuid) {
+        const target = xuid ? `xuid(${xuid})` : "me";
         if (typeof auth == "function") auth = auth();
-        let friendsRaw = await FETCH(`https://profile.xboxlive.com/users/xuid(${xuid})/profile/settings/people/people?settings=GameDisplayName,GameDisplayPicRaw,Gamerscore,Gamertag`,
+        let friendsRaw = await FETCH(`https://profile.xboxlive.com/users/${target}/profile/settings/people/people?settings=GameDisplayName,GameDisplayPicRaw,Gamerscore,Gamertag`,
             {
                 headers: {
                     "Content-Type": "application/json",
@@ -71,7 +72,7 @@ module.exports = {
             });
         const friends = await friendsRaw.json();
         let R = [];
-        console.log(friends)
+        console.log("friends", friends, "friends")
         friends.profileUsers.forEach(element => {
             R.push(self.parseUsr(element, auth));
         });
@@ -92,8 +93,10 @@ module.exports = {
         });
         const json = await rxsts.json();
         const xui = json.DisplayClaims.xui[0];
-        const auth = `XBL3.0 x=${xui.uhs};${json.Token}`
+        console.log(xui)
 
+        const auth = `XBL3.0 x=${xui.uhs};${json.Token}`
+        console.log(json.Token)
         updates({ type: "Loading", data: "Getting profile info", percent: lbar * 1 });
         var info = await FETCH("https://profile.xboxlive.com/users/batch/profile/settings",
             {
@@ -111,13 +114,14 @@ module.exports = {
         // console.log(info);
         const profile = await info.json();
         // console.log(profile);
-    
+
         const user = self.parseUsr(profile.profileUsers[0], auth);
         //user.friends = await self.getFriendList(auth, user.xuid)
         user.getAuth = () => auth;
         updates({ type: "Loading", data: "Done!", percent: 100 });
         return user
     },
+
 
     //Main Login flow implementation
     async get(body, updates = console.log) {
@@ -150,6 +154,7 @@ module.exports = {
         if (MS.error) {
             return error("(" + MS.error + ") => " + MS.error_description + "\nThis is likely due to an invalid refresh token. Please relog!", "Login.Fail.Relog", { error: MS.error, disc: MS.error_description });
         }
+        const ms_exp = Math.floor(Date.now() / 1000) + MS["expires_in"] - 100
 
         loadBar(percent * 1, "Logging into Xbox Live");
         var rxboxlive = await FETCH("https://user.auth.xboxlive.com/user/authenticate", {
@@ -192,20 +197,29 @@ module.exports = {
             var reason = "Unknown reason";
             var ts = "Unknown";
             switch (XSTS.XErr) {
-                case 2148916233: {
+                case 2148916233:
                     reason = "The account doesn't have an Xbox account.";
                     ts = "UserNotFound";
                     break;
-                };
-                case 2148916238: {
+                case 2148916235:
+                    reason = "The account is from a country where Xbox live is not available";
+                    ts = "BannedCountry";
+                    break;
+                case 2148916236:
+                case 2148916237:
+                    //I have no idea if this translates correctly. I don't even know what has to be done...Korean law is strange
+                    reason = "South Korean law: Go to the Xbox page and grant parental rights to continue logging in.";
+                    ts = "ChildInSouthKorea";
+                    break;
+                case 2148916238:
                     //Check MSMC's wiki pages on github if you keep getting this error
                     reason =
-                        "The account is a child (under 18) and cannot proceed unless the account is added to a Family by an adult.";
+                        "The account is a child (under 18) and cannot proceed unless the account is added to a Family account by an adult.";
                     ts = "UserNotAdult";
                     break;
-                }
+
             }
-            return error(reason, "Account." + ts);
+            return error(reason, `Account.${ts}`);
         }
         //console.log("XBL3.0 x=" + UserHash + ";" + XSTS.Token) //debug
         loadBar(percent * 3, "Logging into Minecraft");
@@ -237,7 +251,8 @@ module.exports = {
         loadBar(percent * 4.5, "Extracting XUID and parsing player object");
         var profile = await r998.json();
         const xuid = self.parseJwt(MCauth.access_token).xuid;
-        profile._msmc = { refresh: MS.refresh_token, expires_by: experationDate, mcToken: MCauth.access_token };
+        
+        profile._msmc = { refresh: MS.refresh_token, expires_by: experationDate, ms_exp: ms_exp, mcToken: MCauth.access_token };
         if (profile.error) {
             profile._msmc.demo = true;
             return ({ type: "DemoUser", access_token: MCauth.access_token, profile: { xuid: xuid, _msmc: profile._msmc, id: MCauth.username, name: 'Player' }, translationString: "Login.Success.DemoUser", reason: "User does not own minecraft", getXbox: () => self.xboxProfile(XBLToken) });

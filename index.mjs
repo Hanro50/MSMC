@@ -9,9 +9,12 @@ export function authenticate(code, MStoken, updates = () => { }) {return msmc.au
 export function refresh(profile, updates = () => { }, authToken) {return msmc.refresh(profile, updates , authToken);};
 export function validate(profile) {return msmc.validate(profile);};
 export function login(token, getlink, updates) {return msmc.login(token, getlink, updates);};
-export function fastLaunch(type, updates, prompt = "select_account", properties) {return msmc.fastLaunch(type, updates, prompt , properties);};
+export function fastLaunch(type = "auto", updates, prompt = "select_account", properties) {return msmc.fastLaunch(type , updates, prompt , properties);};
 export function launch(type, token, updates, Windowproperties) {return msmc.launch(type, token, updates, Windowproperties);};
 export function getMCLC() {return msmc.getMCLC();};
+export function getXbox() {return msmc.getXbox();};
+/**@deprecated Function moved! */
+export function getFriendlist(auth, xuid) {return msmc.getFriendlist(auth, xuid);};
 export function errorCheck(result) {return msmc.errorCheck(result);};
 export function isDemoUser(result) {return msmc.isDemoUser(result);};
 export function getExceptional() {return msmc.getExceptional();};
