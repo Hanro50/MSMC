@@ -51,11 +51,14 @@
     "node": ">=14.17.3"
   },
   "devDependencies": {
+    "@types/node": "^17.0.35",
     "@types/node-fetch": "^2.6.1",
     "@types/webpack": "^5.28.0"
   },
   "dependencies": {
-    "node-fetch": "2.x"
+ 
+    "node-fetch": "2.x",
+    "tslib": "^2.4.0"
   },
   "funding": [
     {

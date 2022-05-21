@@ -1,22 +1,22 @@
 /**
  * EXPERIMENTAL!
  */
-const MSMC = require("../..");
-const BE = require("../../modules/backEnd");
 
-const path = require('path')
-const fs = require('fs')
-const os = require("os");
+import path from 'path';
+import fs from 'fs';
+import os from "os";
 
 const temp = path.join(os.tmpdir(), "msmc");
-const { spawn, execSync: exec, ChildProcess } = require('child_process');
-
+import { spawn, execSync as exec, ChildProcessWithoutNullStreams } from 'child_process';
+import { exception, lexcodes, windowProperties } from '../assets.js';
+import auth from '../auth';
+import fetch from 'node-fetch';
 var firefox = false;
-const defaultProperties = {
+const defaultProperties: windowProperties = {
     width: 500,
     height: 650,
 }
-var start
+var start: string
 console.log("[MSMC]: OS Type => " + os.type());
 switch (os.type()) {
     case 'Windows_NT':
@@ -30,9 +30,9 @@ switch (os.type()) {
                         console.log("reg query \"" + locW + compatibleW[i2] + "\"")
                         var out = exec("\"C:\\Windows\\System32\\reg.exe\" query \"" + locW + compatibleW[i2] + "\"").toString();
                         if (!out.startsWith("ERROR")) {
-                            out = out.substr(out.indexOf("REG_SZ") + "REG_SZ".length).trim();
+                            out = out.substring(out.indexOf("REG_SZ") + "REG_SZ".length).trim();
                             if (out.indexOf("\n") > 0)
-                                out = out.substr(0, out.indexOf("\n") - 1);
+                                out = out.substring(0, out.indexOf("\n") - 1);
                             if (fs.existsSync(out)) { start = out; break WE; }
                             else console.log("[MSMC]: cannot find " + out)
                         }
@@ -68,11 +68,10 @@ switch (os.type()) {
             console.error("[MSMC]: No compatible browser was found")
         }
 }
-/**
- * @param {ChildProcess} browser
- */
-function browserLoop(token, port, updates, browser) {
-    return new Promise((resolve) => {
+
+function browserLoop(auth: auth, port: string, browser: ChildProcessWithoutNullStreams) {
+
+    return new Promise((resolve, error: (e: lexcodes) => void) => {
         const call = () => {
             try {
                 clearInterval(f3);
@@ -86,39 +85,40 @@ function browserLoop(token, port, updates, browser) {
                 console.error("[MSMC]: Failed to close window!");
             }
         }
-        const end = process.on("exit", call)
+        process.on("exit", call)
         const f3 = setInterval(() => {
-            BE.getFetch()("http://127.0.0.1:" + port + "/json/list").then(r => r.json()).then(out => {
+            fetch("http://127.0.0.1:" + port + "/json/list").then(r => r.json()).then(out => {
                 for (var i = 0; i < out.length; i++) {
                     const loc = out[i].url;
-                    if (loc && loc.startsWith(token.redirect)) {
+                    if (loc && loc.startsWith(auth.token.redirect)) {
                         const urlParams = new URLSearchParams(loc.substr(loc.indexOf("?") + 1)).get("code");
                         if (urlParams)
-                            resolve(MSMC.authenticate(urlParams, token, updates));
+                            resolve(urlParams);
                         else
-                            resolve({ type: "Cancelled", translationString: "Cancelled.Back" });
+                            error("error.gui.closed");
                         call();
                     }
                 }
             }).catch((err) => {
                 call();
-                resolve({ type: "Cancelled", translationString: "Cancelled.GUI" })
+                error("error.gui.closed");
             })
         }, 500);
     });
+
 }
 
 
-module.exports = (token, updates = () => { }, Windowproperties = defaultProperties) => {
+export default (auth: auth, Windowproperties = defaultProperties) => {
     const cmd = Windowproperties.browserCMD ? Windowproperties.browserCMD : start;
     if (!cmd) {
-        throw new Error("[MSMC]: Error : no chromium browser was set, cannot continue!");
+        new exception("error.gui.raw.noBrowser");
     }
     console.warn("[MSMC]: This setting is experimental");
     console.warn("[MSMC]: Using \"" + cmd + "\"");
-    var redirect = MSMC.createLink(token);
-    return new Promise(resolve => {
-        var browser;
+    var redirect = auth.createLink();
+    return new Promise((resolve, error) => {
+        var browser: ChildProcessWithoutNullStreams;
         if (firefox || Windowproperties.firefox) {
             console.log("[MSMC]: Using firefox fallback {Linux only!}");
             if (fs.existsSync(temp)) exec("rm -R " + temp); fs.mkdirSync(temp);
@@ -126,16 +126,16 @@ module.exports = (token, updates = () => { }, Windowproperties = defaultProperti
         } else browser = spawn(cmd, ["--disable-restore-session-state", "--disable-first-run-ui", "--disable-component-extensions-with-background-pages", "--no-first-run", "--disable-extensions", "--window-size=" + Windowproperties.width + "," + Windowproperties.height, "--remote-debugging-port=0", "--no-default-browser-check", "--user-data-dir=" + temp, "--force-app-mode", "--app=" + redirect]);
 
         var firstrun = true;
-        const ouput = (out) => {
+        const ouput = (out: { toString: () => any; }) => {
             const cout = String(out.toString()).toLocaleLowerCase().trim();
             console.log("[MSMC][Browser]: " + cout)
             if (firstrun && cout.startsWith("devtools listening on ws://")) {
                 firstrun = false;
-                var data = cout.substr("devtools listening on ws://".length);
+                var data = cout.substring("devtools listening on ws://".length);
                 const n = data.indexOf(":") + 1;
-                const port = data.substr(n, data.indexOf("/") - n);
+                const port = data.substring(n, data.indexOf("/"));
                 console.log("[MSMC]: Debug hook => http://127.0.0.1:" + port);
-                resolve(browserLoop(token, port, updates, browser));
+                browserLoop(auth, port, browser).then(resolve).catch(error)
             }
         }
         if (!Windowproperties.suppress) {

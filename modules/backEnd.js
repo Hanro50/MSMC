@@ -162,6 +162,7 @@ module.exports = {
         if (webCheck(MS_Raw)) return error("Could not authenticate with Microsoft", "Login.Fail.MC", MS_Raw);
 
         var MS = await MS_Raw.json();
+
         loadBar(updates, percent * 3, "Getting Xbox live Login Token");
         var rxboxlive = await FETCH("https://user.auth.xboxlive.com/user/authenticate", {
             method: "post",
@@ -178,7 +179,9 @@ module.exports = {
         });
         if (webCheck(rxboxlive)) return error("Could get Xbox live token", "Login.Fail.MC", rxboxlive);
 
-        var token = await rxboxlive.json();
+        var token = await rxboxlive.json();   
+
+        console.log(token)
         var XBLToken = token.Token;
 
         loadBar(updates, 100, "Done!");
@@ -187,9 +190,7 @@ module.exports = {
         return { MS, XBLToken, ms_xp }
     },
 
-async mcLogin(xToken){
 
-},
 
 
     //Main Login flow implementation
@@ -228,6 +229,7 @@ async mcLogin(xToken){
         if (webCheck(rlogin_with_xbox)) return error("Could not log into Minecraft", "Login.Fail.MC", rlogin_with_xbox, getXbox);
 
         var MCauth = await rlogin_with_xbox.json();
+  
         //console.log(MCauth) //debug
         const experationDate = Math.floor(Date.now() / 1000) + MCauth["expires_in"] - 100
 
@@ -242,6 +244,7 @@ async mcLogin(xToken){
 
         loadBar(updates, percent * 3, "Extracting XUID and parsing player object");
         var MCprofile = await r998.json();
+        console.log(MCprofile)
         const xuid = self.parseJwt(MCauth.access_token).xuid;
 
         const _msmc = { refresh: xToken.MS.refresh_token, expires_by: experationDate, mcToken: MCauth.access_token };

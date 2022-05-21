@@ -1,0 +1,85 @@
+import type { Response } from "node-fetch"
+/**
+ * If the exact code isn't founnd. The lexicon string is split up and shaved down till it finds a description for the code. 
+ * 
+ * For example; error.auth.microsoft will be shortend to error.auth if error.auth.microsoft isn't found 
+ */
+export let lexicon = {
+    //Error
+    "error": "An unknown error has occured",
+    "error.auth": "An unknown authentication error has occured",
+    "error.auth.microsoft": "Failed to login to Microsoft account",
+    "error.auth.xboxLive": "Failed to login to Xbox Live",
+    "error.auth.xsts": "Unknown error occured when attempting to optain an Xbox Live Security Token",
+    "error.auth.xsts.userNotFound": "The given Microsoft account doesn't have an Xbox account",
+    "error.auth.xsts.bannedCountry": "The given Microsoft account is from a country where Xbox live is not available",
+    "error.auth.xsts.child": "The account is a child (under 18) and cannot proceed unless the account is added to a Family account by an adult",
+    "error.auth.xsts.child.SK": "South Korean law: Go to the Xbox page and grant parental rights to continue logging in.",
+
+    "error.auth.minecraft": "Unknown error occured when attempting to login to Minecraft",
+    "error.auth.minecraft.login": "Failed to authenticate with Mojang with given Xbox account",
+    "error.auth.minecraft.profile": "Failed to fetch minecraft profile",
+    "error.auth.minecraft.entitlements": "Failed to fetch player entitlements",
+
+    "error.gui": "An unknown gui framework error has occured",
+    "error.gui.closed": "Gui closed by user",
+    "error.gui.raw.noBrowser": "no chromium browser was set, cannot continue!",
+
+
+    "error.state.invalid":"[Internal]: Method not implemented.",
+    //Load events
+    "load": "Generic load event",
+    "load.auth": "Generic authentication load event",
+    "load.auth.microsoft": "Logging into Microsoft account",
+    "load.auth.xboxLive": "Logging into Xbox Live",
+    "load.auth.xboxLive.1": "Logging into Xbox Live",
+    "load.auth.xboxLive.2": "Authenticating with xbox live",
+    "load.auth.xsts": "Generating Xbox Live Security Token",
+
+    "load.auth.minecraft": "Generic Minecraft login flow event",
+    "load.auth.minecraft.login": "Authenticating with Mojang's servers",
+    "load.auth.minecraft.profile": "Fetching player profile",
+    "load.auth.minecraft.entitlements": "Fetching player entitlements"
+}
+
+export type lexcodes = keyof typeof lexicon;
+
+export function lst(lexcodes: lexcodes) {
+    const lex = lexcodes.split(".");
+    do {
+        const l = lex.join('.');
+        if (l in lexicon) { return lexicon[l]; }
+        lex.pop();
+    } while (lex.length > 0)
+    return lexcodes;
+}
+
+export interface exptOpts {
+    response: Response;
+}
+
+export class exception {
+    code: lexcodes
+    opt: exptOpts
+    message: string;
+    constructor(code: lexcodes, opt?: exptOpts) {
+        this.code = code;
+        this.message = lst(code);
+        this.opt = opt;
+
+        throw this;
+    }
+}
+
+/**
+ * Used by graphical Electron and NW.js integrations to set the properties of the generated pop-up
+ */
+export interface windowProperties {
+    width: number,
+    height: number,
+    /**Raw ignores this property!*/
+    resizable?: boolean,
+    /**Raw only: Stops MSMC from passing through the browser console log*/
+    suppress?: boolean,
+    [key: string]: any
+}

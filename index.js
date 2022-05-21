@@ -121,7 +121,7 @@ module.exports = {
         switch (type) {
             case ("electron"): return require("./modules/gui/electron.js")(token, updates, Windowproperties);
             case ("nwjs"): return require("./modules/gui/nwjs.js")(token, updates, Windowproperties);
-            case ("raw"): return require("./modules/gui/raw.js")(token, updates, Windowproperties);
+            case ("raw"): return require("./src/gui/raw.js")(token, updates, Windowproperties);
             default: return launch("auto", token, updates, Windowproperties);
 
         }

@@ -8,7 +8,7 @@ module.exports = {
      * @param {import('..').result } result 
      * @returns 
      */
-    validate(result) {
+    validate : (result)=> {
         let profile = result.profile;
         return result.getXbox && profile && profile._msmc.ms_exp && ((profile._msmc.ms_exp - Math.floor(Date.now() / 1000)) > 0);
     },
