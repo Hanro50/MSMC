@@ -1,15 +1,17 @@
-import { fastLaunch, getMCLC, getXbox } from "msmc";
-import msmc from "msmc";
-msmc.mkES6();
-console.log("Testing Raw. This should test most of the underlying code")
-const L = await fastLaunch('raw', console.log);
-console.log(L)
-const P = await L.getXbox(console.log);
-console.log(P, await P.getFriends(), await getXbox().getFriendlist(P.getAuth));
+import msmc, { wrapError } from "msmc";
+console.log(msmc)
+const auth = new msmc.auth();
 
 
+auth.on('load', console.log).luanch('raw').then(async e => {
+
+  const t = await e.getMinecraft()
+  console.log(t.mclc())
+}).catch((e) => {
+  console.log(wrapError(e))
+})
 let R = [];
-console.log(msmc.getXbox().getXProfile(P.getAuth))
+//console.log(msmc.getXbox().getXProfile(P.getAuth))
 /*
 console.log(L);
 

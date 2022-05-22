@@ -1,6 +1,3 @@
-/**
- * EXPERIMENTAL!
- */
 
 import path from 'path';
 import fs from 'fs';
@@ -8,8 +5,8 @@ import os from "os";
 
 const temp = path.join(os.tmpdir(), "msmc");
 import { spawn, execSync as exec, ChildProcessWithoutNullStreams } from 'child_process';
-import { exception, lexcodes, windowProperties } from '../assets.js';
-import auth from '../auth';
+import { err, lexcodes, windowProperties } from '../assets.js';
+import auth from '../auth/auth';
 import fetch from 'node-fetch';
 var firefox = false;
 const defaultProperties: windowProperties = {
@@ -75,6 +72,7 @@ function browserLoop(auth: auth, port: string, browser: ChildProcessWithoutNullS
         const call = () => {
             try {
                 clearInterval(f3);
+                //@ts-ignore
                 process.removeListener("exit", call);
                 if (os.type() == "Windows_NT") {
                     exec("taskkill /pid " + browser.pid);
@@ -101,18 +99,17 @@ function browserLoop(auth: auth, port: string, browser: ChildProcessWithoutNullS
                 }
             }).catch((err) => {
                 call();
+                console.error("[msmc]: " + err)
                 error("error.gui.closed");
             })
         }, 500);
     });
-
 }
-
 
 export default (auth: auth, Windowproperties = defaultProperties) => {
     const cmd = Windowproperties.browserCMD ? Windowproperties.browserCMD : start;
     if (!cmd) {
-        new exception("error.gui.raw.noBrowser");
+        err("error.gui.raw.noBrowser");
     }
     console.warn("[MSMC]: This setting is experimental");
     console.warn("[MSMC]: Using \"" + cmd + "\"");

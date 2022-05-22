@@ -1,5 +1,17 @@
 import type { Response } from "node-fetch"
 /**
+ * A copy of the user object mclc uses
+ */
+export type mclcUser = {
+    access_token: string;
+    client_token?: string;
+    uuid: string;
+
+    name?: string;
+    meta?: { type: "mojang" | "msa" | "legacy", xuid?: string, demo?: boolean };
+    user_properties?: Partial<any>;
+}
+/**
  * If the exact code isn't founnd. The lexicon string is split up and shaved down till it finds a description for the code. 
  * 
  * For example; error.auth.microsoft will be shortend to error.auth if error.auth.microsoft isn't found 
@@ -25,8 +37,10 @@ export let lexicon = {
     "error.gui.closed": "Gui closed by user",
     "error.gui.raw.noBrowser": "no chromium browser was set, cannot continue!",
 
-
-    "error.state.invalid":"[Internal]: Method not implemented.",
+    "error.state.invalid": "[Internal]: Method not implemented.",
+    "error.state.invalid.gui": "[Internal]: Invalid gui framework.",
+    "error.state.invalid.redirect": "[Internal]: The token must have a redirect starting with 'http://localhost/' for this function to work!",
+    "error.state.invalid.electron": "[Internal]: It seems you're attempting to load electron on the frontend. A critical function is missing!",
     //Load events
     "load": "Generic load event",
     "load.auth": "Generic authentication load event",
@@ -39,7 +53,7 @@ export let lexicon = {
     "load.auth.minecraft": "Generic Minecraft login flow event",
     "load.auth.minecraft.login": "Authenticating with Mojang's servers",
     "load.auth.minecraft.profile": "Fetching player profile",
-    "load.auth.minecraft.entitlements": "Fetching player entitlements"
+
 }
 
 export type lexcodes = keyof typeof lexicon;
@@ -55,20 +69,29 @@ export function lst(lexcodes: lexcodes) {
 }
 
 export interface exptOpts {
+    ts: lexcodes;
     response: Response;
 }
 
-export class exception {
-    code: lexcodes
-    opt: exptOpts
-    message: string;
-    constructor(code: lexcodes, opt?: exptOpts) {
-        this.code = code;
-        this.message = lst(code);
-        this.opt = opt;
+export function err(ts: lexcodes) {
+    throw ts;
+}
 
-        throw this;
+export function errResponse(response: Response, ts: lexcodes) {
+    if (!response.ok) throw { response, ts }
+}
+export function wrapError(code: string | exptOpts | any) {
+    let name: lexcodes;
+    let opt: exptOpts | null;
+    if (typeof code == 'string') {
+        name = code as lexcodes;
     }
+    else {
+        opt = code;
+        name = opt.ts;
+    }
+    let message = lst(name || "error");
+    return { name, opt, message };
 }
 
 /**
@@ -83,3 +106,27 @@ export interface windowProperties {
     suppress?: boolean,
     [key: string]: any
 }
+
+export interface mcProfile {
+    id: string,
+    name: string,
+    skins: Array<
+        {
+            id: string,
+            state: 'ACTIVE',
+            url: string,
+            variant: 'SLIM' | 'CLASSIC'
+        }
+    >,
+    capes: Array<
+        {
+            id: string,
+            state: 'ACTIVE',
+            url: string,
+            alias: string
+        }
+    >,
+    demo?: boolean
+}
+
+

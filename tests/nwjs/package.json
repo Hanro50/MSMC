@@ -7,7 +7,7 @@
     },
     "dependencies": {
         "msmc": "file:../../.",
-        "nw": "0.59.1-sdk"
+        "nw": "^0.59.1-sdk"
     },
     "scripts": {
         "start": "nw"

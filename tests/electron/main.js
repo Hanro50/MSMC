@@ -18,27 +18,21 @@ function createWindow() {
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
 }
-const { fastLaunch, getMCLC } = require("msmc");
+const { auth, wrapError } = require('msmc');
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-
   createWindow()
-
-
   console.log("Testing NWJS. This should test most of the underlying code")
-  
-  fastLaunch('electron', console.log).then(async L => {
-    console.log(L);
-
-    const mclc = getMCLC().getAuth(L);
-    console.log(mclc);
-    const r = await getMCLC().refresh(mclc, console.log);
-    console.log(r);
-
-    console.log("Completed tests!");
-
+  const msmc = new auth('select_account');
+  msmc.on('load', console.log).luanch('electron').then(async e => {
+    const t = await e.getMinecraft()
+    console.log(t.mclc())
+    const a = await t.refresh(true)
+    console.log(t.mclc())
+  }).catch(e => {
+    console.log(wrapError(e))
   })
   app.on('activate', function () {
 

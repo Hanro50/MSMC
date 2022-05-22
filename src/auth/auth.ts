@@ -1,7 +1,8 @@
 import EventEmitter from "events";
-import { exception, lexcodes, windowProperties } from "./assets";
+
 import fetch from "node-fetch";
-import {infXbox} from "./endpoints";
+import { lexcodes, windowProperties, lst, errResponse, err } from "../assets.js";
+import type xbox from "./xbox.js";
 /**
  * This library's supported gui frameworks. 
  * (Raw requires no extra dependencies, use it if you're using some unknown framework!)
@@ -50,40 +51,8 @@ export interface msAuthToken {
     user_id: string,
     foci: string
 }
-export interface xblAuthToken {
-    IssueInstant: string
-    NotAfter: string
-    Token: string
-    DisplayClaims: { xui: [{ uhs: string }] }
-}
-export interface mcAuthToken {
-    username: string,
-    roles: [],
-    access_token: string
-    token_type: string,
-    expires_in: number
-}
-export interface mcProfile {
-    id: string,
-    name: string,
-    skins: Array<
-        {
-            id: string,
-            state: 'ACTIVE',
-            url: string,
-            variant: 'SLIM' | 'CLASSIC'
-        }
-    >,
-    capes: Array<
-        {
-            id: string,
-            state: 'ACTIVE',
-            url: string,
-            alias: string
-        }
-    >,
-    demo?: boolean
-}
+
+
 function mojangAuthToken(prompt?: prompt) {
     const token = {
         client_id: "00000000402b5328",
@@ -103,25 +72,11 @@ export class loader {
     }
 }
 
-
-
 export declare interface auth extends EventEmitter {
-    on(event: "start", listener: (asset: lexcodes) => void): this
-    on(event: "load", listener: (asset: lexcodes) => void): this
-    on(event: "error", listener: (asset: lexcodes) => void): this
-    on(event: "done", listener: (asset: lexcodes) => void): this
-
-    once(event: "start", listener: (asset: lexcodes) => void): this
-    once(event: "error", listener: (asset: lexcodes) => void): this
-    once(event: "done", listener: (asset: lexcodes) => void): this
-
-    emit(event: "start", asset: lexcodes): boolean;
+    on(event: "load", listener: (asset: lexcodes, message: string) => void): this
+    once(event: "load", listener: (asset: lexcodes, message: string) => void): this
     emit(event: "load", asset: lexcodes): boolean;
-    emit(event: "error", asset: lexcodes): boolean;
-    emit(event: "done", asset: lexcodes): boolean;
 }
-
-
 
 export class auth extends EventEmitter {
     token: MStoken;
@@ -142,6 +97,9 @@ export class auth extends EventEmitter {
             (this.token.prompt ? "&prompt=" + this.token.prompt : "")
         );
     }
+    emit(eventName: string | symbol, ...args: any[]): boolean {
+        return super.emit(eventName, args[0], lst(args[0]))
+    }
     load(code: lexcodes) {
         this.emit("load", code);
     }
@@ -154,8 +112,8 @@ export class auth extends EventEmitter {
             "&redirect_uri=" + this.token.redirect)
         return this._get(body);
     }
-    refresh(MS: msAuthToken): Promise< infXbox>
-    refresh(refreshToken: string): Promise<infXbox>
+    refresh(MS: msAuthToken): Promise<xbox>
+    refresh(refreshToken: string): Promise<xbox>
     refresh(MS: msAuthToken | string) {
         const refresh = typeof MS == 'string' ? MS : MS.refresh_token;
         const body = (
@@ -169,16 +127,26 @@ export class auth extends EventEmitter {
     async luanch(framework: framework, windowProperties?: windowProperties) {
         switch (framework) {
             case "raw":
-                return await this.login(await (require("./gui/raw.js")).default(this, windowProperties))
+                return await this.login(await (require("../gui/raw.js")).default(this, windowProperties))
+            case "nwjs":
+                return await this.login(await (require("../gui/nwjs.js")).default(this, windowProperties))
+            case "electron":
+                return await this.login(await (require("../gui/electron.js")).default(this, windowProperties))
+            default:
+                err('error.state.invalid.gui')
         }
     }
 
-    private async _get(body: string): Promise<infXbox> {
+    async server(port = 0) {
+        if (this.token.redirect.startsWith('http://localhost/')) err("error.state.invalid.redirect")
+    }
+
+    private async _get(body: string): Promise<xbox> {
         this.load('load.auth.microsoft')
         var MS_Raw = await fetch("https://login.live.com/oauth20_token.srf", {
             method: "post", body: body, headers: { "Content-Type": "application/x-www-form-urlencoded" }
         })
-        if (!MS_Raw.ok) new exception("error.auth.microsoft", { response: MS_Raw })
+        errResponse(MS_Raw, "error.auth.microsoft")
 
         var MS = await MS_Raw.json();
         this.load('load.auth.xboxLive.1')
@@ -195,9 +163,9 @@ export class auth extends EventEmitter {
             }),
             headers: { "Content-Type": "application/json", Accept: "application/json" },
         });
-        if (!rxboxlive.ok) new exception("error.auth.xboxLive", { response: MS_Raw });
+        errResponse(rxboxlive, "error.auth.xboxLive")
         var token = await rxboxlive.json();
-        return new (require("./endpoints.js").default)(this, MS, token);
+        return new (require("./xbox.js").default)(this, MS, token);
     }
 }
 export default auth;
