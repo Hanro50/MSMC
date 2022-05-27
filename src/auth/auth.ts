@@ -22,24 +22,11 @@ export type prompt = "login" | "none" | "consent" | "select_account";
  * 2) https://docs.microsoft.com/en-us/graph/auth-v2-user#1-register-your-app
  * 3) https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps
  * 
- * Recommendations: 
- * 
- * 1) Use "Mobile and desktop applications" as your type setting and make sure to set it up to only use "Personal Microsoft accounts only". 
- * You're not a university!
- * 
- * 2) set the redirect to "http://localhost/...", With localhost specifically Microsoft does not check port numbers. 
- * This means that  http://localhost:1/... to http://localhost:65535/... are all the same redirect to MS. (http://localhost/... == http://localhost:80/... btw)
- * This library does not allow you to set the port manually, due to the extreme risk of unforeseen bugs popping up. 
- * 
- * 3) If you set the redirect to, for example, "http://localhost/Rainbow/Puppy/Unicorns/hl3/confirmed" then the variable {redirect} needs to equal "Rainbow/Puppy/Unicorns/hl3/confirmed".
- * 
- * 4) Basically the redirect field is equal to your redirect URL you gave microsoft without the "http://localhost/" part. 
- * Please keep this in mind or you'll get weird errors as a mismatch here will still work...sort of. 
  */
 export interface MStoken {
-    client_id: string,
+    client_id: string,  
+    redirect: string,
     clientSecret?: string,
-    redirect?: string,
     prompt?: prompt
 }
 export interface msAuthToken {
@@ -139,6 +126,7 @@ export class auth extends EventEmitter {
 
     async server(port = 0) {
         if (this.token.redirect.startsWith('http://localhost/')) err("error.state.invalid.redirect")
+        throw "error.state.invalid"
     }
 
     private async _get(body: string): Promise<xbox> {
