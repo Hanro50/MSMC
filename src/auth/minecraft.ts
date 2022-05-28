@@ -6,16 +6,18 @@ export type entitlements = "game_minecraft" | "game_minecraft_bedrock" | "game_d
 
 export default class minecraft {
 
-    mcToken: string;
-    profile: mcProfile;
-    parent: xbox;
-    xuid: string;
+    readonly mcToken: string;
+    readonly profile: mcProfile;
+    readonly parent: xbox;
+    readonly xuid: string;
+    readonly exp: number;
 
     constructor(parent: xbox, mcToken: string, profile: mcProfile) {
         this.parent = parent;
         this.mcToken = mcToken;
         this.profile = profile;
         this.xuid = this._parseLoginToken().xuid;
+        this.exp = new Date().getTime() + (1000 * 60 * 60 * 23);
     }
     async entitlements() {
         var r998 = await fetch("https://api.minecraftservices.com/minecraft/profile", {
@@ -52,6 +54,7 @@ export default class minecraft {
     }
 
     async refresh(force?: boolean) {
+        //@ts-ignore
         this.parent = await this.parent.refresh(force);
         if (this.validate() && !force) return this
         let tkn = await this.parent.getMinecraft();
@@ -62,7 +65,7 @@ export default class minecraft {
         return this;
     }
     validate() {
-        return false;
+        return this.exp > Date.now();
     }
     _parseLoginToken() {
         var base64Url = this.mcToken.split('.')[1];

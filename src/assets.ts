@@ -53,7 +53,7 @@ export let lexicon = {
     "load.auth.minecraft": "Generic Minecraft login flow event",
     "load.auth.minecraft.login": "Authenticating with Mojang's servers",
     "load.auth.minecraft.profile": "Fetching player profile",
-
+    "load.auth.minecraft.gamepass": "[experimental!] Checking if a user has gamepass"
 }
 
 export type lexcodes = keyof typeof lexicon;

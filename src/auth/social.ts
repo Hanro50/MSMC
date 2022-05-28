@@ -28,7 +28,7 @@ export default class social {
     }
     async getFriends(xuid?: string) {
         const friends = await this.xGet("/profile/settings/people/people?settings=GameDisplayName,GameDisplayPicRaw,Gamerscore,Gamertag", xuid)
-        let R = [];
+        let R: xplayer[] = [];
         friends.profileUsers.forEach((element: { id: string; settings: any[]; }) => {
             R.push(new xplayer(element, this));
         });

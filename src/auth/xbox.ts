@@ -94,7 +94,7 @@ export default class xbox {
                 headers: { "Content-Type": "application/json", Accept: "application/json" },
             }
         );
-        errResponse(rlogin_with_xbox,"error.auth.minecraft.login")
+        errResponse(rlogin_with_xbox, "error.auth.minecraft.login")
         var MCauth = await rlogin_with_xbox.json() as mcAuthToken;
         this.load('load.auth.minecraft.profile')
         var r998 = await fetch("https://api.minecraftservices.com/minecraft/profile", {
@@ -104,17 +104,28 @@ export default class xbox {
                 Authorization: `Bearer ${MCauth.access_token}`,
             },
         });
-        errResponse(r998,"error.auth.minecraft.profile")
+        errResponse(r998, "error.auth.minecraft.profile")
         var MCprofile = await r998.json() as mcProfile & { error?: string };
         const profile = MCprofile.error ? { id: MCauth.username, capes: [], skins: [], name: "player", demo: true } : MCprofile;
-        return new minecraft(this, MCauth.access_token, profile)
-        // return new minecraft(this, MCauth.access_token, profile);
+        let mc = new minecraft(this, MCauth.access_token, profile);
+        if (mc.isDemo()) {
+            this.load('load.auth.minecraft.gamepass');
+            const entitlements = await mc.entitlements()
+            if (entitlements.includes("game_minecraft") || entitlements.includes("product_minecraft")) {
+                const social = await (await this.getSocial()).getProfile();
+                mc = new minecraft(this, MCauth.access_token, { id: MCauth.username, capes: [], skins: [], name: social.gamerTag });
+            }
+        }
+        return mc
     }
     validate() {
         return this.exp > Date.now();
     }
-
-    //infminecraft
-
-
+    /**
+     * Feed this into the refresh funtion in the auth object that generated it.
+     * @returns The refresh token
+     */
+    save() {
+        return this.msToken.refresh_token;
+    }
 }
