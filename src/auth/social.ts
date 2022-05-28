@@ -14,7 +14,7 @@ export class xplayer {
         this.score = user.settings.find(s => s.id == "Gamerscore").value;
         this.auth = auth;
     }
-    getFriends() { this.auth.getFriends(this.xuid) }
+    getFriends() { return this.auth.getFriends(this.xuid) }
 }
 export default class social {
 
