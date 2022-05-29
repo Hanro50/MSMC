@@ -111,8 +111,7 @@ export default (auth: auth, Windowproperties = defaultProperties) => {
     if (!cmd) {
         err("error.gui.raw.noBrowser");
     }
-    console.warn("[MSMC]: This setting is experimental");
-    console.warn("[MSMC]: Using \"" + cmd + "\"");
+    console.log("[MSMC]: Using \"" + cmd + "\"");
     var redirect = auth.createLink();
     return new Promise((resolve, error) => {
         var browser: ChildProcessWithoutNullStreams;
