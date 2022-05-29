@@ -1,5 +1,5 @@
 # Lexipacks!
-These are optional files that provide translations for msmc events and errors. They are meant to be used by launcher developers to easily change the language msmc displays errors in. 
+These are optional files that provide translations for msmc events and errors. They are meant to be used by launcher developers to easily change the language msmc displays errors and load events in. 
 
 If a languagepack is missing a translation, the internal translation function msmc will map it to the next available lexicode. A lexicode is essentially a string that uses a "." to seperate between the key words held within a set code. 
 
