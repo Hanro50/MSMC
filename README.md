@@ -15,6 +15,47 @@ At the moment you can get support via Discord (link above).
 
 <h1>UNDER CONSTRUCTION; 4.0.0 is still in an alpha state!</h1>
 
+# Examples
+These are in an unfinished state 
+## A basic ES6 example
+```js
+import msmc, { wrapError } from "msmc";
+const auth = new msmc.auth(); //Spawn a new auth object using mojang's token
+
+
+auth.on('load', console.log) //read load events into the console 
+try{
+    const xbx = await  auth.luanch('raw')//In the example we use raw, but you can replace the word raw with electron or nwjs if you're using either of the two
+    const mc = await xbx.getMinecraft()//Lets get the information we need to launch minecraft
+
+    // Pulled from the Minecraft Launcher core docs.
+    let opts = {
+        clientPackage: null,
+        // Simply call this function to convert the msmc minecraft object into a mclc authorization object
+        authorization: mc.mclc(),
+        root: "./minecraft",
+        version: {
+            number: "1.18.2",
+            type: "release"
+        },
+        memory: {
+            max: "6G",
+            min: "4G"
+        }
+    }
+    console.log("Starting!")
+    launcher.launch(opts);
+
+    launcher.on('debug', (e) => console.log(e));
+    launcher.on('data', (e) => console.log(e));
+}catch(e){
+  console.log(wrapError(e)) // The wrap error function is here to convert an msmc error into something we can decode. 
+}
+
+```
+
+
+
 # Modules 
 ## auth
 This module is the starting point of msmc. It will be the first msmc object you create. It is also the object that'll handle all of msmc's events for you. Mainly the load event. 
