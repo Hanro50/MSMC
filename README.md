@@ -17,9 +17,11 @@ At the moment you can get support via Discord (link above).
 
 # Examples
 These are in an unfinished state 
-## A basic ES6 example
+## A basic ES6 example with [MCLC](https://github.com/Pierce01/MinecraftLauncher-core)
 ```js
 import msmc, { wrapError } from "msmc";
+import { Client, Authenticator } from "minecraft-launcher-core";
+const launcher = new Client();//We're simple setting up mclc here...
 const auth = new msmc.auth(); //Spawn a new auth object using mojang's token
 
 
