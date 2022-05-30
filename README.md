@@ -435,3 +435,9 @@ function wrapError(code: string | exptOpts | any): {
 };
 ```
 This function will take errors thrown by msmc and wrap them up for you. The message will be the translated cause of the error. The opt field will contain the response object if the error was caused by a fetch operation and the name is the standard lexcode if you want to do some processing based on the lexcode of the error. 
+
+# Build source 
+Simply run in the root directory. 
+```bash
+npm run build
+```
