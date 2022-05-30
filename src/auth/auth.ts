@@ -64,6 +64,7 @@ export declare interface auth extends EventEmitter {
     once(event: "load", listener: (asset: lexcodes, message: string) => void): this
     emit(event: "load", asset: lexcodes): boolean;
 }
+
 export class auth extends EventEmitter {
     token: MStoken;
     constructor(prompt?: prompt)

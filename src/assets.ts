@@ -1,5 +1,6 @@
 import { readFileSync } from "fs";
 import type { Response } from "node-fetch"
+import { join } from "path";
 /**
  * A copy of the user object mclc uses
  */
@@ -17,7 +18,7 @@ export type mclcUser = {
  * 
  * For example; error.auth.microsoft will be shortend to error.auth if error.auth.microsoft isn't found 
  */
-let lexicon = {
+export let lexicon = {
     //Error
     "error": "An unknown error has occured",
     "error.auth": "An unknown authentication error has occured",
@@ -144,6 +145,8 @@ export function getDefaultWinProperties(): windowProperties {
     };
 }
 
-export function loadLexiPack(file: string) {
-    lexicon = JSON.parse(readFileSync(file).toString());
+export function loadLexiPack(...file: string[]): typeof lexicon  {
+    const pack: typeof lexicon = JSON.parse(readFileSync(join(...file)).toString());
+    lexicon = pack
+    return pack
 }

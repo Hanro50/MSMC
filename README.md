@@ -351,6 +351,8 @@ The raw back end function used to obtain information related to a given user bas
 A collection of helper functions to aid in using msmc.
 
 > ### Languages and you
+See our premade [lexipacks here](/lexipacks) and see the [loadLexiPack](#function-loadlexipackfile-string-typeof-lexicon) function for more information on how to load it. 
+
 I've noticed that a fair amount of the people in the mcjs café discord tend to maintain launchers that by default aren't set to English. While older versions of msmc made efforts to address this. I'm happy to announce that we switched over to a solution that isn't just hacked onto existing code this time. 
 
 Introducing the lexicon property. By overriding this object with your own code you can effectively localize MSMC without essentially needing to hunt for every English piece of dialogue. Potential msmc language packs will only need to override this one property to translate the entirety of msmc's errors and load events to another language. 
@@ -406,7 +408,14 @@ function lst(lexcodes: lexcodes): any;
 ```
 This function will translate lexcodes into readable text based on the [lexicon](#lexicon) object. 
 
+#### `function loadLexiPack(...file: string[]): typeof lexicon;` 
+Loads a set lexipack and returns it when it finishes loading it.  
 
+Usage: 
+```js
+import {assets} from "msmc";
+assets.loadLexiPack(path,to,lexipack,here);
+```
 > ### Error handling
 Handling errors in msmc changed a little. Since we moved back to a throw on error model last seen when we moved to an async architecture. The issue of error typing has propped up again. If an msmc object throws an error. It will be in one of two formats. 
 ```ts
