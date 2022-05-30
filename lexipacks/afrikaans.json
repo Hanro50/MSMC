@@ -1,5 +1,6 @@
 {
     "version":"4.0.0",
+    "name":"Afrikaans",
     "error": "'n Onbekende fout het voorgekom",
     "error.auth": "n Onbekende fout het voorgekom terwel ons probeer het om u identitied te verifiheer",
     "error.auth.microsoft": "Kon nie aanmeld by u Microsoft-rekening nie",
@@ -33,5 +34,9 @@
     "load.auth.minecraft": "Generiese Minecraft-aanmeldingvloeigeleentheid",
     "load.auth.minecraft.login": "Verifieer met Mojang se bedieners",
     "load.auth.minecraft.profile": "Haal tans spelerprofiel",
-    "load.auth.minecraft.gamepass": "Kontroleer of 'n gebruiker 'gamepass' het"
+    "load.auth.minecraft.gamepass": "Kontroleer of 'n gebruiker 'gamepass' het",
+
+    "gui": "Gui komponent",
+    "gui.title": "Teken by Minecraft aan",
+    "gui.market": "af-ZA"
 }

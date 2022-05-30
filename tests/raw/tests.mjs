@@ -2,7 +2,7 @@ import msmc, { wrapError } from "msmc";
 console.log(msmc)
 const auth = new msmc.auth();
 
-
+console.log(auth.createLink())
 auth.on('load', console.log).luanch('raw').then(async e => {
 
   const t = await e.getMinecraft()
@@ -11,6 +11,7 @@ auth.on('load', console.log).luanch('raw').then(async e => {
   console.log(wrapError(e))
 })
 let R = [];
+
 //console.log(msmc.getXbox().getXProfile(P.getAuth))
 /*
 console.log(L);

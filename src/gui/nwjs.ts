@@ -1,13 +1,7 @@
-import { lexcodes } from "../assets.js";
+import { getDefaultWinProperties, lexcodes } from "../assets.js";
 import { auth } from "../auth/auth.js";
-const defProp = {
-    width: 500,
-    height: 650,
-    resizable: false,
-    title: "Microsoft Login"
-}
 
-export default (auth: auth, Windowproperties = defProp) => {
+export default (auth: auth, Windowproperties = getDefaultWinProperties()) => {
     return new Promise((resolve, rejects: (e: lexcodes) => void) => {
         var redirect = auth.createLink();
         //@ts-ignore

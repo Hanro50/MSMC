@@ -1,3 +1,4 @@
+import { readFileSync } from "fs";
 import type { Response } from "node-fetch"
 /**
  * A copy of the user object mclc uses
@@ -16,7 +17,7 @@ export type mclcUser = {
  * 
  * For example; error.auth.microsoft will be shortend to error.auth if error.auth.microsoft isn't found 
  */
-export let lexicon = {
+let lexicon = {
     //Error
     "error": "An unknown error has occured",
     "error.auth": "An unknown authentication error has occured",
@@ -53,7 +54,11 @@ export let lexicon = {
     "load.auth.minecraft": "Generic Minecraft login flow event",
     "load.auth.minecraft.login": "Authenticating with Mojang's servers",
     "load.auth.minecraft.profile": "Fetching player profile",
-    "load.auth.minecraft.gamepass": "[experimental!] Checking if a user has gamepass"
+    "load.auth.minecraft.gamepass": "[experimental!] Checking if a user has gamepass",
+    //Gui components
+    "gui": "Gui component",
+    "gui.title": "Sign in to your account",
+    "gui.market": "en-US"
 }
 
 export type lexcodes = keyof typeof lexicon;
@@ -130,3 +135,15 @@ export interface mcProfile {
 }
 
 
+export function getDefaultWinProperties(): windowProperties {
+    return {
+        width: 500,
+        height: 650,
+        resizable: false,
+        title: lst("gui.title")
+    };
+}
+
+export function loadLexiPack(file: string) {
+    lexicon = JSON.parse(readFileSync(file).toString());
+}

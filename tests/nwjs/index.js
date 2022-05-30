@@ -1,5 +1,8 @@
+const { readFileSync } = require("fs");
 const { auth, wrapError } = require("msmc");
+const { assets } = require("msmc");
 
+assets.loadLexiPack("../../lexipacks/french.json")
 console.log("Testing NWJS. This should test most of the underlying code")
 new auth('select_account').on('load',console.log).luanch('nwjs').then(async e => {
     const t = await e.getMinecraft()

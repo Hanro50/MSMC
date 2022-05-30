@@ -1,4 +1,4 @@
-import { err, lexcodes } from "../assets.js";
+import { err, getDefaultWinProperties, lexcodes } from "../assets.js";
 import { auth } from "../auth/auth.js";
 import type { BrowserWindow as TBrowser } from 'electron';
 //@ts-ignore
@@ -6,18 +6,11 @@ const dynReq = (typeof __webpack_require__ === "function" ? __non_webpack_requir
 
 const BrowserWindow = dynReq("electron").BrowserWindow;
 
-const defProp = {
-    width: 500,
-    height: 650,
-    resizable: false,
-    title: "Microsoft Login"
-};
-
 if (!BrowserWindow){
     err("error.state.invalid.electron")
 }
 
-export default (auth: auth, Windowproperties = defProp) => {
+export default (auth: auth, Windowproperties = getDefaultWinProperties()) => {
     return new Promise((resolve, reject: (e: lexcodes) => void) => {
         var redirect = auth.createLink();
         const mainWindow: TBrowser = new BrowserWindow(Windowproperties);

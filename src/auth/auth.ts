@@ -24,7 +24,7 @@ export type prompt = "login" | "none" | "consent" | "select_account";
  * 
  */
 export interface MStoken {
-    client_id: string,  
+    client_id: string,
     redirect: string,
     clientSecret?: string,
     prompt?: prompt
@@ -64,7 +64,6 @@ export declare interface auth extends EventEmitter {
     once(event: "load", listener: (asset: lexcodes, message: string) => void): this
     emit(event: "load", asset: lexcodes): boolean;
 }
-
 export class auth extends EventEmitter {
     token: MStoken;
     constructor(prompt?: prompt)
@@ -81,7 +80,8 @@ export class auth extends EventEmitter {
             "&response_type=code" +
             "&redirect_uri=" + encodeURIComponent(this.token.redirect) +
             "&scope=XboxLive.signin%20offline_access" +
-            (this.token.prompt ? "&prompt=" + this.token.prompt : "")
+            (this.token.prompt ? "&prompt=" + this.token.prompt : "") +
+            "&mkt=" + lst('gui.market')
         );
     }
     emit(eventName: string | symbol, ...args: any[]): boolean {

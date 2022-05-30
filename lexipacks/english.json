@@ -1,5 +1,6 @@
 {
     "version":"4.0.0",
+    "name":"English",
     "error": "An unknown error has occured",
     "error.auth": "An unknown authentication error has occured",
     "error.auth.microsoft": "Failed to login to Microsoft account",
@@ -35,5 +36,9 @@
     "load.auth.minecraft": "Generic Minecraft login flow event",
     "load.auth.minecraft.login": "Authenticating with Mojang's servers",
     "load.auth.minecraft.profile": "Fetching player profile",
-    "load.auth.minecraft.gamepass": "[experimental!] Checking if a user has gamepass"
+    "load.auth.minecraft.gamepass": "[experimental!] Checking if a user has gamepass",
+
+    "gui": "Gui component",
+    "gui.title": "Sign in to your account",
+    "gui.market": "en-US"
 }

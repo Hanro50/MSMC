@@ -5,14 +5,11 @@ import os from "os";
 
 const temp = path.join(os.tmpdir(), "msmc");
 import { spawn, execSync as exec, ChildProcessWithoutNullStreams } from 'child_process';
-import { err, lexcodes, windowProperties } from '../assets.js';
+import { err, getDefaultWinProperties, lexcodes } from '../assets.js';
 import auth from '../auth/auth';
 import fetch from 'node-fetch';
 var firefox = false;
-const defaultProperties: windowProperties = {
-    width: 500,
-    height: 650,
-}
+
 var start: string
 console.log("[MSMC]: OS Type => " + os.type());
 switch (os.type()) {
@@ -106,7 +103,7 @@ function browserLoop(auth: auth, port: string, browser: ChildProcessWithoutNullS
     });
 }
 
-export default (auth: auth, Windowproperties = defaultProperties) => {
+export default (auth: auth, Windowproperties = getDefaultWinProperties()) => {
     const cmd = Windowproperties.browserCMD ? Windowproperties.browserCMD : start;
     if (!cmd) {
         err("error.gui.raw.noBrowser");

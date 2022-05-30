@@ -1,5 +1,6 @@
 {
     "version":"4.0.0",
+    "name":"French",
     "error": "Une erreur inconnue est survenue.",
     "error.auth": "Une erreur d'authentification inconnue est survenue.",
     "error.auth.microsoft": "Échec de la connexion à votre compte Microsoft.",
@@ -35,5 +36,9 @@
     "load.auth.minecraft": "Événement générique de connexion à Minecraft",
     "load.auth.minecraft.login": "Authentification avec les servers de Mojang.",
     "load.auth.minecraft.profile": "Récupération du profil du joueur",
-    "load.auth.minecraft.gamepass": "[Experimental!] Vérification si le joueur à le Gamepass"
+    "load.auth.minecraft.gamepass": "[Experimental!] Vérification si le joueur à le Gamepass",
+
+    "gui": "Composant GUI",
+    "gui.title": "Se connecter à Minecraft",
+    "gui.market": "fr-FR"
 }
