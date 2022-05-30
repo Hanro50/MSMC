@@ -1,0 +1,44 @@
+{
+    "Version": "4.0.0",
+    "name": "German",
+    "error": "Ein unbekannter Fehler ist aufgetreten",
+    "error.auth": "Ein unbekannter Authentifizierungsfehler ist aufgetreten",
+    "error.auth.microsoft": "Anmeldung beim Microsoft-Konto fehlgeschlagen",
+    "error.auth.xboxLive": "Anmeldung bei Xbox Live fehlgeschlagen",
+    "error.auth.xsts": "Beim Versuch, ein Xbox Live-Sicherheitstoken zu erhalten, ist ",
+    "error.auth.xsts.userNotFound": "Das angegebene Microsoft-Konto hat kein Xbox-Konto",
+    "error.auth.xsts.bannedCountry": "Das angegebene Microsoft-Konto stammt aus einem Land, in dem Xbox Live nicht verfügbar ist",
+    "error.auth.xsts.child": "Das Konto ist ein Kind (unter 18). Es kann nicht fortgefahren werden, solange das Konto nicht von einem Erwachsenen zu einem Familienkonto hinzugefügt wurde",
+    "error.auth.xsts.child.SK": "Südkoreanisches Gesetzt: Gehen Sie zur Xbox-Seite und gewähren Sie den Eltern die Rechte, um sich weiterhin anzumelden.",
+
+    "error.auth.minecraft": "Beim Versuch, sich bei Minecraft anzumelden, ist ein unbekannter Fehler aufgetreten",
+    "error.auth.minecraft.login": "Authentifizierung bei Mojang mit gegebenem Xbox-Konto fehlgeschlagen",
+    "error.auth.minecraft.profile": "Minecraft-Profil konnte nicht abgerufen werden",
+    "error.auth.minecraft.entitlements": "Fehler beim Abrufen der Spielerberechtigungen",
+
+    "error.gui": "Ein unbekannter GUI-Framework-Fehler ist aufgetreten",
+    "error.gui.closed": "Gui vom Benutzer geschlossen",
+    "error.gui.raw.noBrowser": "Es wurde kein Chromium-Browser eingestellt, kann nicht fortfahren!",
+
+    "error.state.invalid": "[Internal]: Methode nicht implementiert.",
+    "error.state.invalid.gui": "[Internal]: Ungültiges GUI-Framework.",
+    "error.state.invalid.redirect": "[Internal]: Der Token muss eine Weiterleitung haben, die mit 'http://localhost/' beginnt, damit diese Funktion funktioniert!",
+    "error.state.invalid.electron": "[Internal]: Anscheinend versuchen Sie, Electron auf das Frontend zu laden. Eine kritische Funktion fehlt!",
+
+    "load": "Generisches Ladeereignis",
+    "load.auth": "Generisches Authentifizierungs-Ladeereignis",
+    "load.auth.microsoft": "Melde bei Microsoft-Konto an",
+    "load.auth.xboxLive": "Melde bei Xbox Live an",
+    "load.auth.xboxLive.1": "Melde Xbox Live an",
+    "load.auth.xboxLive.2": "Authentifiziere bei Xbox Live",
+    "load.auth.xsts": "Generiere Xbox Live-Sicherheitstoken",
+
+    "load.auth.minecraft": "Generisches Minecraft-Login-Flow-Ereignis",
+    "load.auth.minecraft.login": "Authentifiziere bei Mojangs Servern",
+    "load.auth.minecraft.profile": "Rufe Spielerprofil ab",
+    "load.auth.minecraft.gamepass": "[experimentell!] Überprüfe, ob der Benutzer Gamepass hat",
+
+    "gui": "Gui-Komponente",
+    "gui.title": "Melden Sie sich bei Ihrem Konto an",
+    "gui.market": "de-DE"
+}
