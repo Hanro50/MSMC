@@ -2,7 +2,6 @@
 
 const { execSync } = require("child_process");
 const { rmSync } = require("fs");
-const {resolve } = require("path");
 
 rmSync('dist', { recursive: true, force: true });
 rmSync('types', { recursive: true, force: true });
