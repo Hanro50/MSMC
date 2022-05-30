@@ -6,7 +6,8 @@
         "nwjs-types": "^1.0.0"
     },
     "dependencies": {
-        "msmc": "file:../../."
+        "@types/node": "^17.0.35",
+        "msmc": "file:../../"
     },
     "scripts": {
         "start": "node tests.mjs"

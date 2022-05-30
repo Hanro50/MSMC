@@ -1,0 +1,11 @@
+{ // Change this to match your project
+  "extends": "./tsconfig.dist.json",
+  "compilerOptions": {
+    "sourceMap": true,
+    "outDir": "dist",
+    "watch": true,
+    "declarationMap": true,
+    "declaration": true,
+    "declarationDir": "types"
+  }
+}

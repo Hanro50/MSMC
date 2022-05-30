@@ -1,0 +1,9 @@
+{ // Change this to match your project
+    "extends": "./tsconfig.dist.json",
+    "compilerOptions": {
+        "removeComments": false,
+        "emitDeclarationOnly": true,
+        "declaration": true,
+        "declarationDir": "types"
+    }
+}

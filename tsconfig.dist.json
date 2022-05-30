@@ -1,0 +1,23 @@
+{ // Change this to match your project
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ],
+  "compilerOptions": {
+    "outDir": "dist",
+    "moduleResolution": "Node",
+    "target": "ESNext",
+    "allowJs": true,
+    "importHelpers": true,
+    "esModuleInterop": true,
+    "module": "CommonJS",
+    "rootDir": "src/",
+    "removeComments": true,
+
+    // Generate d.ts files
+    
+  }
+}

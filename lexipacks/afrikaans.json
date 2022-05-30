@@ -1,0 +1,42 @@
+{
+    "version":"4.0.0",
+    "name":"Afrikaans",
+    "error": "'n Onbekende fout het voorgekom",
+    "error.auth": "n Onbekende fout het voorgekom terwel ons probeer het om u identitied te verifiheer",
+    "error.auth.microsoft": "Kon nie aanmeld by u Microsoft-rekening nie",
+    "error.auth.xboxLive": "Kon nie by Xbox Live aanmeld nie",
+    "error.auth.xsts": "Onbekende fout het voorgekom tydens 'n poging om 'n Xbox Live Security Token te verkry",
+    "error.auth.xsts.userNotFound": "Die gegewe Microsoft-rekening het nie 'n Xbox-rekening nie",
+    "error.auth.xsts.bannedCountry": "Die gegewe Microsoft-rekening is van 'n land waar Xbox live nie beskikbaar is nie",
+    "error.auth.xsts.child": "Die rekening is 'n kind (onder 18) en kan nie voortgaan tensy die rekening deur 'n volwassene gesinsrekening gevoeg word nie",
+    "error.auth.xsts.child.SK": "Suid-Koreaanse wetgewing: Gaan na die Xbox-bladsy en verleen ouerlike regte om voort te gaan om aan te meld.",
+
+    "error.auth.minecraft": "Onbekende fout het voorgekom toe daar geprobeer is om by Minecraft aan te meld",
+    "error.auth.minecraft.login": "Kon nie u identitied verifiheer met Mojang met u se gewe Xbox-rekening nie",
+    "error.auth.minecraft.profile": "Kon nie minecraft-profiel haal nie",
+    "error.auth.minecraft.entitlements": "Kon nie spelerregte gaan haal nie",
+
+    "error.gui": "'n Onbekende gui-raamwerkfout het voorgekom",
+    "error.gui.closed": "Gui gesluit deur gebruiker",
+    "error.gui.raw.noBrowser": "geen chromiumblaaier is gestel nie, kan nie voortgaan nie!",
+
+    "error.state.invalid": "[Intern]: Metode nie geïmplementeer nie.",
+    "error.state.invalid.gui": "[Intern]: Ongeldige gui-raamwerk.",
+    "error.state.invalid.redirect": "[Intern]: Die token moet 'n herleiding feld hê wat begin met 'http://localhost/' vir hierdie funksie om te werk!",
+    "error.state.invalid.electron": "[Intern]: Dit blyk dat jy probeer het om elektron op die voorkant te laai. 'n Kritieke funksie is nie beskikbaar nie!",
+
+    "load": "Generiese laai gebeurtenis",
+    "load.auth": "Generiese verifikasie laai gebeurtenis",
+    "load.auth.microsoft": "Teken in by Microsoft-rekening",
+    "load.auth.xboxLive": "Teken in by Xbox-rekening",
+    "load.auth.xsts": "Genereer Xbox Live Security Token",
+
+    "load.auth.minecraft": "Generiese Minecraft-aanmeldingvloeigeleentheid",
+    "load.auth.minecraft.login": "Verifieer met Mojang se bedieners",
+    "load.auth.minecraft.profile": "Haal tans spelerprofiel",
+    "load.auth.minecraft.gamepass": "Kontroleer of 'n gebruiker 'gamepass' het",
+
+    "gui": "Gui komponent",
+    "gui.title": "Teken by Minecraft aan",
+    "gui.market": "af-ZA"
+}

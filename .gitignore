@@ -1,5 +1,6 @@
 
 package-lock.json
-
+dist
+types
 node_modules
 bin

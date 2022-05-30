@@ -1,14 +1,18 @@
-import { fastLaunch, getFriendlist, getMCLC } from "msmc";
-import msmc from "msmc";
-msmc.mkES6();
-console.log("Testing Raw. This should test most of the underlying code")
-const L = await fastLaunch('raw', console.log);
-const P = await L.getXbox(console.log);
-console.log(P, await P.getFriends(), await getFriendlist(P.getAuth));
+import msmc, { wrapError,assets } from "msmc";
+console.log(msmc)
+const auth = new msmc.auth();
+assets.loadLexiPack("..","..","lexipacks","afrikaans.json")
+console.log(auth.createLink())
+auth.on('load', console.log).luanch('raw').then(async e => {
 
-
+  const t = await e.getMinecraft()
+  console.log(t.mclc())
+}).catch((e) => {
+  console.log(wrapError(e))
+})
 let R = [];
-console.log(msmc.getXbox().getXProfile(P.getAuth))
+
+//console.log(msmc.getXbox().getXProfile(P.getAuth))
 /*
 console.log(L);
 

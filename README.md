@@ -7,681 +7,431 @@
 
 # Support
 <div>
-   <a href="https://discord.gg/3hM8H7nQMA">
-   <img src="https://img.shields.io/discord/861839919655944213?logo=discord"
-      alt="chat on Discord"></a>
+<a href="https://discord.gg/3hM8H7nQMA">
+<img src="https://img.shields.io/discord/861839919655944213?logo=discord"
+alt="chat on Discord"></a>
 </div>
+At the moment you can get support via Discord (link above).
 
- At the momement you can get support via Discord (link above).
-
-   
-# Supported gui frameworks
-> If you're using MSMC with one of the frameworks below. The behaviour each framework displays should be identical. 
-Mainly each will generate a pop-up that can be used by the end user to login. In-line logins, where the main window of your app is redirected to allow a user to log in should be implemented manually. Check the wiki page for more information! {Coming soon!}
-## "Auto" <DEPRECATED!>
-> This framework is not a framework. Instead it tells MSMC to attempt detecting the optimal framework it should be using itself. Still in testing.
-###### Due to the risk of badly behaving code. This framework is marked for removal
-```js
-...
-const msmc = require("msmc");
-msmc.fastLaunch("auto"...
-```
-## "Raw"
-
-> This is not a framework as this method takes advantage off the chromium based web browsers a user will likely already have on their machine. 
-Windows already ships with one, Microsoft edge, and you're in full control of you launcher’s dependencies on Linux.
-
-> Chromium based web browser that are compatible with this method:
-Google Chrome, Microsoft Edge, Vivaldi, Blisk, Brave Browser, Yandex (Only Mac/Linux), Chromium (Linux only)
-No additional dependencies needed! 
-
-### Example 
-
-```js
-const msmc = require("msmc");
-const fetch = require("node-fetch");
-//msmc's testing enviroment sometimes runs into this issue that it can't load node fetch
-msmc.setFetch(fetch)
-msmc.fastLaunch("raw", 
-   (update) => {
-        //A hook for catching loading bar events and errors, standard with MSMC
-        console.log("CallBack!!!!!")
-        console.log(update)
-    }).then(result => {
-        //If the login works
-        if (msmc.errorCheck(result)){
-            console.log("We failed to log someone in because : "+result.reason)
-            return;
-        }
-        console.log("Player profile and mojang token : "+result);
-    }).catch(reason=>{
-        //If the login fails
-        console.log("We failed to log someone in because : "+reason);
-    })
-```
-###### 1) Raw was tested running under pure node 
-###### 2) Raw doesn't respect the "resizable" window property
-## NW.js
-> You should use the require method to load this module. Loading it by linking directly to the index.js file from the browser side of things may lead to unintended 
-errors and glitches our testing did not account for. 
-### Example 
-> If you noticed that this and the raw gui framework has the same example bar the change of the word "raw" to "nwjs". That's more due to the new architecture in 2.2.0 allowing us to streamline documentation. 
-   ```js
-const msmc = require("msmc");
-const fetch = require("node-fetch");
-//msmc's testing enviroment sometimes runs into this issue that it can't load node fetch
-msmc.setFetch(fetch)
-msmc.fastLaunch("nwjs", 
-    (update) => {
-        //A hook for catching loading bar events and errors, standard with MSMC
-        console.log("CallBack!!!!!")
-        console.log(update)
-    }).then(result => {
-        //If the login works
-        if (msmc.errorCheck(result)){
-            console.log("We failed to log someone in because : "+result.reason)
-            return;
-        }
-        console.log("Player profile and mojang token : "+result);
-    }).catch(reason=>{
-        //If the login fails
-        console.log("We failed to log someone in because : "+reason);
-    })
-```
-## Electron
-> It is recommended to run the code for this library on the back-end side of electron. This is mainly due to security and the fast launch methods using functions and objects not available on the front end of electron. 
-> 
-> Do note that some frameworks that use electron as a base might not have these issues, but it is still something you should consider if you're having issues.
-### Example 
-> This is a code sample for electron should be added to your main.js file. 
-> NOTE: Only pass the profile object and the raw xprofile object you get back from the "getXbox" command included in the final object returned by msmc. Passing the entire object returned by msmc may cause issues. 
-```js
-app.whenReady().then(() => {
-  ...
-    require("msmc").fastLaunch("electron", 
-        (update) => {
-            //A hook for catching loading bar events and errors, standard with MSMC
-            console.log("CallBack!!!!!")
-            console.log(update)
-        }).then(result => {
-            //If the login works
-             if (msmc.errorCheck(result)){
-                console.log("We failed to log someone in because : "+result.reason)
-                return;
-            }
-            console.log("Player profile and mojang token : "+result);
-        }).catch(reason=>{
-            //If the login fails
-            console.log("We failed to log someone in because : "+reason);
-        })
- ...
-})
-```
+<h1>UNDER CONSTRUCTION; 4.0.0 is still in an alpha state!</h1>
 
 # Examples
-
-## MCLC example
-
-> A basic example of how to hook this library into <a href="https://github.com/Pierce01/MinecraftLauncher-core#readme">Mincraft Launcher core</a> to launch Minecraft
-
+These are in an unfinished state 
+## A basic ES6 example with [MCLC](https://github.com/Pierce01/MinecraftLauncher-core)
 ```js
-const { Client, Authenticator } = require('minecraft-launcher-core');
-const launcher = new Client();
-const msmc = require("msmc");
-const fetch = require("node-fetch");
-//msmc's testing enviroment sometimes runs into this issue that it can't load node fetch
-msmc.setFetch(fetch)
-msmc.fastLaunch("raw",
-    (update) => {
-        //A hook for catching loading bar events and errors, standard with MSMC
-        console.log("CallBack!!!!!")
-        console.log(update)
-    }).then(result => {
-        //Let's check if we logged in?
-        if (msmc.errorCheck(result)){
-            console.log(result.reason)
-            return;
-        }
-        //If the login works
-        let opts = {
-            clientPackage: null,
-            // Pulled from the Minecraft Launcher core docs , this function is the star of the show
-            authorization: msmc.getMCLC().getAuth(result),
-            root: "./minecraft",
-            version: {
-                number: "1.17.1",
-                type: "release"
-            },
-            memory: {
-                max: "6G",
-                min: "4G"
-            }
-        }
-        console.log("Starting!")
-        launcher.launch(opts);
+import msmc, { wrapError } from "msmc";
+import { Client, Authenticator } from "minecraft-launcher-core";
+const launcher = new Client();//We're simple setting up mclc here...
+const auth = new msmc.auth(); //Spawn a new auth object using mojang's token
 
-        launcher.on('debug', (e) => console.log(e));
-        launcher.on('data', (e) => console.log(e));
-    }).catch(reason => {
-        //If the login fails
-        console.log("We failed to log someone in because : " + reason);
-    })
 
-```
+auth.on('load', console.log) //read load events into the console 
+try{
+    const xbx = await  auth.luanch('raw')//In the example we use raw, but you can replace the word raw with electron or nwjs if you're using either of the two
+    const mc = await xbx.getMinecraft()//Lets get the information we need to launch minecraft
 
-## Pure Node Example:
-> This is the set-up you'd use if you where only using node or an incompatible gui framework. Like writing a terminal based minecraft launcher!
-```js
-const MSMC = require("msmc");
-MSMC.login({ client_id: "<token>" }, 
-    (link) => {
-            //This is the link to the login page
-        console.log("Click ME!!!!");
-        console.log(link);
-        },(update) => {
-            //A hook for catching loading bar events and errors
-            console.log("CallBack!!!!!");
-            console.log(update);
+    // Pulled from the Minecraft Launcher core docs.
+    let opts = {
+        clientPackage: null,
+        // Simply call this function to convert the msmc minecraft object into a mclc authorization object
+        authorization: mc.mclc(),
+        root: "./minecraft",
+        version: {
+            number: "1.18.2",
+            type: "release"
+        },
+        memory: {
+            max: "6G",
+            min: "4G"
         }
-    ).then((result) => {
-           //Let's check if we logged in?
-        if (msmc.errorCheck(result)){
-            //We had an error? Lets see what it was. 
-            console.log("Failed!!!!!!!");
-            console.log(result)
-            return;
-        }
-        console.log("Logged in!!!!!!!");
-        //Else, lets continue
-        console.log(result)
-    }).catch(reason=>{
-        //If the login fails
-        console.log("We failed to log someone in because : "+reason);
-    })
-```
+    }
+    console.log("Starting!")
+    launcher.launch(opts);
 
-## inline login \<advance>
-> Potentially usefull when you want to use MSMC for something beyond launching minecraft or are simply seeking to implement an inline login method. 
-> 
-> Whatever the case, this is usefull if you solely want to use MSMC as a specialised oauth2 client for whatever reason. Do note that the vanilla token will likely no longer work as you will likely need to define a custom redirect URL. 
-> 
-> Due to this being for advance users only. Please note that the example here will not produce working code if copied and pasted directly.
-```js
-const msmc = require("msmc");
-const token = {
-    client_id: "Your clientID from your token here",
-    clientSecret: "<OPTIONAL> Your secret, typically needed for websites",
-    redirect: "The redirect back to your website",
-    prompt: "login" | "none" | "consent" | "select_account"
+    launcher.on('debug', (e) => console.log(e));
+    launcher.on('data', (e) => console.log(e));
+}catch(e){
+  console.log(wrapError(e)) // The wrap error function is here to convert an msmc error into something we can decode. 
 }
-const link = msmc.createLink(token);
-...
-//Handle redirecting the client to the link provided by link variable here and the callback to get the data returned by the get request microsoft sent back to you here.
-...
-const code = "The code returned by that afformentioned get request";
-//We're going to leave out the update variable here. See the entry for this function for more information.
-msmc.authenticate(code,token).then(result=>{
-    //Handle the result object as you would from any other login callback msmc uses
-});
+
 ```
-###### Recommend spinning up an HTTP/HTTPS server for this.   
 
-# Docs: Types
 
-## prompt
-> Basically this is the prompt value in the request sent to Microsoft. This should only be important if you're using either the fastLaunch or Launch functions under either Electron or NW.js
 
-###### For more information. Check out <a href="https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-auth-code-flow#request-an-authorization-code">Microsoft's support page</a>: 
+# Modules 
+## auth
+This module is the starting point of msmc. It will be the first msmc object you create. It is also the object that'll handle all of msmc's events for you. Mainly the load event. 
+```ts
+class auth extends EventEmitter {
+    token: MStoken;
+    constructor(prompt?: prompt);
+    constructor(token: MStoken);
+    createLink(): string;
+    login(code: string): Promise<xbox>;
+    refresh(MS: msAuthToken): Promise<xbox>;
+    refresh(refreshToken: string): Promise<xbox>;
+    luanch(framework: framework, windowProperties?: windowProperties): Promise<xbox>;
+    server(port?: number): Promise<void>;
+
+    on(event: "load", listener: (asset: lexcodes, message: string) => void): this;
+    once(event: "load", listener: (asset: lexcodes, message: string) => void): this;
+}
+```
+>### `constructor(prompt?: prompt)`
+This version of the constructor will generate an auth object with the vanilla Minecraft launcher token. The prompt variable is a string that provides the prompt field in the vanilla token as that is not provided by default. 
+
 ```ts
 type prompt = "login" | "none" | "consent" | "select_account";
 ```
 
-
-## mclcUser
-> A copy of the user object mclc uses
+To learn more about the prompt type, check out <a href="https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-auth-code-flow#request-an-authorization-code">Microsoft's support page</a>. It will provide more details for the possible value of this field. 
+>### `constructor(token: MStoken)` \<advanced>
+This version of the constructor is for use with custom Microsoft tokens. 
 ```ts
-type mclcUser = {
-    access_token: string;
-    client_token?: string;
-    uuid: string;
-
-    name?: string;
-    meta?: { 
-        type: "mojang" | "xbox", 
-        xuid?: string, 
-        demo?: boolean 
-    };
-    user_properties?: Partial<any>;
+interface MStoken {
+    client_id: string,
+    redirect: string,
+    clientSecret?: string,
+    prompt?: prompt
 }
 ```
-## framework
-> A list of gui frameworks supported by this library.
-Used by the launch and fastLaunch functions to figure out what functions they should target.
+The Oauth2 token details needed for you to log people in with Microsoft's service. 
+
+Resources:
+1) https://docs.microsoft.com/en-us/graph/auth-register-app-v2
+2) https://docs.microsoft.com/en-us/graph/auth-v2-user#1-register-your-app
+3) https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps
+>### `createLink(): string` \<advance>
+Creates a login link using the given Token. Can be used if you're forgoing msmc's default gui based login flow for something custom. In essence you should use this link as a redirect, then capture the returning code url-parameter and feed it into the login function 
+>### `login(code: string): Promise<xbox>` \<advance>
+The low level login function msmc uses. The returning promise is for the next stage in the login chain. Mainly the xbox module. I'd refer you to the next module to learn more! 
+
+returns an instance of the [xbox](#xbox) module or throws an error
+>### `refresh(MS: msAuthToken): Promise<xbox>`
+The low level refresh function msmc uses. This will attempt to refresh the Microsoft token at the core of msmc and return an xbox object as a result. Please see the msToken variable under the xbox module.
+```ts
+interface msAuthToken {
+    token_type: string,
+    expires_in: number,
+    scope: string,
+    access_token: string,
+    refresh_token: string,
+    user_id: string,
+    foci: string
+}
+```
+The 'refresh_token' and the 'access_token' are the only two fields of note to this project.
+
+returns an instance of the [xbox](#xbox) module or throws an error
+
+>### `refresh(refreshToken: string): Promise<xbox>`
+Refreshes a user solely based on the refresh token of a set user's refresh_token. See the [save](#save-string) function in the [xbox](#xbox) for more information.
+
+returns an instance of the [xbox](#xbox) module or throws an error
+
+>### ` luanch(framework: framework, windowProperties?: windowProperties): Promise<xbox>`
+Launches a pop-up window prompting the user to login to their Microsoft account. 
 ```ts
 type framework = "electron" | "nwjs" | "raw";
 ```
-
-## ts 
-> This is mostly used to aid translators. In theory one could create an add-on package that took in these codes and translated the given output accordingly.
-```ts
-export type ts =  "Login.Success.User" | "Login.Success.DemoUser" | "Login.Fail.Relog" | "Login.Fail.Xbox" | "Login.Fail.MC" | "Account.Unknown" | "Account.UserNotFound" | "Account.UserNotAdult" | "Cancelled.GUI" | "Cancelled.Back";
-```
-
-<table>
-    <tr>
-        <th>Value</th>
-        <th>English translation</th>
-    </tr>
-    <tr>
-        <td>Login.Success.User</td>
-        <td>Success</td>
-   </tr>
-   <tr>
-        <td>Login.Success.DemoUser</td>
-        <td>You do not own Minecraft on this Microsoft Account</td>
-    </tr>
-    <tr>
-        <td>Login.Fail.Relog</td>
-        <td>Please relog</td>
-    </tr>
-    <tr>
-        <td>Login.Fail.Xbox</td>
-        <td>We failed to log you into your Xbox Account</td>
-    </tr>
-     <tr>
-        <td>Login.Fail.MC</td>
-        <td>We failed to log you into Minecraft with the given Xbox Account</td>
-    </tr>
-    <tr>
-        <td>Account.Unknown</td>
-        <td>We encountered an unknown error Attempting to get your Xbox One Security Token</td>
-    </tr>
-    <tr>
-        <td>Account.UserNotFound</td>
-        <td>The given Microsoft Account is not connected to a given Xbox Account</td>
-    </tr>
-    <tr>
-        <td>Account.BannedCountry</td>
-        <td>The login is from an account that hails from a country where Xbox Live is not available</td>
-    </tr>
-    <tr>
-        <td>Account.ChildInSouthKorea</td>
-        <td>The account needs adult verification on Xbox page. (South Korea)</td>
-    </tr>
-    <tr>
-        <td>Account.UserNotAdult</td>
-        <td>According to Microsoft. You need to be an adult to log in from your current location.</td>
-    </tr>
-    <tr>
-        <td>Cancelled.GUI</td>
-        <td>The user dismissed the Login popup without logging in.</td>
-    </tr>
-    <tr>
-        <td>Cancelled.Back</td>
-        <td>The user dismissed the Login popup without logging in by clicking the back option or an error occured.</td>
-    </tr>
-</table>
-
-# Docs: Interfaces
-
-## token
-
-> The Oauth2 details needed to log you in.
-
-### Resources
-> 
-> 1. https://docs.microsoft.com/en-us/graph/auth-register-app-v2
-> 2. https://docs.microsoft.com/en-us/graph/auth-v2-user#1-register-your-app
-> 3. https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps
-
-### Recommendations:
-> 
-> 1. If all of this seems confusing. Use the <a href="#fastlaunch">fastLaunch</a> method. Since doing so will allow you to skip this mess!
->
-> 2. Use "Mobile and desktop applications" as your type setting and make sure to set it up to only use "Personal Microsoft accounts only". <b>You're not a university!</b>
-> 
-> 3. set the redirect to "http://localhost/...", With localhost specifically Microsoft does not check port numbers.
-   This means that http://localhost:1/... to http://localhost:65535/... are all the same redirect to MS. (http://localhost/... == http://localhost:80/... btw)
-> 
-> 4. If you set the redirect to, for example, "http://localhost/Rainbow/Puppy/Unicorns/hl3/confirmed" then the variable {redirect} needs to equal "Rainbow/Puppy/Unicorns/hl3/confirmed".
->
-> 5. Basically the redirect field is equal to your redirect URL you gave Microsoft without the "http://localhost/" part.
-   Please keep this in mind or you'll get weird errors as a mismatch here will still work...sort of.
-###### This library does not allow you to set the port manually, due to the extreme risk of unforeseen bugs popping up.
-```ts
-interface token {
-    client_id: string;
-    clientSecret?: string;
-    redirect?: string;
-    prompt?: prompt;
-}
-```
-## profile 
-> A version of a Minecraft profile you'd get from the auth end points
-```ts
-interface profile {
-    id: string, name: string, skins?: [], capes?: [],xuid: string;
-}
-```
-## xprofile 
-> This is an xbox account object. Used to allow for intergration with xbox related services and features. 
-For example getting a user's xbox profile picture.   
-
-```ts
-interface xprofile {
-    /**The xuid that belongs to this user */
-    xuid: string,
-    /**The user's gamer tag */
-    gamerTag: string,
-    /**The user's username */
-    name: string,
-    /**The user's profile picture's url */
-    profilePictureURL: string,
-    /**The user's "Gamer score"*/
-    score: string,
-    /**Gets a user's friend list */
-    getFriends?: () => promise<xprofile[]>,
-    /**The auth token you need for an "Authorization" header non of the ms docs tell you about, 
-     * but which you absolutely need if you want to hit up any xbox live end points. 
-     * 
-     * I swear I will fork those fudging documents one of these days and make them a whole lot clearer then they are!!!! -Hanro50
-     */
-    getAuth?: () => string
-}
-```
-
-## result
->The return object that all the async login procedures return<br>
-
->Possible values for the 'type' parameter in this interface:
-
-<table>
-    <tr>
-        <th>Value</th>
-        <th>Cause</th>
-        <th>Other fields</th>
-    </tr>
-    <tr>
-        <td>Success</td>
-        <td>The user has been logged in and it has been verified that the user owns a licence to the game</td>
-        <td>
-            access_token&nbsp;:&nbsp;string<br>
-            profile&nbsp;:&nbsp;profile<br>
-            getXbox&nbsp;:&nbsp;{function}
-        </td> 
-    </tr>
-    <tr>
-        <td>DemoUser</td>
-        <td>The user has been logged in, but does not appear to own the game.
-        <br>THIS IS ONLY MEANT TO BE USED FOR LAUNCHING THE GAME IN DEMO MODE</td>
-        <td>
-            access_token&nbsp;:&nbsp;string<br>
-            reason&nbsp;:&nbsp;string<br>
-            getXbox&nbsp;:&nbsp;{function}
-        </td>
-    </tr>
-    <tr>
-        <td>Authentication</td>
-        <td>The user could not be logged into their Microsoft account</td>
-        <td>
-            reason&nbsp;:&nbsp;string<br>
-            data&nbsp;:&nbsp;Response
-        </td>
-    </tr>
-    <tr>
-        <td>Cancelled</td>
-        <td>The user closed the login prompt (Gui based login flows)</td>
-        <td>
-            No added fields. 
-        </td>
-    </tr>
-    <tr>
-        <td>Unknown</td>
-        <td>This unused at the moment</td>
-        <td>
-            No added fields. 
-        </td>
-    </tr>
-</table>
-
-> The resulting typescript object.<br> 
-
-```ts
-    interface result {
-        type: "Success" | "DemoUser" | "Authentication" | "Cancelled" | "Unknown"
-        /**Your classic Mojang auth token.*/
-        "access_token"?: string, 
-        /**Player profile. Similar to the one you'd normally get with the Mojang login*/
-        profile?: profile,
-        /**Used with the error types */
-        reason?: string,
-        /**Used to make translation easier */
-        translationString?: ts,
-        /**Used when there was a fetch rejection.*/
-        data?: Response,
-        /**Get Xbox profile of user */
-        getXbox?: (updates?: (info: update) => void) => Promise<xprofile>;
-    }
-```
-## update
-> Used in the callback that is fired multiple times during the login process to give the user feedback on how far along the login process is
-
-```ts
-interface update {
-    type:  "Starting" | "Loading" | "Error"; //See table below!
-    /**Some information about the call. Like the component that's loading or the cause of the error. */
-    data?: string;
-    /**Used by the Error type.*/
-    error?: result;
-    /**Used to show how far along the object is in terms of loading*/
-    percent?: number;
-}
-```
-
-> Possible values for the 'type' parameter:
-
-<table>
-        <tr>
-            <th>Value</th>
-            <th>Cause</th>
-        </tr>
-         <tr>
-            <td>"Starting"</td>
-            <td>This is fired once when the whole loading process is started. This is mainly for setting up loading bars and stuff like that. </td>
-        </tr>
-        <tr>
-            <td>"Loading" </td>
-            <td>This gives input with regards to how far along the login process is.</td>
-        </tr>
-        <tr>
-            <td>"Error"</td>
-            <td>This is given with a normal MC account error and will give you some user readable feedback.<br>
-            [Only thrown with the versions of the auth functions returned by the "<a href=#getcallback>getCallback()</a>" wrapper] </td>
-        </tr>
-    </table>
-
-## windowProperties
-
-> Window properties is set to any to avoid needing both nw.js and electron loaded as developer dependencies<br>
-The common properties between both libraries has been backed into the type information for this interface however<br>
->
-> See <a href="https://www.electronjs.org/docs/api/browser-window#new-browserwindowoptions">this</a> resource for Electron, if you want to know what options are available <br>
-> 
-> See <a href="https://nwjs.readthedocs.io/en/latest/References/Manifest%20Format/#window-subfields">this</a> resource for NW.js, if you want to know the available options<br>
+The supported frameworks are <a title="Build cross-platform desktop apps with JavaScript, HTML, and CSS" src="https://www.electronjs.org/">electron</a>, <a title="NW.js (previously known as node-webkit) lets you call all Node.js modules directly from DOM and enables a new way of writing applications with all Web technologies." src="https://nwjs.io/">nwjs</a> and <a title="Uses a user's native (chromium based) browser. For example the new Microsoft edge. Can be used with launchers written purely in plain vanilla nodejs">raw</a>. 
 
 ```ts
 interface windowProperties {
-    width: number;
-    height: number;
-    resizable?: boolean; 
-    [key: string]: any;
+    width: number,
+    height: number,
+    /**Raw ignores this property!*/
+    resizable?: boolean,
+    /**Raw only: Stops MSMC from passing through the browser console log*/
+    suppress?: boolean,
+    [key: string]: any
 }
 ```
-# Docs: Functions
-## setFetch
-> An override to manually define which version of fetch should be used <br>
+This is the properties msmc passes through to the function of a set framework that spawns a pop-up. For more information of which properties are available depending on your preferred GUI framework of choice. Click <a href="https://nwjs.readthedocs.io/en/latest/References/Window/#windowopenurl-options-callback">here</a> for nwjs and <a href="https://www.electronjs.org/docs/latest/api/browser-window#class-browserwindow">here</a> for electron. The raw framework only uses the properties "width","height" and "suppress"
 
-fetchIn => A version of fetch 
+returns an instance of the [xbox](#xbox) module or throws an error
+
+> ### `server(port?: number): Promise<void>` \<placeholder>
+WIP, not implemented yet
+
+returns an instance of the [xbox](#xbox) module or throws an error
+> ### `on(event: "load", listener: (asset: lexcodes, message: string) => void): this`
+Event handler. Fires on a load event. Can be used for loading indicators similar to the update function in previous versions on msmc. 
+> ### `once(event: "load", listener: (asset: lexcodes, message: string) => void): this`
+The same as the "on" function, but only fires once. 
+<hr>
+
+## xbox
+The second stage of the authentication phase. In this phase the user has been logged in with their Microsoft account, but they haven't been logged into Minecraft nor have they been authenticated to the degree needed to access social features yet. This being said, you now potentially have the ability to do both if you have made it this far. 
+
+Please see [auth](#auth) module for more information on how to spawn this object
 ```ts
-function setFetch(fetchIn: any): void;
-```
-## mojangAuthToken \<Advance users only>
-> Gets a premade token with mojang's auth token already set up . <br>
+class xbox {
+    readonly parent: auth;
+    readonly msToken: msAuthToken;
+    readonly xblToken: xblAuthToken;
+    readonly exp: number;
 
-prompt => See the type definition for "prompt" for more information
-###### This token is owned and controlled by Mojang. Using it for anything other then Minecraft might get you an angry email from a lawyer eventually. 
- ```ts
-export declare function mojangAuthToken(prompt: prompt): token;
-```
-## createLink
-> This function will create a login link based on the inputs provided. <br>
-> 
-> Note that this function is called internally after the redirect has been formatted. Aka after "http://localhost:\<port\>/" is appended to the redirect. <br>
-> 
-> This is done to allow us to create the "fastLaunch" methods which don't rely on an internal http server<br>
-
-token => Your MS Login token. Mainly your client ID, client secret (optional  | Depends how azure is set up) and a redirect;<br>
-returns => A link you can plug into a web browser to send a user to a ms login page
-```ts
-function createLink(token: token): String;
-```
-## authenticate \<Advance users only>
-> Used when you want to implement your own login code, but still want msmc to handle authentication for you. <br>
-
-code => The code gotten from a successful login <br>
-MStoken => The Microsoft token object used to obtain the login code <br>
-updates => A callback that one can hook into to get updates on the login process<br>
-returns => A promise that will grant you a user profile and Mojang login token<br>
-```ts
-function authenticate(code: string, MStoken: token, updates?: (info: update) => void): Promise<result>;
-```
-## refresh
-> Used to refresh login tokens. It is recommended to do this at start up after calling validate to check if the client token needs a refresh<br>
-
-profile => Player profile. Similar to the one you'd normally get with the Mojang login<br>
-updates => A callback that one can hook into to get updates on the login process<br>
-MStoken => Microsoft token object used to obtain the login code  (Optional, will use the vanilla client token if it doesn't have anything)<br>
-returns => A promise that will grant you an updated user profile and Mojang login token<br>
-```ts
-function refresh(profile: profile, updates?: (info: update) => void, MStoken?: token): Promise<result>;
-```
-## validate
-> Checks if a profile object is still valid<br>
-
-profile => Player profile. Similar to the one you'd normally get with the Mojang login<br>
-return => Returns a boolean stating whether a set account is still valid <br>
-```ts
- function validate(profile: profile): Boolean;
-```
-## login
-> A generic login method. Useful if you aren't using electron or NW.js and want to make a terminal launcher or are using an unsupported framework<br>
-
-token => Your MS Login token. Mainly your client ID, client secret (optional  | Depends how azure is set up) and a redirect (Do not include http://localhost:<port\>/ as that's added for you!)<br>
-getlink => The callback will give you a link you can redirect a user to. <br>
-updates => A callback that one can hook into to get updates on the login process <br>
-returns => A promise that will grant you a user profile and Mojang login token<br>
-```ts
- function login(token: token, getlink: (info: string) => void, updates?: (info: update) => void): Promise<result>;
-```
-## launch
-> Used with electron or nwjs to launch a popup that a user can use to sign in with<br>
-
-type => The GUI framework this is compatible with <br>
-token => Your MS Login token. Mainly your client ID, client secret<br>
-updates => A callback that one can hook into to get updates on the login process<br>
-properties => See windowProperties interface for more information<br>
-returns => A promise that will grant you a user profile and mojang login token<br>
-```ts
- function launch(type: framework, token: token, updates?: (info: update) => void, properties?: windowProperties): Promise<result>;
-```
-## fastLaunch
-> Mimics the vanilla launcher in how it works. Like launch in creates a pop-up a user can log in with
-
-type => The GUI framework this is compatible with <br>
-updates => A callback that one can hook into to get updates on the login process<br>
-prompt => See the type definition for "prompt" for more information<br>
-properties => See windowProperties interface for more information<br>
-returns => A promise that will grant you a user profile and mojang login token<br>
-```ts
-function fastLaunch(type: framework, updates?: (info: update) => void, prompt?: prompt, properties?: windowProperties): Promise<result>;
-```
-## getMCLC
-
-> Replaces some of the functions the Authenticator component in MCLC.
-
-### getAuth
-
-> This serves as a MSMC friendly version of getAuth function in MCLC's Authenticator component. Translating the information MSMC gets into something mclc can comprehend. This does however not work with normal Mojang accounts
-
-### validate
-
-> This serves as a drop in replacement for the validate function in MCLC's Authenticator component. This works with Mojang and Microsoft accounts. 
-
-### refresh
-> This serves as a drop in replacement for the refreshAuth function in MCLC's Authenticator component. This will refresh vanilla and MSMC accounts. A hidden \_msmc variable is used to determine how an account should be refreshed so please avoid removing that somehow since the Mojang method of refreshing accounts is not compatible with MSMC signed in accounts.
-
-### toProfile \<Advance users only>
-> This converts mclc profile objects back into msmc ones. It should be noted that mclc profile objects created with mclc's native authenticator module should not be passed to this function as it will likely result in an error upon converting them back to mclc profile objects. 
-
-```ts
-export declare function getMCLC(): {
-    getAuth: (info: result) => mclcUser
-    validate: (profile: mclcUser) => Promise<Boolean>
-    refresh: (profile: mclcUser, updates?: (info: update) => void, MStoken?: token) => Promise<mclcUser>
-    toProfile: (profile: mclcUser) => profile
+    xAuth(RelyingParty?: string): Promise<string>;
+    refresh(force?: boolean): Promise<this>;
+    getSocial(): Promise<social>;
+    getMinecraft(): Promise<minecraft>;
+    validate(): boolean;
+    save(): string;
 }
 ```
-## errorCheck
-> Checks if a return value is valid and if the login procedure has been successful
-###### Demo accounts will cause this function to return false. 
+> ### properties \<advance>
 ```ts
-function errorCheck(result: result): Boolean;
+parent: auth;
 ```
-
-## isDemoUser
-> Checks if a player object was created with a demo account. Useful for if you're using msmc without mclc and still want to implement demo account support.
-###### This function shouldn't be needed with MCLC as the profile object MSMC creates for MCLC contains some meta data that tells MCLC to launch the game in demo mode. 
+The auth object that was used to create this Xbox object.
 ```ts
-function isDemoUser(profile: profile | result): Boolean;
+interface msAuthToken {
+    token_type: string;
+    expires_in: number;
+    scope: string;
+    access_token: string;
+    refresh_token: string;
+    user_id: string;
+    foci: string;
+}
+msToken: msAuthToken;
 ```
-
-## getExceptional
-> Wraps the following functions and causes each to throw a result object as an error on a failed login instead of passing back said result object
-###### See the docs for the normal async versions of these functions for a better idea of what they do
+This is the token that was generated when the user was logged into their Microsoft account. 
 ```ts
-function getExceptional(): {
-    authenticate: (code: string, MStoken: token, updates?: (info: update) => void) => Promise<result>
-    refresh: (profile: profile, updates?: (info: update) => void, MStoken?: token) => Promise<result>
-    login: (token: token, getlink: (info: string) => void, updates?: (info: update) => void) => Promise<result>
-    launch: (type: framework, token: token, updates?: (info: update) => void, properties?: windowProperties) => Promise<result>
-    fastLaunch: (type: framework, updates?: (info: update) => void, prompt?: prompt, properties?: windowProperties) => Promise<result>
+interface xblAuthToken {
+    IssueInstant: string;
+    NotAfter: string;
+    Token: string;
+    DisplayClaims: {
+        xui: [{
+            uhs: string;
+        }];
+    };
+}
+
+xblToken: xblAuthToken;
+```
+This is the token that was generated when msmc authenticated against a user's microsoft account to gain xbox live authentication access. 
+
+```ts
+exp: number;
+```
+The time in milliseconds the provided tokens are valid till. If this date is surpassed it can be assumed the provided tokens need to be refreshed. 
+
+> ### `xAuth(RelyingParty?: string): Promise<string>` \<advanced>
+Retrieves the auth header for a set replying party. In theory it could be expanded to be used with more services that work with Xbox live endpoints. Right now this is mainly an internal function that happens to be exposed
+> ### `refresh(force?: boolean): Promise<this>`
+Refreshes the tokens of this Xbox object. This function should be called once per hour. This being said, msmc does check if the tokens need to be refreshed before refreshing them. The exception being when the "force" property is set to true. In that case it will force all tokens to be refreshed.
+> ### `getSocial(): Promise<social>`
+Gets an instance of the [social](#social) module. Can be used to implement friend lists. 
+> ### `getMinecraft(): Promise<minecraft>`
+Gets an instance of the [Minecraft](#minecraft) module. Can be used to obtain the needed information to launch Minecraft. 
+
+NB: There is an additional internal check that will be done to determine if a user got Minecraft Java edition via game pass. This is experimental at the moment so please report any issues you observe with this. It may also not function with older versions of the game just yet. 
+> ### `validate(): boolean`
+Checks if the internal tokens in this object are still valid and usable. If this returns false then it is a good idea to call the [refresh](#refreshforce-boolean-promisethis) function listed earlier (This also gets called by that funtion btw). 
+> ### `save(): string`
+Returns a token that can be fed into a [refresh](#refreshrefreshtoken-string-promisexbox) function in an instance of the auth module. Useful if you want to save the information needed to recreate a set Xbox object to file. 
+<hr>
+
+## minecraft
+The module needed to obtain the information required to launch Minecraft.
+```ts
+minecraft {
+    mcToken: string;
+    profile: mcProfile;
+    parent: xbox;
+    xuid: string;
+
+    entitlements(): Promise<entitlements[]>;
+    isDemo(): boolean;
+    mclc(): mclcUser;
+    refresh(force?: boolean): Promise<this>;
+    validate(): boolean;
 }
 ```
-## getCallback
-> Wraps the following functions and presents them in a similar style to the old 2.1.x series of msmc. 
-In that you must provide the set of functions a callback function as a variable. 
-> 
-> Also errors are sent to the update funtion that you provide similarly to the 2.1.x series of msmc. 
-###### See the docs for the normal async versions of these functions for a better idea of what they do
+> ### properties \<advance>
 ```ts
-export declare function getCallback(): {
-    authenticate: (callback: (r: result) => void, code: string, MStoken: token, updates?: (info: update) => void) => void
-    refresh: (callback: (r: result) => void, profile: profile, updates?: (info: update) => void, MStoken?: token) => void
-    login: (callback: (r: result) => void, token: token, getlink: (info: string) => void, updates?: (info: update) => void) => void
-    launch: (callback: (r: result) => void, type: framework, token: token, updates?: (info: update) => void, properties?: windowProperties) => void
-    fastLaunch: (callback: (r: result) => void, type: framework, updates?: (info: update) => void, prompt?: prompt, properties?: windowProperties) => void
+mcToken: string;
+```
+The minecraft authentication token. This is needed to launch the game in online mode 
+```ts
+interface mcProfile {
+    id: string,
+    name: string,
+    skins: Array<{
+        id: string,
+        state: 'ACTIVE',
+        url: string,
+        variant: 'SLIM' | 'CLASSIC'
+    }>,
+    capes: Array<{
+        id: string,
+        state: 'ACTIVE',
+        url: string,
+        alias: string
+    }>,
+    demo?: boolean
+}
+
+profile: mcProfile;
+```
+The raw Minecraft profile object. Do note that the skins and capes arrays may be empty. Generally this contains everything you need to launch Minecraft. 
+
+```ts
+parent: xbox;
+```
+The [xbox](#xbox) object that spawned this instance of the Minecraft module.
+```ts
+xuid: string;
+```
+The xuid of the Xbox user id of the logged in user. 
+> ### `entitlements(): Promise<entitlements[]>` 
+Generates a list of mojang products/games a set user owns.
+```ts
+type entitlements = "game_minecraft" | "game_minecraft_bedrock" | "game_dungeons" | "product_minecraft" | "product_minecraft_bedrock" | "product_dungeons";
+```
+> ### `mclc(): mclcUser`
+Creates a <a title="MCLC (Minecraft Launcher Core) is a NodeJS solution for launching modded and vanilla Minecraft without having to download and format everything yourself. Basically a core for your Electron or script based launchers." href="https://github.com/Pierce01/MinecraftLauncher-core">Mincraft Launcher core</a> user object. Usefull if you wish to use msmc with that library. 
+> ### `refresh(force?: boolean): Promise<this>`
+Refreshes the minecraft and xbox tokens. Like the [refresh](#refreshforce-boolean-promisethis) function in the [xbox](#xbox) module.
+> ### `validate(): boolean`
+Like the Like the [validate](#validate-boolean) function in the [xbox](#xbox) module, but just for the Minecraft token. Which remains valid for 24 hours
+<hr>
+
+## social
+The social module is unique. Partly because it is expected to be ran server side in some settings. This is done to allow for features such as allowing you to create screens where players may be able to see which of their friends are online and such. 
+
+If you have deeper access to the game, such as in the scenario where your launcher is a front end for some type of custom client. Then I foresee the possibility of even implementing a kind of "click to join" function. In the end this is merely here to serve as a bases for something substantially more complex that is beyond the scope of msmc.
+
+```ts
+class social {
+    auth: string;
+    constructor(auth: string);
+    getProfile(xuid?: string): Promise<xplayer>;
+    getFriends(xuid?: string): Promise<xplayer[]>;
+    xGet(enpoint: string, xuid?: string): Promise<any>;
 }
 ```
-### NWJS
-> If you're already using this GUI framework. A variant of Fetch is already available in global scope and will thus be selected by msmc automatically. <b>You do not need to manually add fetch.</b>
-### Electron 
-> Electron does not provide an implementation of fetch to the node backend. It is recommended not to use the implementation of fetch provided by the frontend. This is mostly due to potential issues with cores you'll have if you ignore this warning. 
-### Recommended
-> Two fetch implementations msmc is tested against is <a href="https://www.npmjs.com/package/node-fetch">node-fetch</a> and <a href="https://www.npmjs.com/package/electron-fetch">electron-fetch</a>. If either are present then MSMC will pull them down automatically. If you however want to specify an implementation of fetch msmc should use. Please see the <a href="#setfetch">setFetch</a> function for more information!.  
+> ### `class xplayer`
+```ts
+class xplayer {
+    auth: social;
+    score: number;
+    xuid: string;
+    gamerTag: string;
+    name: string;
+    profilePictureURL: string;
+    getFriends(): Promise<xplayer[]>;
+}
+```
+auth=> The instance of the [social](#social) module that spawned this xplayer object<br>
+score=> The user's player score....not sure what it does, but the endpoint provides it<br>
+xuid=>The xbox user id of the player this instance of xplayer represents.<br>
+gamerTag=>The gamer tag of the user this instance of xplayer represents.<br>
+name=>The name of the user this instance of xplayer represents.<br>
+profilePictureURL=>The profile picture url of the user this instance of xplayer represents.<br>
+getFriends=>This function returns a list of xplayer modules that represents everyone on a give user's friend list. 
 
-# Final notes
-> This module includes a ES6 layer.
-# Credit
-> Based off the Oauth2 flow outline on <a href="https://wiki.vg/Microsoft_Authentication_Scheme"> this site</a>
-###### Please report any type file bugs asap
+> ### `constructor(auth: string)` \<advance>
+The auth header is needed to use the underlying endpoints that make this function. To get this header, run [xAuth](#xauthrelyingparty-string-promisestring-advanced) function in the [xbox](#xbox) module. This header can potentially be sent as an authentication string for an endpoint of your launcher's back end server.
 
+> ### `getProfile(xuid?: string): Promise<xplayer>`
+Gets the user profile of a given user. If the xuid field is missing it will return the profile of the user the auth header belongs to.
+
+> ### `getFriends(xuid?: string): Promise<xplayer[]>`
+Gets the friend list of a given user. If the xuid field is missing it will return the friend list of the user the auth header belongs to.
+
+> ### `xGet(enpoint: string, xuid?: string): Promise<any>` \<advance>
+The raw back end function used to obtain information related to a given user based on the xuid provided. If a xuid is not provided the information returned will instead be based on the profile the auth header belongs to. 
+<hr>
+
+## assets
+A collection of helper functions to aid in using msmc.
+
+> ### Languages and you
+See our premade [lexipacks here](/lexipacks) and see the [loadLexiPack](#function-loadlexipackfile-string-typeof-lexicon) function for more information on how to load it. 
+
+I've noticed that a fair amount of the people in the mcjs café discord tend to maintain launchers that by default aren't set to English. While older versions of msmc made efforts to address this. I'm happy to announce that we switched over to a solution that isn't just hacked onto existing code this time. 
+
+Introducing the lexicon property. By overriding this object with your own code you can effectively localize MSMC without essentially needing to hunt for every English piece of dialogue. Potential msmc language packs will only need to override this one property to translate the entirety of msmc's errors and load events to another language. 
+
+#### `lexicon`
+```ts
+export let lexicon = {
+    //Error
+    "error": "An unknown error has occured",
+    "error.auth": "An unknown authentication error has occured",
+    "error.auth.microsoft": "Failed to login to Microsoft account",
+    "error.auth.xboxLive": "Failed to login to Xbox Live",
+    "error.auth.xsts": "Unknown error occured when attempting to optain an Xbox Live Security Token",
+    "error.auth.xsts.userNotFound": "The given Microsoft account doesn't have an Xbox account",
+    "error.auth.xsts.bannedCountry": "The given Microsoft account is from a country where Xbox live is not available",
+    "error.auth.xsts.child": "The account is a child (under 18) and cannot proceed unless the account is added to a Family account by an adult",
+    "error.auth.xsts.child.SK": "South Korean law: Go to the Xbox page and grant parental rights to continue logging in.",
+
+    "error.auth.minecraft": "Unknown error occured when attempting to login to Minecraft",
+    "error.auth.minecraft.login": "Failed to authenticate with Mojang with given Xbox account",
+    "error.auth.minecraft.profile": "Failed to fetch minecraft profile",
+    "error.auth.minecraft.entitlements": "Failed to fetch player entitlements",
+
+    "error.gui": "An unknown gui framework error has occured",
+    "error.gui.closed": "Gui closed by user",
+    "error.gui.raw.noBrowser": "no chromium browser was set, cannot continue!",
+
+    "error.state.invalid": "[Internal]: Method not implemented.",
+    "error.state.invalid.gui": "[Internal]: Invalid gui framework.",
+    "error.state.invalid.redirect": "[Internal]: The token must have a redirect starting with 'http://localhost/' for this function to work!",
+    "error.state.invalid.electron": "[Internal]: It seems you're attempting to load electron on the frontend. A critical function is missing!",
+    //Load events
+    "load": "Generic load event",
+    "load.auth": "Generic authentication load event",
+    "load.auth.microsoft": "Logging into Microsoft account",
+    "load.auth.xboxLive": "Logging into Xbox Live",
+    "load.auth.xboxLive.1": "Logging into Xbox Live",
+    "load.auth.xboxLive.2": "Authenticating with xbox live",
+    "load.auth.xsts": "Generating Xbox Live Security Token",
+
+    "load.auth.minecraft": "Generic Minecraft login flow event",
+    "load.auth.minecraft.login": "Authenticating with Mojang's servers",
+    "load.auth.minecraft.profile": "Fetching player profile",
+    "load.auth.minecraft.gamepass": "[experimental!] Checking if a user has gamepass"
+}
+```
+A note on implementation. If msmc updates and a new event gets added, say `load.auth.example.new`. If your translation supports `load.auth.example`, msmc will proceed to use the translation text you provided for that code if `load.auth.example.new` is not available. This is why `load` and `load.auth` still have translations provided even if they're not called directly by msmc. They're in essence fall backs. 
+
+Note: if you want to translate the read me into another language. Then hit me up on the discord! 
+#### `lst(lexcodes: lexcodes): any` 
+```ts
+function lst(lexcodes: lexcodes): any;
+```
+This function will translate lexcodes into readable text based on the [lexicon](#lexicon) object. 
+
+#### `function loadLexiPack(...file: string[]): typeof lexicon;` 
+Loads a set lexipack and returns it when it finishes loading it.  
+
+Usage: 
+```js
+import {assets} from "msmc";
+assets.loadLexiPack(path,to,lexipack,here);
+```
+> ### Error handling
+Handling errors in msmc changed a little. Since we moved back to a throw on error model last seen when we moved to an async architecture. The issue of error typing has propped up again. If an msmc object throws an error. It will be in one of two formats. 
+```ts
+interface response{ response: Response, ts: lexcodes }
+```
+This is thrown when a fetch request errors out. The ts object will be the raw lexcode. The [lst](#lstlexcodes-lexcodes-any) function can translate the lexcodes into readable text for you. The response object is the response from the fetch object that caused the exception 
+
+Otherwise only the raw lexcode will be thrown. You can use [lst](#lstlexcodes-lexcodes-any) to translate if for you, but msmc already ships with a function to handle all this for you. 
+
+```ts
+function wrapError(code: string | exptOpts | any): {
+    name: lexcodes;
+    opt?: {
+        response: Response;
+    };
+    message: any;
+};
+```
+This function will take errors thrown by msmc and wrap them up for you. The message will be the translated cause of the error. The opt field will contain the response object if the error was caused by a fetch operation and the name is the standard lexcode if you want to do some processing based on the lexcode of the error. 
