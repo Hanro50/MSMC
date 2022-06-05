@@ -1,0 +1,44 @@
+{
+  "version": "4.0.0",
+  "name": "Turkish",
+  "error": "Bilinmeyen bir hata oluştu",
+  "error.auth": "Bilinmeyen bir kimlik doğrulama hatası oluştu",
+  "error.auth.microsoft": "Microsoft hesabına giriş başarısız oldu",
+  "error.auth.xboxLive": "Xbox Live hesabına giriş başarısız oldu",
+  "error.auth.xsts": "Xbox Live güvenlik anahtarı alınırken bilinmeyen bir hata oluştu",
+  "error.auth.xsts.userNotFound": "Sağlanan Microsoft hesabı bir Xbox hesabına sahip değil",
+  "error.auth.xsts.bannedCountry": "Sağlanan Microsoft hesabı, Xbox Live'ın yasak olduğu bir ülkede",
+  "error.auth.xsts.child": "Bu hesap bir çocuk hesabı (18 yaşından küçük) ve bu hesabın eklenmesi için bir yetişkin tarafından Aile hesabına dahil edilmeli",
+  "error.auth.xsts.child.SK": "Güney Kore yasaları: Giriş yapabilmek için Xbox sayfasına gidin ve aile izni sağlayın",
+
+  "error.auth.minecraft": "Minecraft'a giriş yapılırken bilinmeyen bir hata oluştu",
+  "error.auth.minecraft.login": "Sağlanan Xbox hesabı ile Mojang bağlantısı başarısız oldu",
+  "error.auth.minecraft.profile": "Minecraft profili alınırken hata oluştu",
+  "error.auth.minecraft.entitlements": "Kullanıcı izinleri alınırken hata oluştu",
+
+  "error.gui": "Bilinmeyen bir arayüz hatası oluştu",
+  "error.gui.closed": "Arayüz, kullanıcı tarafından kapatıldı",
+  "error.gui.raw.noBrowser": "Hiçbir chromium tarayıcısı ayarlanmadı, devam edilemiyor!",
+
+  "error.state.invalid": "[Dahili]: Yöntem uygulanmadı.",
+  "error.state.invalid.gui": "[Dahili]: Geçersiz arayüz yapısı.",
+  "error.state.invalid.redirect": "[Dahili]: Bu işlevi yapabilmek için anahtarın'http://localhost/' ile başlayan bir yönlendirmeye sahip olması gerekli!",
+  "error.state.invalid.electron": "[Internal]: Frontend'de Electronu çalıştırmaya çalışıyorsun gibi görünüyor. Kritik bir fonksiyon eksik!",
+
+  "load": "Genel yükleme olayı",
+  "load.auth": "Genel kimlik doğrulama olayı",
+  "load.auth.microsoft": "Microsoft hesabına giriş yapılıyor",
+  "load.auth.xboxLive": "Xbox Live hesabına giriş yapılıyor",
+  "load.auth.xboxLive.1": "Xbox Live hesabına giriş yapılıyor",
+  "load.auth.xboxLive.2": "Xbox Live ile kimlik doğrulama yapılıyor",
+  "load.auth.xsts": "Xbox Live anahtarı alınıyor",
+
+  "load.auth.minecraft": "Genel Minecraft'a giriş olayı",
+  "load.auth.minecraft.login": "Mojang sunucularına bağlanılıyor",
+  "load.auth.minecraft.profile": "Oyuncu profili alınıyor",
+  "load.auth.minecraft.gamepass": "[deneysel!] Oyuncunun gamepass sahipliği kontrol ediliyor",
+
+  "gui": "Arayüz bileşeni",
+  "gui.title": "Hesabına giriş yap",
+  "gui.market": "tr-TR"
+}
