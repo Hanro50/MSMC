@@ -12,7 +12,7 @@ A version header is added simply to check when a set lexipack was last updated. 
 The people you need to bug about translation errors in a set lexipack. This will be updated as more lexipacks are added.
 * Afrikaans [Hanro50](https://github.com/hanro50)
 * English [Hanro50](https://github.com/hanro50)
-* French [Txab](https://github.com/Txab33)
+* French [Txab](https://github.com/Txab33), [ri1_](https://github.com/ri1ongithub)
 * German [Matix-Media](https://github.com/Matix-Media)
 * Turkish [Kuzey Kurtuluş](https://github.com/kuzeeeyk)
 
