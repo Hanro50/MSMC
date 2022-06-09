@@ -1,5 +1,5 @@
 import fetch from "node-fetch";
-import { errResponse, mclcUser, mcProfile } from "../assets.js";
+import { errResponse, gmlluser, mclcUser, mcProfile } from "../assets.js";
 import xbox from "./xbox.js";
 export interface mcJWTDecoded { xuid: string, agg: string, sub: string, nbf: number, auth: string, roles: [], iss: string, exp: number, iat: number, platform: string, yuid: string }
 export type entitlements = "game_minecraft" | "game_minecraft_bedrock" | "game_dungeons" | "product_minecraft" | "product_minecraft_bedrock" | "product_dungeons"
@@ -52,7 +52,18 @@ export default class minecraft {
             user_properties: {}
         } as mclcUser
     }
-
+    gmll(): gmlluser {
+        return {
+            profile: {
+                id: this.profile.id,
+                name: this.profile.id,
+                xuid: this.xuid,
+                type: "msa",
+                demo: this.profile.demo,
+            },
+            access_token: this.mcToken
+        }
+    }
     async refresh(force?: boolean) {
         //@ts-ignore
         this.parent = await this.parent.refresh(force);

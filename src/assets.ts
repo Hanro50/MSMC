@@ -13,6 +13,8 @@ export type mclcUser = {
     meta?: { type: "mojang" | "msa" | "legacy", xuid?: string, demo?: boolean };
     user_properties?: Partial<any>;
 }
+
+
 /**
  * If the exact code isn't founnd. The lexicon string is split up and shaved down till it finds a description for the code. 
  * 
@@ -135,7 +137,21 @@ export interface mcProfile {
     demo?: boolean
 }
 
-
+export interface gmlluser {
+    profile: {
+        id: string,
+        name: string,
+        xuid?: string,
+        type?: "mojang" | "msa" | "legacy",
+        demo?: boolean,
+        properties?: {
+            //We're still reverse engineering what this property is used for...
+            //This likely does not work anymore...
+            twitch_access_token: string
+        }
+    },
+    access_token?: string
+}
 export function getDefaultWinProperties(): windowProperties {
     return {
         width: 500,
@@ -145,7 +161,7 @@ export function getDefaultWinProperties(): windowProperties {
     };
 }
 
-export function loadLexiPack(...file: string[]): typeof lexicon  {
+export function loadLexiPack(...file: string[]): typeof lexicon {
     const pack: typeof lexicon = JSON.parse(readFileSync(join(...file)).toString());
     lexicon = pack
     return pack
