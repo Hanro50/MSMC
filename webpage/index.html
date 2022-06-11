@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>MSMC</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="A small web based tool to generate recommended partition sizes. The values returned are merely suggested values and the use of said values are done entirely at one's own risk">
+    <link rel="icon" type="image/jpeg" href="/favicon.jpeg">
+    <style>
+        :root {
+            --text: #000;
+            --background: #eee;
+            --border: #000;
+            --accent: #fff;
+        }
+
+        html {
+            height: 100%;
+        }
+
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            background-color: var(--background);
+            color: var(--text);
+            height: calc(100% - 16px);
+        }
+
+        h1,
+        p {
+            text-align: center;
+        }
+
+        .button {
+            border: solid 1px var(--border);
+            background-color: var(--accent);
+            border-radius: 15px;
+            margin-right: 5vw;
+            margin-left: 5vw;
+            padding: 5px;
+        }
+
+        div {
+            text-align: center;
+            transition-duration: 0.5s;
+        }
+
+        div:hover,
+        .button:hover {
+            background-color: var(--background);
+        }
+
+        *:focus {
+            outline: none;
+        }
+
+        .w {
+            color: red;
+            background-color: var(--background);
+        }
+
+        body * {
+            border-radius: 10px;
+            width: 70%;
+            min-width: 300px;
+            text-align: center;
+
+        }
+
+        @media not screen and (max-width: 1000px) {
+            body * {
+                width: 689px;
+                min-width: 0px;
+            }
+        }
+
+        @media only screen and (max-width: 300px) {
+            body * {
+                width: 99%;
+                min-width: 0px;
+            }
+        }
+    </style>
+    <style id="dark">
+        :root {
+            --text: #fff;
+            --background: rgb(20, 20, 20);
+            --border: rgb(30, 30, 30);
+            --accent: rgb(40, 40, 40);
+
+        }
+    </style>
+    <script>
+        const theme = document.getElementById("dark");
+
+        function switchTheme() {
+            if (theme.parentElement) {
+                theme.remove()
+                localStorage.setItem("light", "true")
+            } else {
+                document.head.appendChild(theme)
+                localStorage.removeItem("light")
+            }
+        }
+        if (localStorage.getItem("light")) {
+            switchTheme()
+        }
+    </script>
+</head>
+
+<body>
+
+    <h1>MSMC: A library for authenticating with Microsoft.</h1>
+    <p>MSMC is a lightweight library for authenticating with Microsoft for the sole intention of launching Minecraft.
+    </p>
+
+    <h1>Features:</h1>
+    <h2>Tokenless</h2>
+    <img src="./assets/Tokenless.png">
+    <p>MSMC can make use of and includes the default Mojang auth token. While you can define a custom token, with msmc
+        that is an option and not a must. Easily get your players online now without worrying about the paperwork.</p>
+    <h2>Lexipacks!</h2>
+    <img src="./assets/Lexipacks.png">
+    <p>Tarketing a market that doesn't speak English. While with the json files in our Github repo, you can easily
+        change out the language MSMC displays in. Whether that be French, Afrikaans, German or Turkish. If we don't have
+        a lexipack for you language of choice, then don't worry. It is easy to write your own as well.</p>
+
+    <h2>Support for multiple frameworks!</h2>
+    <img src="./assets/frameworks.png">
+    <p>Whether it is Electron, NW.js or you're trying to make a terminal based launcher with a standalone version of
+        NodeJS for one reason or another. MSMC has your back! Shipping with support for all three scenarios! Do note
+        that if you use the raw framework that the end user will need at least chrome or the new Microsoft edge on
+        Windows, a chromium based browser installed on mac and a display server on Linux with Firefox or Waterfox.</p>
+    <h2>Xbox Live Integration</h2>
+    <img src="./assets/xbox.png">
+    <p>While msmc doesn't include a full reimplementation of the Xbox live api. We do include enough to get user
+        profiles
+        as well as the friend-lists of a set user. You can use this to build an interactive launcher that can notify you
+        when your user's friends are online. Custom client creators could even go a step further and potentially use
+        this to setup a one click join system. MSMC's social module can run independently meaning you can even
+        potentially run it seperately on a remote server!</p>
+    <h2>Fine controll over refreshes and Logins</h2>
+    <img src="./assets/fine controll.png">
+    <p>Notice how other launchers can take up to a minute to get everything refreshed? Now with msmc you can space out
+        parts of the authentication process. Allowing your launcher to feel way more responsive by spacing out the calls
+        between logging onto Xbox and getting the Minecraft token needed to launch the game! By default it can even
+        check if tokens even need to be refreshed!<br>
+        (Assuming the launcher hasn't been closed and reopened)</p>
+    <div class="button" id="themer" onclick="switchTheme()">Switch theme</div>
+    <br>
+    <div class="button" id="themer" onclick="window.open('https://github.com/Hanro50/MSMC','_blank')">View on github
+    </div>
+    <br>
+    <div class=" button" onclick="document.location.href='../'">back</div>
+    <br>
+    &nbsp;
+</body>
+
+</html>

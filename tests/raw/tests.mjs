@@ -1,7 +1,7 @@
 import msmc, { wrapError,assets } from "msmc";
 console.log(msmc)
 const auth = new msmc.auth();
-assets.loadLexiPack("..","..","lexipacks","afrikaans.json")
+//assets.loadLexiPack("..","..","lexipacks","afrikaans.json")
 console.log(auth.createLink())
 auth.on('load', console.log).luanch('raw').then(async e => {
 

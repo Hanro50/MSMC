@@ -1,6 +1,6 @@
 {
   "name": "msmc",
-  "version": "4.0.0-pre2",
+  "version": "4.0.0-pre3",
   "description": "A bare bones login library for Minecraft based projects to authenticate individuals with a Microsoft account.",
   "license": "MIT",
   "exports": {
@@ -18,7 +18,7 @@
   "bugs": {
     "url": "https://github.com/Hanro50/MSMC/issues"
   },
-  "homepage": "https://github.com/Hanro50/MSMC/",
+  "homepage": "https://www.hanro50.net.za/msmc/",
   "scripts": {
     "build": "node build.js",
     "test:raw": "cd ./tests/raw\nnpm run start",
