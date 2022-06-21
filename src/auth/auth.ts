@@ -71,7 +71,11 @@ export class auth extends EventEmitter {
     constructor(token: MStoken)
     constructor(token?: MStoken | prompt) {
         super();
-        this.token = (!token || typeof token == "string") ? mojangAuthToken(token as prompt) : token;
+        if (!token)
+            console.warn("[MSMC]: Just a note. No prompt variable was specified. Assuming value to be 'login' to remain consistent with older releases")
+        this.token = (!token || typeof token == "string") ? mojangAuthToken(token as prompt || "login") : token;
+
+
     }
     createLink() {
         return (
@@ -126,7 +130,7 @@ export class auth extends EventEmitter {
     }
 
     async server(port = 0) {
-        if (this.token.redirect.startsWith('http://localhost/')) err("error.state.invalid.redirect")
+        if (this.token.redirect.startsWith('http://localhost/') || this.token.redirect.startsWith('http://127.')) err("error.state.invalid.redirect")
         throw "error.state.invalid"
     }
 

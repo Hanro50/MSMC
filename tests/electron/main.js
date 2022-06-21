@@ -24,9 +24,9 @@ const { auth, wrapError } = require('msmc');
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   createWindow()
-  console.log("Testing NWJS. This should test most of the underlying code")
+  console.log("Testing Electron. This should test most of the underlying code")
   const msmc = new auth('select_account');
-  msmc.on('load', console.log).luanch('electron').then(async e => {
+  msmc.on('load', console.log).launch('electron').then(async e => {
     const t = await e.getMinecraft()
     console.log(t.mclc())
     const a = await t.refresh(true)
