@@ -17,7 +17,7 @@
   "author": "GitHub",
   "license": "CC0-1.0",
   "devDependencies": {
-    "electron": "^13.0.1"
+    "electron": "^18"
   },
   "dependencies": {
     "msmc": "file:../../.",
