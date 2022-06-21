@@ -27,7 +27,7 @@ const auth = new msmc.auth(); //Spawn a new auth object using mojang's token
 
 auth.on('load', console.log) //read load events into the console 
 try{
-    const xbx = await  auth.luanch('raw')//In the example we use raw, but you can replace the word raw with electron or nwjs if you're using either of the two
+    const xbx = await  auth.launch('raw')//In the example we use raw, but you can replace the word raw with electron or nwjs if you're using either of the two
     const mc = await xbx.getMinecraft()//Lets get the information we need to launch minecraft
 
     // Pulled from the Minecraft Launcher core docs.
