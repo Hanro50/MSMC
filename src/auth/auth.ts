@@ -112,7 +112,7 @@ export class auth extends EventEmitter {
         return this._get(body)
     }
 
-    async luanch(framework: framework, windowProperties?: windowProperties) {
+    async launch(framework: framework, windowProperties?: windowProperties) {
         switch (framework) {
             case "raw":
                 return await this.login(await (require("../gui/raw.js")).default(this, windowProperties))
