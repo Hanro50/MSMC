@@ -53,7 +53,7 @@ switch (os.type()) {
     case 'Linux':
     default:
         const pathsL = process.env.PATH.split(":");
-        const edd = ["", "-stable", "-beta", "-dev", "-g4"];
+        const edd = ["", "-stable", "-beta", "-dev", "-g4", "-browser"];
         const compatibleL = ["chromium", "google-chrome", "microsoft-edge", "vivaldi", "brave-browser", "blisk-browser", "yandex-browser", "waterfox", "firefox"]
         const ffox = ["firefox", "waterfox"]
         LE: {
