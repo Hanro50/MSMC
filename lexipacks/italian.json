@@ -1,0 +1,44 @@
+{
+    "version":"4.0.0",
+    "name": "Italiano",
+    "error": "Si è verificato un errore sconosciuto",
+    "error.auth": "Si è verificato un errore di autenticazione sconosciuto",
+    "error.auth.microsoft": "Si è verificato un errore di Login all'account Microsoft",
+    "error.auth.xboxLive": "Si è verificato un errore di Login di Xbox Live",
+    "error.auth.xsts": "Si è verificato un errore sconosciuto nel tentativo di ottenere un Xbox Live Security Token",
+    "error.auth.xsts.userNotFound": "Questo account Microsoft non ha un account Xbox",
+    "error.auth.xsts.bannedCountry": "Questo account Microsoft proviene da un paese dove Xbox Live non è disponibile",
+    "error.auth.xsts.child": "Questo account possiede ad un minorenne e non puo continuare il processo se l'account non è aggiunto ad un account famiglia da un adulto.",
+    "error.auth.xsts.child.SK": "Legge Sud Coreana: Vai alla pagina Xbox e concedi i diritti dei genitori per continuare ad accedere.",
+
+    "error.auth.minecraft": "Si è verificato un errore sconosciuto nel login a Minecraft",
+    "error.auth.minecraft.login": "Autenticazione con Mojang fallita con questo account Xbox",
+    "error.auth.minecraft.profile": "Impossibile recuperare il profilo Minecraft",
+    "error.auth.minecraft.entitlements": "Impossibile recuperare i diritti del giocatore",
+
+    "error.gui": "Si è verificato un errore del framework GUI sconosciuto",
+    "error.gui.closed": "Gui chiusa dall'utente",
+    "error.gui.raw.noBrowser": "Nessun browser chromium impostato, impossibile continuare!",
+
+    "error.state.invalid": "[Errore Interno]: Metodo non implementato.",
+    "error.state.invalid.gui": "[Errore Interno]: Invalido framework gui",
+    "error.state.invalid.redirect": "[Errore Interno]: Il token deve avere un redirect che inizia con 'http://localhost' perche questa funzione possa funzionare!",
+    "error.state.invalid.electron": "[Errore Interno]: Sembra che tu stia provando a caricare Electron nel frontend. Una funzione critica manca!",
+
+    "load": "Evento di caricamento generico",
+    "load.auth": "Evento di caricamento autenticazione generico",
+    "load.auth.microsoft": "Effettuando il login all'account Microsoft",
+    "load.auth.xboxLive": "Effettuando il login all'account Xbox Live",
+    "load.auth.xboxLive.1": "Effettuando il login all'account Xbox Live",
+    "load.auth.xboxLive.2": "Effettuando l'autenticazione con Xbox Live",
+    "load.auth.xsts": "Creando un Xbox Live Security Token",
+
+    "load.auth.minecraft": "Evento flow del login di Minecraft generico",
+    "load.auth.minecraft.login": "Effettuando l'autenticazione con i server Mojang",
+    "load.auth.minecraft.profile": "Recuperando il profilo del giocatore",
+    "load.auth.minecraft.gamepass": "[esperimentale!] Controllando se un utente ha il gamepass",
+
+    "gui": "Componente gui",
+    "gui.title": "Effettua il login nel tuo account",
+    "gui.market": "it-IT"
+}
