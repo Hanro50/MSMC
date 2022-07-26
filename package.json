@@ -26,6 +26,7 @@
     "modules/backEnd.js",
     "modules/mclc.js",
     "modules/wrapper.js",
+    "modules/xbox.js",
     "modules/gui/electron.js",
     "modules/gui/nwjs.js",
     "modules/gui/raw.js"
