@@ -1,7 +1,9 @@
+// @ts-nocheck Electron misbehaved in the dev dependencies. 
 import { err, getDefaultWinProperties, lexcodes } from "../assets.js";
 import { auth } from "../auth/auth.js";
+
 import type { BrowserWindow as TBrowser } from 'electron';
-//@ts-ignore
+
 const dynReq = (typeof __webpack_require__ === "function" ? __non_webpack_require__ : require) as NodeRequire;
 
 const BrowserWindow = dynReq("electron").BrowserWindow;
