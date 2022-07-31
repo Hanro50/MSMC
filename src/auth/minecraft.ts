@@ -56,7 +56,7 @@ export default class minecraft {
         return {
             profile: {
                 id: this.profile.id,
-                name: this.profile.id,
+                name: this.profile.name,
                 xuid: this.xuid,
                 type: "msa",
                 demo: this.profile.demo,
