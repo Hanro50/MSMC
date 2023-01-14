@@ -70,7 +70,7 @@ class auth extends EventEmitter {
     login(code: string): Promise<xbox>;
     refresh(MS: msAuthToken): Promise<xbox>;
     refresh(refreshToken: string): Promise<xbox>;
-    luanch(framework: framework, windowProperties?: windowProperties): Promise<xbox>;
+    launch(framework: framework, windowProperties?: windowProperties): Promise<xbox>;
     server(port?: number): Promise<void>;
 
     on(event: "load", listener: (asset: lexcodes, message: string) => void): this;
@@ -129,7 +129,7 @@ Refreshes a user solely based on the refresh token of a set user's refresh_token
 
 returns an instance of the [xbox](#xbox) module or throws an error
 
->### ` luanch(framework: framework, windowProperties?: windowProperties): Promise<xbox>`
+>### ` launch(framework: framework, windowProperties?: windowProperties): Promise<xbox>`
 Launches a pop-up window prompting the user to login to their Microsoft account. 
 ```ts
 type framework = "electron" | "nwjs" | "raw";
