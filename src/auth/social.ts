@@ -34,9 +34,9 @@ export default class social {
         });
         return R;
     }
-    async xGet(enpoint: string, xuid?: string) {
+    async xGet(endpoint: string, xuid?: string) {
         const target = xuid ? `xuid(${xuid})` : "me";
-        let profileRaw = await fetch(`https://profile.xboxlive.com/users/${target}/${enpoint}`, {
+        let profileRaw = await fetch(`https://profile.xboxlive.com/users/${target}/${endpoint}`, {
             headers: {
                 "Content-Type": "application/json",
                 "x-xbl-contract-version": '2',

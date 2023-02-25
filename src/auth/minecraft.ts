@@ -1,5 +1,5 @@
 import fetch from "node-fetch";
-import { errResponse, gmlluser, mclcUser, mcProfile } from "../assets.js";
+import { errResponse, gmllUser, mclcUser, mcProfile } from "../assets.js";
 import xbox from "./xbox.js";
 export interface mcJWTDecoded { xuid: string, agg: string, sub: string, nbf: number, auth: string, roles: [], iss: string, exp: number, iat: number, platform: string, yuid: string }
 export type entitlements = "game_minecraft" | "game_minecraft_bedrock" | "game_dungeons" | "product_minecraft" | "product_minecraft_bedrock" | "product_dungeons"
@@ -52,7 +52,7 @@ export default class minecraft {
             user_properties: {}
         } as mclcUser
     }
-    gmll(): gmlluser {
+    gmll(): gmllUser {
         return {
             profile: {
                 id: this.profile.id,

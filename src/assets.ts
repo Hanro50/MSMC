@@ -138,7 +138,7 @@ export interface mcProfile {
     demo?: boolean
 }
 
-export interface gmlluser {
+export interface gmllUser {
     profile: {
         id: string,
         name: string,
