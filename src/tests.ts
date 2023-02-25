@@ -1,4 +1,4 @@
-import { execSync } from "child_process";
+import { execSync } from "child_process"
 console.log("Testing raw framework")
 execSync('npm run start',{cwd:"tests/raw"})
 console.log("Testing nwjs framework")

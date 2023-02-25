@@ -3,6 +3,7 @@ import EventEmitter from "events";
 import fetch from "node-fetch";
 import { lexcodes, windowProperties, lst, errResponse, err } from "../assets.js";
 import type xbox from "./xbox.js";
+import type { Server } from "http"
 /**
  * This library's supported gui frameworks. 
  * (Raw requires no extra dependencies, use it if you're using some unknown framework!)
@@ -67,6 +68,7 @@ export declare interface auth extends EventEmitter {
 
 export class auth extends EventEmitter {
     token: MStoken;
+    private app: Server;
     constructor(prompt?: prompt)
     constructor(token: MStoken)
     constructor(token?: MStoken | prompt) {
@@ -77,13 +79,13 @@ export class auth extends EventEmitter {
 
 
     }
-    createLink() {
+    createLink(redirect?: string) {
         return (
             "https://login.live.com/oauth20_authorize.srf" +
             "?client_id=" +
             this.token.client_id +
             "&response_type=code" +
-            "&redirect_uri=" + encodeURIComponent(this.token.redirect) +
+            "&redirect_uri=" + encodeURIComponent(redirect ? redirect : this.token.redirect) +
             "&scope=XboxLive.signin%20offline_access" +
             (this.token.prompt ? "&prompt=" + this.token.prompt : "") +
             "&mkt=" + lst('gui.market')
@@ -95,13 +97,13 @@ export class auth extends EventEmitter {
     load(code: lexcodes) {
         this.emit("load", code);
     }
-    login(code: string) {
+    login(code: string, redirect?: string) {
         const body = (
             "client_id=" + this.token.client_id +
             (this.token.clientSecret ? "&client_secret=" + this.token.clientSecret : "") +
             "&code=" + code +
             "&grant_type=authorization_code" +
-            "&redirect_uri=" + this.token.redirect)
+            "&redirect_uri=" + (redirect ? redirect : this.token.redirect))
         return this._get(body);
     }
     refresh(MS: msAuthToken): Promise<xbox>
@@ -128,10 +130,49 @@ export class auth extends EventEmitter {
                 err('error.state.invalid.gui')
         }
     }
+    /**
+     * Used for a console like login experience. 
+     * @param callback 
+     * @param port 
+     * @returns 
+     */
+    async setServer(callback: (xbox:xbox) => void, port = 0) {
+        let http: typeof import("http");
+        try { http = await import("http"); }
+        catch (er) { err("error.state.invalid.http"); }
+       // if (this.token.redirect.startsWith('http://localhost/')) err("error.state.invalid.redirect");
+        try { if (this.app) { this.app.close(); } } catch { /*Ignore*/ }
+        this.app = http.createServer(async (req, res) => {
+            const lnk = `http://localhost:${req.socket.localPort}`;
+            if (req.url.startsWith(`/link`)) {
+                res.writeHead(302, {
+                    'Location': this.createLink(lnk)
+                });
+                return res.end();
+            }
 
-    async server(port = 0) {
-        if (this.token.redirect.startsWith('http://localhost/') || this.token.redirect.startsWith('http://127.')) err("error.state.invalid.redirect")
-        throw "error.state.invalid"
+            res.writeHead(200, { "Content-Type": "text/plain" });
+            res.end("Thank you!");
+            if (req.url.includes("?")) {
+                const code = new URLSearchParams(req.url.substr(req.url.indexOf("?") + 1)).get("code");
+                console.log(code)
+                try{
+                callback(await this.login(code,lnk));
+                }catch(e){
+                    console.error(e)
+                }
+            }
+        });
+        this.app.on("listening", () => {
+            const f = this.app.address();
+            if (typeof f != "string") {
+                console.log(`Use 'http://localhost:${f.port}/link' to automatically get redirected`)
+            } else {
+                console.log(`Server is running on address ${f}...`);
+            }
+        })
+        return this.app.listen(port);
+
     }
 
     private async _get(body: string): Promise<xbox> {
@@ -139,6 +180,7 @@ export class auth extends EventEmitter {
         var MS_Raw = await fetch("https://login.live.com/oauth20_token.srf", {
             method: "post", body: body, headers: { "Content-Type": "application/x-www-form-urlencoded" }
         })
+       // console.log(await MS_Raw.text())
         errResponse(MS_Raw, "error.auth.microsoft")
 
         var MS = await MS_Raw.json();

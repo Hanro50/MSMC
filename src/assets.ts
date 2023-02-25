@@ -22,26 +22,27 @@ export type mclcUser = {
  */
 export let lexicon = {
     //Error
-    "error": "An unknown error has occured",
-    "error.auth": "An unknown authentication error has occured",
+    "error": "An unknown error has occurred",
+    "error.auth": "An unknown authentication error has occurred",
     "error.auth.microsoft": "Failed to login to Microsoft account",
     "error.auth.xboxLive": "Failed to login to Xbox Live",
-    "error.auth.xsts": "Unknown error occured when attempting to optain an Xbox Live Security Token",
+    "error.auth.xsts": "Unknown error occurred when attempting to optain an Xbox Live Security Token",
     "error.auth.xsts.userNotFound": "The given Microsoft account doesn't have an Xbox account",
     "error.auth.xsts.bannedCountry": "The given Microsoft account is from a country where Xbox live is not available",
     "error.auth.xsts.child": "The account is a child (under 18) and cannot proceed unless the account is added to a Family account by an adult",
     "error.auth.xsts.child.SK": "South Korean law: Go to the Xbox page and grant parental rights to continue logging in.",
 
-    "error.auth.minecraft": "Unknown error occured when attempting to login to Minecraft",
+    "error.auth.minecraft": "Unknown error occurred when attempting to login to Minecraft",
     "error.auth.minecraft.login": "Failed to authenticate with Mojang with given Xbox account",
     "error.auth.minecraft.profile": "Failed to fetch minecraft profile",
     "error.auth.minecraft.entitlements": "Failed to fetch player entitlements",
 
-    "error.gui": "An unknown gui framework error has occured",
+    "error.gui": "An unknown gui framework error has occurred",
     "error.gui.closed": "Gui closed by user",
     "error.gui.raw.noBrowser": "no chromium browser was set, cannot continue!",
 
     "error.state.invalid": "[Internal]: Method not implemented.",
+    "error.state.invalid.http": "[Internal]: Http server support not present in current environment.",
     "error.state.invalid.gui": "[Internal]: Invalid gui framework.",
     "error.state.invalid.redirect": "[Internal]: The token must have a redirect starting with 'http://localhost/' for this function to work!",
     "error.state.invalid.electron": "[Internal]: It seems you're attempting to load electron on the frontend. A critical function is missing!",
