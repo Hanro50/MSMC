@@ -5,7 +5,7 @@ const auth = new msmc.auth({
     "redirect":"http://localhost"
 });
 auth.setServer((xbla=>{
-  console.log(xbla)
+  console.log(xbla.refresh(true).then(e=>console.log(e)))
 }))
 
 
