@@ -16,23 +16,55 @@ At the moment you can get support via Discord (link above).
 # Examples
 ## A basic ES6 example with [MCLC](https://github.com/Pierce01/MinecraftLauncher-core)
 ```js
-import msmc, { wrapError } from "msmc";
-import { Client, Authenticator } from "minecraft-launcher-core";
-const launcher = new Client();//We're simple setting up mclc here...
-const auth = new msmc.auth(); //Spawn a new auth object using mojang's token
+import { Client } from "minecraft-launcher-core";
+const launcher = new Client();
+//Import the auth class
+import { auth } from "msmc";
+//Create a new auth manager
+const authManager = new auth("select_account");
+//Launch using the 'raw' gui framework (can be 'electron' or 'nwjs')
+const xboxManager = await authManager.launch("raw")
+//Generate the minecraft login token
+const token = await xboxManager.getMinecraft();
+// Pulled from the Minecraft Launcher core docs.
+let opts = {
+    clientPackage: null,
+    // Simply call this function to convert the msmc minecraft object into a mclc authorization object
+    authorization: token.mclc(),
+    root: "./.minecraft",
+    version: {
+        number: "1.18.2",
+        type: "release"
+    },
+    memory: {
+        max: "6G",
+        min: "4G"
+    }
+};
+console.log("Starting!");
+launcher.launch(opts);
 
-
-auth.on('load', console.log) //read load events into the console 
-try{
-    const xbx = await  auth.launch('raw')//In the example we use raw, but you can replace the word raw with electron or nwjs if you're using either of the two
-    const mc = await xbx.getMinecraft()//Lets get the information we need to launch minecraft
-
+launcher.on('debug', (e) => console.log(e));
+launcher.on('data', (e) => console.log(e));
+```
+## A basic commonJS example with [MCLC](https://github.com/Pierce01/MinecraftLauncher-core)
+```js
+const { Client } = require("minecraft-launcher-core");
+const launcher = new Client();
+//Import the auth class
+const { auth } = require("msmc");
+//Create a new auth manager
+const authManager = new auth("select_account");
+//Launch using the 'raw' gui framework (can be 'electron' or 'nwjs')
+authManager.launch("raw").then(async xboxManager => {
+    //Generate the minecraft login token
+    const token = await xboxManager.getMinecraft();
     // Pulled from the Minecraft Launcher core docs.
     let opts = {
         clientPackage: null,
         // Simply call this function to convert the msmc minecraft object into a mclc authorization object
-        authorization: mc.mclc(),
-        root: "./minecraft",
+        authorization: token.mclc(),
+        root: "./.minecraft",
         version: {
             number: "1.18.2",
             type: "release"
@@ -41,16 +73,13 @@ try{
             max: "6G",
             min: "4G"
         }
-    }
-    console.log("Starting!")
+    };
+    console.log("Starting!");
     launcher.launch(opts);
 
     launcher.on('debug', (e) => console.log(e));
     launcher.on('data', (e) => console.log(e));
-}catch(e){
-  console.log(wrapError(e)) // The wrap error function is here to convert an msmc error into something we can decode. 
-}
-
+});
 ```
 ## A basic commonJS example with [GMLL](https://github.com/Hanro50/GMLL)
 ```js
@@ -60,22 +89,16 @@ const gmll = require("gmll");
 const { auth } = require("msmc");
 
 gmll.init().then(async () => {
-  //Create a new auth manager
-  const authManager = new auth("select_account");
-  //Launch using the 'raw' gui framework (can be 'electron' or 'nwjs')
-  const xboxManager = await authManager.launch("raw")
-  //Generate the minecraft login token
-  const token = await xboxManager.getMinecraft()
+    //Create a new auth manager
+    const authManager = new auth("select_account");
+    //Launch using the 'raw' gui framework (can be 'electron' or 'nwjs')
+    const xboxManager = await authManager.launch("raw")
+    //Generate the minecraft login token
+    const token = await xboxManager.getMinecraft()
 
-  var int = new gmll.instance()
-  //Launch with the gmll token
-  int.launch(token.gmll());
-
-  try {
-  } catch (e) {
-    console.trace(e)
-  }
-
+    var int = new gmll.instance()
+    //Launch with the gmll token
+    int.launch(token.gmll());
 })
 ```
 ## A basic ES6 example with [GMLL](https://github.com/Hanro50/GMLL)
@@ -95,11 +118,6 @@ const token = await xboxManager.getMinecraft()
 var int = new instance()
 //Launch with the gmll token
 int.launch(token.gmll());
-
-try {
-} catch (e) {
-    console.trace(e)
-}
 
 ```
 # Modules 
