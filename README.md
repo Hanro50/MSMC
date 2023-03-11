@@ -13,10 +13,7 @@ alt="chat on Discord"></a>
 </div>
 At the moment you can get support via Discord (link above).
 
-<h1>UNDER CONSTRUCTION; 4.0.0 is still in an alpha state!</h1>
-
 # Examples
-These are in an unfinished state 
 ## A basic ES6 example with [MCLC](https://github.com/Pierce01/MinecraftLauncher-core)
 ```js
 import msmc, { wrapError } from "msmc";
@@ -55,8 +52,6 @@ try{
 }
 
 ```
-
-
 
 # Modules 
 ## auth
