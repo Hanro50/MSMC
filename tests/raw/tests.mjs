@@ -3,7 +3,7 @@ console.log(msmc)
 const auth = new msmc.auth();
 //assets.loadLexiPack("..","..","lexipacks","afrikaans.json")
 console.log(auth.createLink())
-auth.on('load', console.log).luanch('raw').then(async e => {
+auth.on('load', console.log).launch('raw').then(async e => {
 
   const t = await e.getMinecraft()
   console.log(t.mclc())

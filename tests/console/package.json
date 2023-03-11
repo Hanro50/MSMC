@@ -10,6 +10,6 @@
         "msmc": "file:../../"
     },
     "scripts": {
-        "start": "node tests.mjs"
+        "start": "node index.mjs"
     }
 }

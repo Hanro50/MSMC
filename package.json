@@ -1,6 +1,6 @@
 {
   "name": "msmc",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "description": "A bare bones login library for Minecraft based projects to authenticate individuals with a Microsoft account.",
   "license": "MIT",
   "exports": {
@@ -21,9 +21,10 @@
   "homepage": "https://www.hanro50.net.za/msmc/",
   "scripts": {
     "build": "node build.js",
-    "test:raw": "cd ./tests/raw\nnpm run start",
-    "test:nwjs": "cd ./tests/nwjs\nnpm run start",
-    "test:electron": "cd ./tests/electron\nnpm run start"
+    "test:raw": "cd ./tests/raw\nnpm i\nnpm run start",
+    "test:nwjs": "cd ./tests/nwjs\nnpm i\nnpm run start",
+    "test:electron": "cd ./tests/electron\nnpm i\nnpm run start",
+    "test:console": "cd ./tests/console\nnpm i\nnpm run start"
   },
   "keywords": [
     "msmc",

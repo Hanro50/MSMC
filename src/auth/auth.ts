@@ -136,7 +136,10 @@ export class auth extends EventEmitter {
      * @param port 
      * @returns 
      */
-    setServer(callback: (xbox: xbox) => void, port = 0): Promise<{ link: string, port: number, server: Server, auth: auth }> {
+    setServer(callback: (xbox: xbox) => void, redirect: string = "Thank you!", port = 0): Promise<{ link: string, port: number, server: Server, auth: auth }> {
+        if (typeof redirect == "number")
+            port = redirect;
+
         return new Promise(async (suc, err) => {
             let http: typeof import("http");
             try { http = await import("http"); }
@@ -152,8 +155,14 @@ export class auth extends EventEmitter {
                     return res.end();
                 }
 
-                res.writeHead(200, { "Content-Type": "text/plain" });
-                res.end("Thank you!");
+                if (typeof redirect == "string" && redirect.startsWith("http")) {
+                    res.writeHead(302, { "Location": redirect });
+                    res.end();
+                }
+                else {
+                    res.writeHead(200, { "Content-Type": "text/plain" });
+                    res.end("Thank you!");
+                }
                 if (req.url.includes("?")) {
                     const code = new URLSearchParams(req.url.substr(req.url.indexOf("?") + 1)).get("code");
                     console.log(code)

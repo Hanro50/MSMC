@@ -4,9 +4,9 @@ const auth = new msmc.auth({
     "client_id":"9263b99c-b7c7-4c98-ac73-3dd90bc1fa2e",
     "redirect":"http://localhost"
 });
-auth.setServer((xbla=>{
-  console.log(xbla.refresh(true).then(e=>console.log(e)))
-}))
+auth.setServer((async xbla=>{
+  console.log(await xbla.refresh(true).then(e=>console.log(e)))
+}),"https://www.hanro50.net.za/msmc/")
 
 
 //assets.loadLexiPack("..","..","lexipacks","afrikaans.json")
