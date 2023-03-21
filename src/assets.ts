@@ -1,6 +1,7 @@
 import { readFileSync } from "fs";
 import type { Response } from "node-fetch"
 import { join } from "path";
+import { mcToken } from "./auth/minecraft";
 /**
  * A copy of the user object mclc uses
  */
@@ -10,7 +11,9 @@ export type mclcUser = {
     uuid: string;
 
     name?: string;
-    meta?: { type: "mojang" | "msa" | "legacy", xuid?: string, demo?: boolean };
+    meta?: {
+        refresh: string; exp?: number, type: "mojang" | "msa" | "legacy", xuid?: string, demo?: boolean
+    };
     user_properties?: Partial<any>;
 }
 
@@ -119,7 +122,7 @@ export interface windowProperties {
 export interface mcProfile {
     id: string,
     name: string,
-    skins: Array<
+    skins?: Array<
         {
             id: string,
             state: 'ACTIVE',
@@ -127,7 +130,7 @@ export interface mcProfile {
             variant: 'SLIM' | 'CLASSIC'
         }
     >,
-    capes: Array<
+    capes?: Array<
         {
             id: string,
             state: 'ACTIVE',

@@ -1,9 +1,9 @@
 import { Client } from "minecraft-launcher-core";
 const launcher = new Client();
 //Import the auth class
-import { auth } from "msmc";
+import msmc from "msmc";
 //Create a new auth manager
-const authManager = new auth("select_account");
+const authManager = new msmc.auth("select_account");
 //Launch using the 'raw' gui framework (can be 'electron' or 'nwjs')
 const xboxManager = await authManager.launch("raw")
 //Generate the minecraft login token
@@ -23,6 +23,8 @@ let opts = {
         min: "4G"
     }
 };
+console.log(JSON.stringify(msmc.mcTokenToolbox.fromMclcToken(authManager,token.mclc()).validate()))
+//mcTokenToolkit.fromToken(authManager,token.mclc()).mclc()
 console.log("Starting!");
 launcher.launch(opts);
 

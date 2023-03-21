@@ -13,13 +13,11 @@ export interface mcAuthToken {
     expires_in: number
 }
 export interface xblAuthToken {
-    IssueInstant: string
-    NotAfter: string
+    IssueInstant?: string
+    NotAfter?: string
     Token: string
-    DisplayClaims: { xui: [{ uhs: string }] }
+    DisplayClaims?: { xui: [{ uhs: string }] }
 }
-
-
 
 export default class xbox {
     readonly parent: auth;
@@ -107,13 +105,13 @@ export default class xbox {
         errResponse(r998, "error.auth.minecraft.profile")
         var MCprofile = await r998.json() as mcProfile & { error?: string };
         const profile = MCprofile.error ? { id: MCauth.username, capes: [], skins: [], name: "player", demo: true } : MCprofile;
-        let mc = new minecraft(this, MCauth.access_token, profile);
+        let mc = new minecraft(MCauth.access_token, profile, this);
         if (mc.isDemo()) {
             this.load('load.auth.minecraft.gamepass');
             const entitlements = await mc.entitlements()
             if (entitlements.includes("game_minecraft") || entitlements.includes("product_minecraft")) {
                 const social = await (await this.getSocial()).getProfile();
-                mc = new minecraft(this, MCauth.access_token, { id: MCauth.username, capes: [], skins: [], name: social.gamerTag });
+                mc = new minecraft(MCauth.access_token, { id: MCauth.username, capes: [], skins: [], name: social.gamerTag }, this);
             }
         }
         return mc
