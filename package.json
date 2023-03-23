@@ -1,10 +1,11 @@
 {
   "name": "msmc",
-  "version": "4.0.5",
+  "version": "4.0.6",
   "description": "A bare bones login library for Minecraft based projects to authenticate individuals with a Microsoft account.",
   "license": "MIT",
   "exports": {
     ".": {
+      "types":"./types/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.js"
     }
