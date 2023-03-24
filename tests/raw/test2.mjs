@@ -6,12 +6,12 @@ import msmc from "msmc";
 const authManager = new msmc.Auth("select_account");
 //Launch using the 'raw' gui framework (can be 'electron' or 'nwjs')
 const xboxManager = await authManager.launch("raw")
-//Generate the minecraft login token
+//Generate the Minecraft login token
 const token = await xboxManager.getMinecraft();
 // Pulled from the Minecraft Launcher core docs.
 let opts = {
     clientPackage: null,
-    // Simply call this function to convert the msmc minecraft object into a mclc authorization object
+    // Simply call this function to convert the msmc Minecraft object into a mclc authorization object
     authorization: token.mclc(),
     root: "./.minecraft",
     version: {

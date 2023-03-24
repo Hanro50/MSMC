@@ -37,13 +37,13 @@ export function validate(token: MCToken | Minecraft | MclcUser) {
 }
 
 /**
- * Gets a minecraft token from a saved mcToken.
- * @param auth A new instance of the auth object
+ * Gets a Minecraft token from a saved mcToken.
+ * @param auth A new instance of the Auth object
  * @param token The mcToken
  * @param refresh Set to true if we should try refreshing the token
- * @returns A newly serialized minecraft Token.
+ * @returns A newly serialized Minecraft Token.
  *
- * @warning The xbox object may not be restored using this method!
+ * @warning The Xbox object may not be restored using this method!
  */
 export function fromToken(auth: Auth, token: MCToken): null | Minecraft;
 export function fromToken(auth: Auth, token: MCToken, refresh?: boolean): Promise<Minecraft>;
@@ -58,12 +58,12 @@ export function fromToken(auth: Auth, token: MCToken, refresh?: boolean): null |
 }
 
 /**
- * Gets a minecraft token from a saved mcToken.
- * @param auth A new instance of the auth object
+ * Gets a Minecraft token from a saved mcToken.
+ * @param auth A new instance of the Auth object
  * @param token The mcToken
- * @returns A newly serialized minecraft Token.
+ * @returns A newly serialized Minecraft Token.
  *
- * @warning The xbox object may not be restored using this method!
+ * @warning The Xbox object may not be restored using this method!
  */
 export function fromMclcToken(auth: Auth, token: MclcUser, refresh?: boolean): null | Minecraft | Promise<Minecraft> {
     return fromToken(

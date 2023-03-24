@@ -1,7 +1,6 @@
 import { readFileSync } from "fs";
 import type { Response } from "node-fetch";
 import { join } from "path";
-import { MCToken } from "./auth/minecraft";
 /**
  * A copy of the user object mclc uses
  */
@@ -22,7 +21,7 @@ export type MclcUser = {
 };
 
 /**
- * If the exact code isn't founnd. The lexicon string is split up and shaved down till it finds a description for the code.
+ * If the exact code isn't found. The lexicon string is split up and shaved down till it finds a description for the code.
  *
  * For example; error.auth.microsoft will be shortend to error.auth if error.auth.microsoft isn't found
  */
@@ -40,7 +39,7 @@ export let lexicon = {
 
     "error.auth.minecraft": "Unknown error occurred when attempting to login to Minecraft",
     "error.auth.minecraft.login": "Failed to authenticate with Mojang with given Xbox account",
-    "error.auth.minecraft.profile": "Failed to fetch minecraft profile",
+    "error.auth.minecraft.profile": "Failed to fetch Minecraft profile",
     "error.auth.minecraft.entitlements": "Failed to fetch player entitlements",
 
     "error.gui": "An unknown gui framework error has occurred",
@@ -58,7 +57,7 @@ export let lexicon = {
     "load.auth.microsoft": "Logging into Microsoft account",
     "load.auth.xboxLive": "Logging into Xbox Live",
     "load.auth.xboxLive.1": "Logging into Xbox Live",
-    "load.auth.xboxLive.2": "Authenticating with xbox live",
+    "load.auth.xboxLive.2": "Authenticating with Xbox live",
     "load.auth.xsts": "Generating Xbox Live Security Token",
 
     "load.auth.minecraft": "Generic Minecraft login flow event",

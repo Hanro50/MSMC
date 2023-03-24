@@ -70,7 +70,7 @@ export default class Xbox {
         console.log(XSTS.DisplayClaims);
         return `XBL3.0 x=${XSTS.DisplayClaims.xui[0].uhs};${XSTS.Token}`;
     }
-    //infxbox
+
     async refresh(force?: boolean) {
         if (this.validate() && !force) return this;
         let tkn = await this.parent.refresh(this.msToken);
@@ -125,7 +125,7 @@ export default class Xbox {
         return this.exp > Date.now();
     }
     /**
-     * Feed this into the refresh funtion in the auth object that generated it.
+     * Feed this into the refresh function in the Auth object that generated it.
      * @returns The refresh token
      */
     save() {

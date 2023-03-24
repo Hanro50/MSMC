@@ -1,5 +1,6 @@
 {
-    "name": "launcher",
+    "private":true,
+    "name": "test-nwjs",
     "version": "0.0.1",
     "main": "index.html",
     "devDependencies": {

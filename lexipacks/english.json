@@ -31,7 +31,7 @@
     "load.auth.microsoft": "Logging into Microsoft account",
     "load.auth.xboxLive": "Logging into Xbox Live",
     "load.auth.xboxLive.1": "Logging into Xbox Live",
-    "load.auth.xboxLive.2": "Authenticating with xbox live",
+    "load.auth.xboxLive.2": "Authenticating with Xbox live",
     "load.auth.xsts": "Generating Xbox Live Security Token",
 
     "load.auth.minecraft": "Generic Minecraft login flow event",

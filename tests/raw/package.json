@@ -1,5 +1,6 @@
 {
-    "name": "launcher",
+    "private":true,
+    "name": "test-raw",
     "version": "0.0.1",
     "main": "index.js",
     "devDependencies": {

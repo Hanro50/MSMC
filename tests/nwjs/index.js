@@ -1,5 +1,5 @@
 const { readFileSync } = require("fs");
-const { auth, wrapError } = require("msmc");
+const { Auth, wrapError } = require("msmc");
 const { assets } = require("msmc");
 
 assets.loadLexiPack("../../lexipacks/french.json")
