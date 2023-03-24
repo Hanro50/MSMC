@@ -4,7 +4,7 @@ const { assets } = require("msmc");
 
 assets.loadLexiPack("../../lexipacks/french.json")
 console.log("Testing NWJS. This should test most of the underlying code")
-new auth('select_account').on('load', console.log).launch('nwjs').then(async e => {
+new Auth('select_account').on('load', console.log).launch('nwjs').then(async e => {
     const t = await e.getMinecraft()
     console.log(t.mclc())
     const a = await t.refresh(true)
