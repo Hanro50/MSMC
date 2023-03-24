@@ -1,19 +1,19 @@
-// @ts-nocheck Electron misbehaved in the dev dependencies. 
-import { err, getDefaultWinProperties, lexcodes } from "../assets.js";
-import { auth } from "../auth/auth.js";
+// @ts-nocheck Electron misbehaved in the dev dependencies.
+import { err, getDefaultWinProperties, Lexcodes } from "../assets.js";
+import { Auth } from "../auth/auth.js";
 
-import type { BrowserWindow as TBrowser } from 'electron';
+import type { BrowserWindow as TBrowser } from "electron";
 
 const dynReq = (typeof __webpack_require__ === "function" ? __non_webpack_require__ : require) as NodeRequire;
 
 const BrowserWindow = dynReq("electron").BrowserWindow;
 
-if (!BrowserWindow){
-    err("error.state.invalid.electron")
+if (!BrowserWindow) {
+    err("error.state.invalid.electron");
 }
 
-export default (auth: auth, Windowproperties = getDefaultWinProperties()) => {
-    return new Promise((resolve, reject: (e: lexcodes) => void) => {
+export default (auth: Auth, Windowproperties = getDefaultWinProperties()) => {
+    return new Promise((resolve, reject: (e: Lexcodes) => void) => {
         var redirect = auth.createLink();
         const mainWindow: TBrowser = new BrowserWindow(Windowproperties);
         mainWindow.setMenu(null);
@@ -21,7 +21,9 @@ export default (auth: auth, Windowproperties = getDefaultWinProperties()) => {
         const contents = mainWindow.webContents;
         var loading = false;
         mainWindow.on("close", () => {
-            if (!loading) { reject("error.gui.closed") };
+            if (!loading) {
+                reject("error.gui.closed");
+            }
         });
         contents.on("did-finish-load", () => {
             const loc = contents.getURL();
@@ -36,7 +38,7 @@ export default (auth: auth, Windowproperties = getDefaultWinProperties()) => {
                 } catch {
                     console.error("[MSMC]: Failed to close window!");
                 }
-            };
+            }
         });
     });
 };

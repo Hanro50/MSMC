@@ -1,31 +1,34 @@
 import { readFileSync } from "fs";
-import type { Response } from "node-fetch"
+import type { Response } from "node-fetch";
 import { join } from "path";
-import { mcToken } from "./auth/minecraft";
+import { MCToken } from "./auth/minecraft";
 /**
  * A copy of the user object mclc uses
  */
-export type mclcUser = {
+export type MclcUser = {
     access_token: string;
     client_token?: string;
     uuid: string;
 
     name?: string;
     meta?: {
-        refresh: string; exp?: number, type: "mojang" | "msa" | "legacy", xuid?: string, demo?: boolean
+        refresh: string;
+        exp?: number;
+        type: "mojang" | "msa" | "legacy";
+        xuid?: string;
+        demo?: boolean;
     };
     user_properties?: Partial<any>;
-}
-
+};
 
 /**
- * If the exact code isn't founnd. The lexicon string is split up and shaved down till it finds a description for the code. 
- * 
- * For example; error.auth.microsoft will be shortend to error.auth if error.auth.microsoft isn't found 
+ * If the exact code isn't founnd. The lexicon string is split up and shaved down till it finds a description for the code.
+ *
+ * For example; error.auth.microsoft will be shortend to error.auth if error.auth.microsoft isn't found
  */
 export let lexicon = {
     //Error
-    "error": "An unknown error has occurred",
+    error: "An unknown error has occurred",
     "error.auth": "An unknown authentication error has occurred",
     "error.auth.microsoft": "Failed to login to Microsoft account",
     "error.auth.xboxLive": "Failed to login to Xbox Live",
@@ -50,7 +53,7 @@ export let lexicon = {
     "error.state.invalid.redirect": "[Internal]: The token must have a redirect starting with 'http://localhost/' for this function to work!",
     "error.state.invalid.electron": "[Internal]: It seems you're attempting to load electron on the frontend. A critical function is missing!",
     //Load events
-    "load": "Generic load event",
+    load: "Generic load event",
     "load.auth": "Generic authentication load event",
     "load.auth.microsoft": "Logging into Microsoft account",
     "load.auth.xboxLive": "Logging into Xbox Live",
@@ -63,42 +66,43 @@ export let lexicon = {
     "load.auth.minecraft.profile": "Fetching player profile",
     "load.auth.minecraft.gamepass": "[experimental!] Checking if a user has gamepass",
     //Gui components
-    "gui": "Gui component",
+    gui: "Gui component",
     "gui.title": "Sign in to your account",
-    "gui.market": "en-US"
-}
+    "gui.market": "en-US",
+};
 
-export type lexcodes = keyof typeof lexicon;
+export type Lexcodes = keyof typeof lexicon;
 
-export function lst(lexcodes: lexcodes) {
+export function lst(lexcodes: Lexcodes) {
     const lex = lexcodes.split(".");
     do {
-        const l = lex.join('.');
-        if (l in lexicon) { return lexicon[l]; }
+        const l = lex.join(".");
+        if (l in lexicon) {
+            return lexicon[l];
+        }
         lex.pop();
-    } while (lex.length > 0)
+    } while (lex.length > 0);
     return lexcodes;
 }
 
-export interface exptOpts {
-    ts: lexcodes;
+export interface ExptOpts {
+    ts: Lexcodes;
     response: Response;
 }
 
-export function err(ts: lexcodes) {
+export function err(ts: Lexcodes) {
     throw ts;
 }
 
-export function errResponse(response: Response, ts: lexcodes) {
-    if (!response.ok) throw { response, ts }
+export function errResponse(response: Response, ts: Lexcodes) {
+    if (!response.ok) throw { response, ts };
 }
-export function wrapError(code: string | exptOpts | any) {
-    let name: lexcodes;
-    let opt: exptOpts | null;
-    if (typeof code == 'string') {
-        name = code as lexcodes;
-    }
-    else {
+export function wrapError(code: string | ExptOpts | any) {
+    let name: Lexcodes;
+    let opt: ExptOpts | null;
+    if (typeof code == "string") {
+        name = code as Lexcodes;
+    } else {
         opt = code;
         name = opt.ts;
     }
@@ -109,64 +113,60 @@ export function wrapError(code: string | exptOpts | any) {
 /**
  * Used by graphical Electron and NW.js integrations to set the properties of the generated pop-up
  */
-export interface windowProperties {
-    width: number,
-    height: number,
+export interface WindowProperties {
+    width: number;
+    height: number;
     /**Raw ignores this property!*/
-    resizable?: boolean,
+    resizable?: boolean;
     /**Raw only: Stops MSMC from passing through the browser console log*/
-    suppress?: boolean,
-    [key: string]: any
+    suppress?: boolean;
+    [key: string]: any;
 }
 
-export interface mcProfile {
-    id: string,
-    name: string,
-    skins?: Array<
-        {
-            id: string,
-            state: 'ACTIVE',
-            url: string,
-            variant: 'SLIM' | 'CLASSIC'
-        }
-    >,
-    capes?: Array<
-        {
-            id: string,
-            state: 'ACTIVE',
-            url: string,
-            alias: string
-        }
-    >,
-    demo?: boolean
+export interface MCProfile {
+    id: string;
+    name: string;
+    skins?: Array<{
+        id: string;
+        state: "ACTIVE";
+        url: string;
+        variant: "SLIM" | "CLASSIC";
+    }>;
+    capes?: Array<{
+        id: string;
+        state: "ACTIVE";
+        url: string;
+        alias: string;
+    }>;
+    demo?: boolean;
 }
 
-export interface gmllUser {
+export interface GmllUser {
     profile: {
-        id: string,
-        name: string,
-        xuid?: string,
-        type?: "mojang" | "msa" | "legacy",
-        demo?: boolean,
+        id: string;
+        name: string;
+        xuid?: string;
+        type?: "mojang" | "msa" | "legacy";
+        demo?: boolean;
         properties?: {
             //We're still reverse engineering what this property is used for...
             //This likely does not work anymore...
-            twitch_access_token: string
-        }
-    },
-    access_token?: string
+            twitch_access_token: string;
+        };
+    };
+    access_token?: string;
 }
-export function getDefaultWinProperties(): windowProperties {
+export function getDefaultWinProperties(): WindowProperties {
     return {
         width: 500,
         height: 650,
         resizable: false,
-        title: lst("gui.title")
+        title: lst("gui.title"),
     };
 }
 
 export function loadLexiPack(...file: string[]): typeof lexicon {
     const pack: typeof lexicon = JSON.parse(readFileSync(join(...file)).toString());
-    lexicon = pack
-    return pack
+    lexicon = pack;
+    return pack;
 }
