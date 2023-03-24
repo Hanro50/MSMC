@@ -27,6 +27,12 @@
     "test:electron": "cd ./tests/electron\nnpm i\nnpm run start",
     "test:console": "cd ./tests/console\nnpm i\nnpm run start"
   },
+  "workspaces": [
+    "tests/console",
+    "tests/electron",
+    "tests/nwjs",
+    "tests/raw"
+  ],
   "keywords": [
     "msmc",
     "microsoft",
