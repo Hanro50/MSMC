@@ -1,6 +1,6 @@
 import msmc from "msmc";
 console.log(msmc)
-const auth = new msmc.auth({
+const auth = new msmc.Auth({
     "client_id":"9263b99c-b7c7-4c98-ac73-3dd90bc1fa2e",
     "redirect":"http://localhost"
 });

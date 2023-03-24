@@ -3,7 +3,7 @@ const launcher = new Client();
 //Import the auth class
 import msmc from "msmc";
 //Create a new auth manager
-const authManager = new msmc.auth("select_account");
+const authManager = new msmc.Auth("select_account");
 //Launch using the 'raw' gui framework (can be 'electron' or 'nwjs')
 const xboxManager = await authManager.launch("raw")
 //Generate the minecraft login token
