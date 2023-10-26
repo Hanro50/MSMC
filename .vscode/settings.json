@@ -15,5 +15,6 @@
         "xsts",
         "xuid",
         "yuid"
-    ]
+    ],
+    "files.eol": "\n",
 }

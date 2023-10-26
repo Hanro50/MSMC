@@ -1,6 +1,7 @@
+
+import fetch from "node-fetch";
 import { err, errResponse, Lexcodes, MCProfile } from "../assets.js";
 import { Auth, MSAuthToken } from "./auth.js";
-import fetch from "node-fetch";
 
 import Social from "./social.js";
 import Minecraft from "./minecraft.js";

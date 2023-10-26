@@ -1,13 +1,13 @@
 {
   "name": "msmc",
-  "version": "4.1.0",
+  "version": "5.0.0",
   "description": "A bare bones login library for Minecraft based projects to authenticate individuals with a Microsoft account.",
   "license": "MIT",
   "exports": {
     ".": {
-      "types":"./types/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.js"
+      "types": "./types/index.d.ts",
+      "import": "./dist/mjs/index.js",
+      "require": "./dist/cjs/index.js"
     }
   },
   "repository": {
@@ -22,17 +22,12 @@
   "homepage": "https://www.hanro50.net.za/msmc/",
   "scripts": {
     "build": "node build.js",
+    "dev": "tsc -b ./tsconfig.json -w",
     "test:raw": "cd ./tests/raw\nnpm i\nnpm run start",
     "test:nwjs": "cd ./tests/nwjs\nnpm i\nnpm run start",
     "test:electron": "cd ./tests/electron\nnpm i\nnpm run start",
     "test:console": "cd ./tests/console\nnpm i\nnpm run start"
   },
-  "workspaces": [
-    "tests/console",
-    "tests/electron",
-    "tests/nwjs",
-    "tests/raw"
-  ],
   "keywords": [
     "msmc",
     "microsoft",
@@ -46,15 +41,15 @@
   "engines": {
     "node": ">=14.17.3"
   },
+
   "devDependencies": {
-    "@types/node": "^17.0.35",
+    "@types/node": "^20.8.9",
     "@types/node-fetch": "^2.x",
-    "@types/webpack": "^5.x",
-    "typescript": "^4.x"
+    "typescript": "^5.2.2"
   },
   "dependencies": {
     "node-fetch": "2.x",
-    "tslib": "^2.4.0"
+    "tslib": "^2.6.2"
   },
   "funding": [
     {

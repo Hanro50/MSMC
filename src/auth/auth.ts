@@ -1,9 +1,10 @@
 import EventEmitter from "events";
-
+import type { Server } from "http";
 import fetch from "node-fetch";
+
 import { Lexcodes, WindowProperties, lst, errResponse, err } from "../assets.js";
 import type Xbox from "./xbox.js";
-import type { Server } from "http";
+
 /**
  * This library's supported gui frameworks.
  * (Raw requires no extra dependencies, use it if you're using some unknown framework!)

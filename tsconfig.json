@@ -3,9 +3,9 @@
   "compilerOptions": {
     "sourceMap": true,
     "outDir": "dist",
-    "watch": true,
     "declarationMap": true,
     "declaration": true,
-    "declarationDir": "types"
+    "declarationDir": "types",
+    "module": "CommonJS",
   }
 }
