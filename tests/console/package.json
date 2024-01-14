@@ -1,16 +1,16 @@
 {
-    "private":true,
-    "name": "test-console",
-    "version": "0.0.1",
-    "main": "index.mjs",
-    "devDependencies": {
-        "nwjs-types": "^1.0.0"
-    },
-    "dependencies": {
-        "@types/node": "^17.0.35",
-        "msmc": "file:../../"
-    },
-    "scripts": {
-        "start": "node index.mjs"
-    }
+  "private": true,
+  "name": "test-console",
+  "version": "0.0.1",
+  "main": "index.mjs",
+  "devDependencies": {
+    "nwjs-types": "^1.0.0"
+  },
+  "dependencies": {
+    "@types/node": "^17.0.35",
+    "msmc": "file:../../"
+  },
+  "scripts": {
+    "start": "node index.mjs"
+  }
 }

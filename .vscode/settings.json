@@ -1,20 +1,20 @@
 {
-    "cSpell.words": [
-        "Expt",
-        "Lexi",
-        "lexipacks",
-        "mcjs",
-        "MCJWT",
-        "mclc",
-        "mojang",
-        "nwjs",
-        "rlogin",
-        "rxboxlive",
-        "rxsts",
-        "signin",
-        "xsts",
-        "xuid",
-        "yuid"
-    ],
-    "files.eol": "\n",
+  "cSpell.words": [
+    "Expt",
+    "Lexi",
+    "lexipacks",
+    "mcjs",
+    "MCJWT",
+    "mclc",
+    "mojang",
+    "nwjs",
+    "rlogin",
+    "rxboxlive",
+    "rxsts",
+    "signin",
+    "xsts",
+    "xuid",
+    "yuid"
+  ],
+  "files.eol": "\n"
 }

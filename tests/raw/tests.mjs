@@ -1,15 +1,18 @@
-import msmc, { wrapError,assets } from "msmc";
-console.log(msmc)
+import msmc, { wrapError, assets } from "msmc";
+console.log(msmc);
 const auth = new msmc.Auth();
 //assets.loadLexiPack("..","..","lexipacks","afrikaans.json")
-console.log(auth.createLink())
-auth.on('load', console.log).launch('raw').then(async e => {
-
-  const t = await e.getMinecraft()
-  console.log(t.mclc())
-}).catch((e) => {
-  console.log(wrapError(e))
-})
+console.log(auth.createLink());
+auth
+  .on("load", console.log)
+  .launch("raw")
+  .then(async (e) => {
+    const t = await e.getMinecraft();
+    console.log(t.mclc());
+  })
+  .catch((e) => {
+    console.log(wrapError(e));
+  });
 let R = [];
 
 //console.log(msmc.getXbox().getXProfile(P.getAuth))
@@ -24,4 +27,3 @@ console.log(r);
 console.log("Completed tests!");
 /**Hidden in type files. Here to make keeping the ES6 shim up to date far less of a hassle. */
 //msmc.mkES6();
-

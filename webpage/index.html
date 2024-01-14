@@ -1,66 +1,100 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-
-<head>
-    <link rel="preload" href="https://styles.hanro50.net.za/v1/light" as="style">
-    <link rel="stylesheet" href="https://styles.hanro50.net.za/v1/main,img,centre">
+  <head>
+    <link
+      rel="preload"
+      href="https://styles.hanro50.net.za/v1/light"
+      as="style"
+    />
+    <link
+      rel="stylesheet"
+      href="https://styles.hanro50.net.za/v1/main,img,centre"
+    />
     <script src="https://styles.hanro50.net.za/themer.js"></script>
     <title>MSMC</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description"
-        content="A semi-barebones authentication library for Minecraft. Allowing one to add Microsoft authentication to launchers written with Nodejs, Electron or NW.js">
-    <link rel="icon" type="image/jpeg" href="/favicon.jpeg">
-   
-</head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A semi-barebones authentication library for Minecraft. Allowing one to add Microsoft authentication to launchers written with Nodejs, Electron or NW.js"
+    />
+    <link rel="icon" type="image/jpeg" href="/favicon.jpeg" />
+  </head>
 
-<body class="centre_all">
+  <body class="centre_all">
     <h1>MSMC</h1>
-    <p>MSMC is a lightweight library for authenticating with Microsoft for the sole intention of launching Minecraft.
+    <p>
+      MSMC is a lightweight library for authenticating with Microsoft for the
+      sole intention of launching Minecraft.
     </p>
 
     <h1>Features:</h1>
     <h2>Tokenless</h2>
-    <img src="./assets/Tokenless.png">
-    <p>MSMC can make use of and includes the default Mojang auth token. While you can define a custom token, with msmc
-        that is an option and not a must. Easily get your players online now without worrying about the paperwork.</p>
+    <img src="./assets/Tokenless.png" />
+    <p>
+      MSMC can make use of and includes the default Mojang auth token. While you
+      can define a custom token, with msmc that is an option and not a must.
+      Easily get your players online now without worrying about the paperwork.
+    </p>
     <h2>Lexipacks!</h2>
-    <img src="./assets/Lexipacks.png">
-    <p>Tarketing a market that doesn't speak English. While with the json files in our Github repo, you can easily
-        change out the language MSMC displays in. Whether that be French, Afrikaans, German or Turkish. If we don't have
-        a lexipack for you language of choice, then don't worry. It is easy to write your own as well.</p>
+    <img src="./assets/Lexipacks.png" />
+    <p>
+      Tarketing a market that doesn't speak English. While with the json files
+      in our Github repo, you can easily change out the language MSMC displays
+      in. Whether that be French, Afrikaans, German or Turkish. If we don't have
+      a lexipack for you language of choice, then don't worry. It is easy to
+      write your own as well.
+    </p>
 
     <h2>Support for multiple frameworks!</h2>
-    <img src="./assets/frameworks.png">
-    <p>Whether it is Electron, NW.js or you're trying to make a terminal based launcher with a standalone version of
-        NodeJS for one reason or another. MSMC has your back! Shipping with support for all three scenarios! Do note
-        that if you use the raw framework that the end user will need at least chrome or the new Microsoft edge on
-        Windows, a chromium based browser installed on mac and a display server on Linux with Firefox or Waterfox.</p>
+    <img src="./assets/frameworks.png" />
+    <p>
+      Whether it is Electron, NW.js or you're trying to make a terminal based
+      launcher with a standalone version of NodeJS for one reason or another.
+      MSMC has your back! Shipping with support for all three scenarios! Do note
+      that if you use the raw framework that the end user will need at least
+      chrome or the new Microsoft edge on Windows, a chromium based browser
+      installed on mac and a display server on Linux with Firefox or Waterfox.
+    </p>
     <h2>Xbox Live Integration</h2>
-    <img src="./assets/xbox.png">
-    <p>While msmc doesn't include a full reimplementation of the Xbox live api. We do include enough to get user
-        profiles
-        as well as the friend-lists of a set user. You can use this to build an interactive launcher that can notify you
-        when your user's friends are online. Custom client creators could even go a step further and potentially use
-        this to setup a one click join system. MSMC's Social module can run independently meaning you can even
-        potentially run it seperately on a remote server!</p>
+    <img src="./assets/xbox.png" />
+    <p>
+      While msmc doesn't include a full reimplementation of the Xbox live api.
+      We do include enough to get user profiles as well as the friend-lists of a
+      set user. You can use this to build an interactive launcher that can
+      notify you when your user's friends are online. Custom client creators
+      could even go a step further and potentially use this to setup a one click
+      join system. MSMC's Social module can run independently meaning you can
+      even potentially run it seperately on a remote server!
+    </p>
     <h2>Fine controll over refreshes and Logins</h2>
-    <img src="./assets/fine controll.png">
-    <p>Notice how other launchers can take up to a minute to get everything refreshed? Now with msmc you can space out
-        parts of the authentication process. Allowing your launcher to feel way more responsive by spacing out the calls
-        between logging onto Xbox and getting the Minecraft token needed to launch the game! By default it can even
-        check if tokens even need to be refreshed!<br>
-        (Assuming the launcher hasn't been closed and reopened)</p>
-    <div class="element button" id="themer" onclick="switchTheme()">Switch theme</div>
-    <br>
-    <div class="element button" id="themer" onclick="window.open('https://github.com/Hanro50/MSMC','_blank')">View on
-        github
+    <img src="./assets/fine controll.png" />
+    <p>
+      Notice how other launchers can take up to a minute to get everything
+      refreshed? Now with msmc you can space out parts of the authentication
+      process. Allowing your launcher to feel way more responsive by spacing out
+      the calls between logging onto Xbox and getting the Minecraft token needed
+      to launch the game! By default it can even check if tokens even need to be
+      refreshed!<br />
+      (Assuming the launcher hasn't been closed and reopened)
+    </p>
+    <div class="element button" id="themer" onclick="switchTheme()">
+      Switch theme
     </div>
-    <br>
-    <div class="element button" onclick="document.location.href='../'">back</div>
+    <br />
+    <div
+      class="element button"
+      id="themer"
+      onclick="window.open('https://github.com/Hanro50/MSMC','_blank')"
+    >
+      View on github
+    </div>
+    <br />
+    <div class="element button" onclick="document.location.href='../'">
+      back
+    </div>
 
     <footer id="license">
-        MSMC&nbsp;&lt;MIT&gt;&nbsp;Copyright&nbsp;(C)&nbsp;2022&nbsp;Hanro50
+      MSMC&nbsp;&lt;MIT&gt;&nbsp;Copyright&nbsp;(C)&nbsp;2022&nbsp;Hanro50
     </footer>
-</body>
-
+  </body>
 </html>

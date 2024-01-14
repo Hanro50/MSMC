@@ -1,16 +1,16 @@
 {
-    "private":true,
-    "name": "test-nwjs",
-    "version": "0.0.1",
-    "main": "index.html",
-    "devDependencies": {
-        "nwjs-types": "^1.0.0"
-    },
-    "dependencies": {
-        "msmc": "file:../../.",
-        "nw": "^0.59.1-sdk"
-    },
-    "scripts": {
-        "start": "nw"
-    }
+  "private": true,
+  "name": "test-nwjs",
+  "version": "0.0.1",
+  "main": "index.html",
+  "devDependencies": {
+    "nwjs-types": "^1.0.0"
+  },
+  "dependencies": {
+    "msmc": "file:../../.",
+    "nw": "^0.59.1-sdk"
+  },
+  "scripts": {
+    "start": "nw"
+  }
 }

@@ -1,17 +1,17 @@
 {
-    "private":true,
-    "name": "test-raw",
-    "version": "0.0.1",
-    "main": "index.js",
-    "devDependencies": {
-        "nwjs-types": "^1.0.0"
-    },
-    "dependencies": {
-        "@types/node": "^17.0.35",
-        "minecraft-launcher-core": "^3.16.18",
-        "msmc": "file:../../"
-    },
-    "scripts": {
-        "start": "node tests.mjs"
-    }
+  "private": true,
+  "name": "test-raw",
+  "version": "0.0.1",
+  "main": "index.js",
+  "devDependencies": {
+    "nwjs-types": "^1.0.0"
+  },
+  "dependencies": {
+    "@types/node": "^17.0.35",
+    "minecraft-launcher-core": "^3.16.18",
+    "msmc": "file:../../"
+  },
+  "scripts": {
+    "start": "node tests.mjs"
+  }
 }

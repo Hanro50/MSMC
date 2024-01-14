@@ -1,6 +1,9 @@
-{ // Change this to match your project
+{
+  // Change this to match your project
   "extends": "./tsconfig.dist.json",
   "compilerOptions": {
     "outDir": "dist/cjs",
+    "moduleResolution": "Node16",
+    "module": "Node16"
   }
 }

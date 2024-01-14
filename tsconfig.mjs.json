@@ -1,7 +1,8 @@
-{ // Change this to match your project
+{
+  // Change this to match your project
   "extends": "./tsconfig.dist.json",
   "compilerOptions": {
     "module": "esnext",
-    "outDir": "dist/mjs",
+    "outDir": "dist/mjs"
   }
 }

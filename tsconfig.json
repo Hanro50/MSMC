@@ -1,11 +1,14 @@
-{ // Change this to match your project
+{
+  // Change this to match your project
   "extends": "./tsconfig.dist.json",
   "compilerOptions": {
     "sourceMap": true,
     "outDir": "dist",
-    "declarationMap": true,
-    "declaration": true,
     "declarationDir": "types",
-    "module": "CommonJS",
+    "declaration": true,
+    "moduleResolution": "Node16",
+    "esModuleInterop": true,
+    "module": "Node16",
+    "target": "ESNext"
   }
 }

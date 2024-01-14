@@ -1,5 +1,5 @@
 {
-  "private":true,
+  "private": true,
   "name": "test-console-electron",
   "version": "1.0.0",
   "description": "A minimal Electron application",

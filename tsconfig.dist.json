@@ -1,12 +1,7 @@
-{ // Change this to match your project
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "node_modules/**/*",
-    "node_modules/*",
-    "dist"
-  ],
+{
+  // Change this to match your project
+  "include": ["src/**/*"],
+  "exclude": ["node_modules/**/*", "node_modules/*", "dist"],
   "compilerOptions": {
     "outDir": "dist",
     "moduleResolution": "Node",
@@ -15,10 +10,7 @@
     "importHelpers": true,
     "esModuleInterop": true,
     "module": "CommonJS",
-    "rootDir": "src/",
-    "removeComments": true,
-
+    "rootDir": "src/"
     // Generate d.ts files
-    
   }
 }

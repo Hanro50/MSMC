@@ -1,3 +1,3 @@
-# Architecture guideline 
+# Architecture guideline
+
 WIP rewrite
-   
