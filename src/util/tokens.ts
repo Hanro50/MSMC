@@ -1,8 +1,8 @@
 import type { Auth } from "../auth/auth.js";
 import type { MCToken, MclcUser } from "../types";
 
-import { Minecraft } from "../auth/minecraft";
-import { validate } from "./validate";
+import { Minecraft } from "../auth/minecraft.js";
+import { validate } from "./validate.js";
 /**Validates MC tokens to check if they're valid. */
 
 /**

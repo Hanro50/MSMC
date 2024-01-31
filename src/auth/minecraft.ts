@@ -44,14 +44,14 @@ export class Minecraft {
     profile: MCProfile,
     parent: Auth,
     refreshTkn: string,
-    exp: number,
+    exp: number
   );
   constructor(
     mcToken: string,
     profile: MCProfile,
     parent: Xbox | Auth,
     refreshTkn?: string,
-    exp = new Date().getTime() + 1000 * 60 * 60 * 23,
+    exp = new Date().getTime() + 1000 * 60 * 60 * 23
   ) {
     this.parent = parent;
     this.mcToken = mcToken;
@@ -62,14 +62,14 @@ export class Minecraft {
   }
   async entitlements() {
     var r998 = await fetch(
-      "https://api.minecraftservices.com/minecraft/profile",
+      "https://api.minecraftservices.com/entitlements/mcstore",
       {
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
           Authorization: `Bearer ${this.mcToken}`,
         },
-      },
+      }
     );
     errorResponse(r998, "error.auth.minecraft.entitlements");
     const json = (await r998.json()) as {
@@ -149,7 +149,7 @@ export class Minecraft {
         .map(function (c) {
           return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
         })
-        .join(""),
+        .join("")
     );
     return JSON.parse(jsonPayload) as MCJWTDecoded;
   }
@@ -163,4 +163,3 @@ function getUUID() {
   }
   return result;
 }
-module.exports.default = Minecraft;

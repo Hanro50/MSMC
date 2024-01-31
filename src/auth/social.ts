@@ -1,5 +1,5 @@
 import fetch from "node-fetch";
-import { XPlayer } from "../util/xPlayer";
+import { XPlayer } from "../util/xPlayer.js";
 
 export class Social {
   auth: string;
@@ -39,4 +39,3 @@ export class Social {
     return await profileRaw.json();
   }
 }
-module.exports.default = Social;

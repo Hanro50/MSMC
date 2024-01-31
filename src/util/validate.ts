@@ -8,4 +8,3 @@ export function validate(token: MCToken | Minecraft | MclcUser) {
     return typeof token.meta.exp == "number" && token.meta.exp > Date.now();
   return false;
 }
-exports.default = validate;

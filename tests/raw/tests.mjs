@@ -1,5 +1,6 @@
-import msmc, { wrapError, assets } from "msmc";
+import msmc from "msmc";
 console.log(msmc);
+
 const auth = new msmc.Auth();
 //assets.loadLexiPack("..","..","lexipacks","afrikaans.json")
 console.log(auth.createLink());
@@ -8,10 +9,12 @@ auth
   .launch("raw")
   .then(async (e) => {
     const t = await e.getMinecraft();
+ 
     console.log(t.mclc());
+    console.log(await t.entitlements());
   })
   .catch((e) => {
-    console.log(wrapError(e));
+    console.log(msmc.lexicon.wrapError(e));
   });
 let R = [];
 

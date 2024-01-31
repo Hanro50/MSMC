@@ -1,5 +1,5 @@
 import type { WindowProperties } from "../types";
-import { getCode } from "../util/lexicon";
+import { getCode } from "../util/lexicon.js";
 import { error } from "../util/lexicon.js";
 
 import type { Auth } from "../auth/auth.js";
