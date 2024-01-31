@@ -1,6 +1,5 @@
 const { readFileSync } = require("fs");
-const { Auth, wrapError } = require("msmc");
-const { assets } = require("msmc");
+const { Auth,lexicon } = require("msmc");
 
 //assets.loadLexiPack("../../lexipacks/french.json")
 console.log("Testing NWJS. This should test most of the underlying code");
@@ -14,7 +13,7 @@ new Auth("select_account")
     console.log(t.mclc());
   })
   .catch((e) => {
-    console.log(wrapError(e));
+    console.log(lexicon.wrapError(e));
   });
 
 /*
