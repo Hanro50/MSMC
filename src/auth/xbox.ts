@@ -98,7 +98,7 @@ export class Xbox {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-      },
+      }
     );
     errorResponse(rlogin_with_xbox, "error.auth.minecraft.login");
     var MCauth = (await rlogin_with_xbox.json()) as MCAuthToken;
@@ -111,9 +111,9 @@ export class Xbox {
           Accept: "application/json",
           Authorization: `Bearer ${MCauth.access_token}`,
         },
-      },
+      }
     );
-    errorResponse(r998, "error.auth.minecraft.profile");
+
     var MCprofile = (await r998.json()) as MCProfile & { error?: string };
     const profile = MCprofile.error
       ? {
@@ -136,8 +136,10 @@ export class Xbox {
         mc = new Minecraft(
           MCauth.access_token,
           { id: MCauth.username, capes: [], skins: [], name: social.gamerTag },
-          this,
+          this
         );
+      } else {
+        errorResponse(r998, "error.auth.minecraft.profile");
       }
     }
     return mc;
