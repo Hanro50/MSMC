@@ -155,3 +155,4 @@ export class Xbox {
     return this.msToken.refresh_token;
   }
 }
+export default Xbox;

@@ -21,3 +21,4 @@ export class XPlayer {
     return this.auth.getFriends(this.xuid);
   }
 }
+export default XPlayer;

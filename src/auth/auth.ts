@@ -205,3 +205,4 @@ export class Auth extends EventEmitter implements AuthEvents {
     return new Xbox(this, MS, token);
   }
 }
+export default Auth;

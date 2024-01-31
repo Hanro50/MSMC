@@ -39,3 +39,4 @@ export class Social {
     return await profileRaw.json();
   }
 }
+export default Social;

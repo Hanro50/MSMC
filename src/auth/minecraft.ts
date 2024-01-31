@@ -163,3 +163,4 @@ function getUUID() {
   }
   return result;
 }
+export default Minecraft;
