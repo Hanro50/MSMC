@@ -26,9 +26,13 @@ export function fromToken(
   refresh?: boolean,
 ): null | Minecraft | Promise<Minecraft> {
   if (validate(token) && refresh)
-    return new Promise(async (done) => {
+    return new Promise(async (done, reject) => {
       const xbl = await auth.refresh(token.refresh);
-      done(await xbl.getMinecraft());
+      try {
+        done(await xbl.getMinecraft());
+      } catch (e) {
+        reject(e);
+      }
     });
   let mc = new Minecraft(
     token.mcToken,
