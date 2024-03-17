@@ -23,10 +23,12 @@
   "scripts": {
     "build": "node build.js",
     "dev": "tsc -b ./tsconfig.json -w",
+    "test": "ts-mocha",
     "test:raw": "cd ./tests/raw\nnpm i\nnpm run start",
     "test:nwjs": "cd ./tests/nwjs\nnpm i\nnpm run start",
     "test:electron": "cd ./tests/electron\nnpm i\nnpm run start",
-    "test:console": "cd ./tests/console\nnpm i\nnpm run start"
+    "test:console": "cd ./tests/console\nnpm i\nnpm run start",
+    "test:util": "cd ./tests/util\nnpm i\nnpm run start"
   },
   "keywords": [
     "msmc",
@@ -42,8 +44,11 @@
     "node": ">=14.17.3"
   },
   "devDependencies": {
+    "@types/mocha": "^10.0.6",
     "@types/node": "^20.8.9",
     "@types/node-fetch": "^2.x",
+    "mocha": "^10.3.0",
+    "ts-mocha": "^10.0.0",
     "typescript": "^5.2.2"
   },
   "dependencies": {
