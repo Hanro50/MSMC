@@ -1,12 +1,9 @@
 import msmc from "msmc";
 console.log(msmc);
 const auth = new msmc.Auth({
-  client_id: "9263b99c-b7c7-4c98-ac73-3dd90bc1fa2e",
-  redirect: "http://localhost",
+    client_id: "9263b99c-b7c7-4c98-ac73-3dd90bc1fa2e",
+    redirect: "http://localhost",
 });
-auth.setServer(async (xbla) => {
-  console.log(await xbla.refresh(true).then((e) => console.log(e)));
-}, "https://www.hanro50.net.za/msmc/");
 
 //assets.loadLexiPack("..","..","lexipacks","afrikaans.json")
 //console.log(auth.createLink())
