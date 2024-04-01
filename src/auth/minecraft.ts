@@ -20,7 +20,7 @@ export class Minecraft {
   readonly xuid: string;
   readonly exp: number;
   refreshTkn: string;
-  getToken(full: boolean): MCToken {
+  getToken(full?: boolean): MCToken {
     return {
       refresh:
         this.parent instanceof Auth

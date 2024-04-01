@@ -634,3 +634,66 @@ Simply run in the root directory.
 ```bash
 npm run build
 ```
+
+# refresh tokens
+At this stage I am assuming you have successfully started minecraft with a token that was created with MSMC, but doing a full login each time your launcher restarts is getting rather annoying. I am also assuming you have a secure way to store access tokens already. 
+
+The access token for minecraft will remain active for 24 hours after being created. I recommend reusing the same token if you have been given a valid access token in the last 16 hours. After this the token should be refreshed. 
+
+## Two methods 
+The first method I will show you is recommend if you are adding msmc to a new project. The later is what I recommend doing if you have an existing project with GML. 
+
+## Predefined variables for the below examples
+```ts
+import {Auth, Minecraft,tokenUtils} from "msmc"; // The imports you will beed
+const auth: Auth = new Auth("select_account"); // The auth object, if created with the same variables as inputs, can be treated as a singleton object. 
+let mc: Minecraft = .... // Some minecraft instance that you have gotten from a successful login instance
+```
+
+### Method 1
+After authenticating the user, and the mc object being set, you should add code that looks a bit like this
+```ts
+const token = mc.getToken()
+/*Feed this into some method you can use to save this as a json object. 
+ *The vanilla launcher uses a plain json file in your .minecraft folder to store this
+ *Personally I recommend using something more secure
+ */
+saveTokenFunction(token); 
+```
+
+Then on startup you can do something such as this
+```ts
+//The "getTokenFunction" is something you need to implement yourself.
+const token = getTokenFunction();
+
+mc = tokenUtils.fromToken(auth,token);
+//forces the token to be refresh, set to false if you want to refresh the token only if it expired. 
+mc = mc.refresh(true); 
+
+```
+
+
+### Method 2
+After authenticating the user, and the mc object being set, but before you launch mc, you should add code that looks a bit like this.
+
+```ts
+//get a token with the required meta-data to make it refreshable. 
+const token = mc.mclc(true);
+/*Feed this into some method you can use to save this as a json object. 
+ *The vanilla launcher uses a plain json file in your .minecraft folder to store this
+ *Personally I recommend using something more secure
+ */
+saveTokenFunction(token); 
+//This function should be implemented by you. 
+launchMc(token);
+```
+
+Then on startup you can do something such as this
+```ts
+//The "getTokenFunction" is something you need to implement yourself. 
+const token =  getTokenFunction();
+
+mc = tokenUtils.fromMclcToken(auth,token);
+//forces the token to be refresh, set to false if you want to refresh the token only if it expired. 
+mc = mc.refresh(true); 
+```
