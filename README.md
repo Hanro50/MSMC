@@ -7,13 +7,13 @@
 > A bare bones login library for Minecraft based projects to authenticate individuals with a Microsoft account.
 
 # Support
-
+Please read the documentation at least once before asking for help. This is an AUTHENTICATION library, you need to own Minecraft to make use of it outside the context of launching the game in demo mode. No assistance will be provided to people who want to use MSMC for the sake of piracy.  
 <div>
 <a href="https://discord.gg/3hM8H7nQMA">
 <img src="https://img.shields.io/discord/861839919655944213?logo=discord"
 alt="chat on Discord"></a>
 </div>
-At the moment you can get support via Discord (link above).
+At the moment you can get support via Discord (link above). 
 
 # Examples
 
