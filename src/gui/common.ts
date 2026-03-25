@@ -1,23 +1,13 @@
-import type { WindowProperties } from "../types";
-import { getCode } from "../util/lexicon.js";
-import { error } from "../util/lexicon.js";
-
-import type { Auth } from "../auth/auth.js";
-export function getDefaultWinProperties(): WindowProperties {
-  return {
-    width: 500,
-    height: 650,
-    resizable: false,
-    title: getCode("gui.title"),
-  };
-}
+import { LoginError } from "../error";
+import type { framework, mstoken, windowProperties } from "../types";
 
 export async function launch(
-  auth: Auth,
-  framework: any,
-  windowProperties: any,
-) {
+  auth: mstoken,
+  framework: framework,
+  windowProperties: windowProperties
+): Promise<string> {
   let func = null;
+
   switch (framework) {
     case "raw":
       func = await import("./raw.js");
@@ -29,14 +19,10 @@ export async function launch(
       func = await import("./electron.js");
       break;
     default:
-      error("error.state.invalid.gui");
-      return;
+      throw new LoginError("error.state.invalid.gui", "Invalid GUI framework");
   }
-  console.log(func);
-  return await auth.login(
-    await (func?.default?.default || func?.default || func)(
-      auth,
-      windowProperties,
-    ),
+  return await (func?.default?.default || func?.default || func)(
+    auth,
+    windowProperties
   );
 }

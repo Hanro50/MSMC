@@ -8,11 +8,10 @@ import {
   execSync as exec,
   ChildProcessWithoutNullStreams,
 } from "child_process";
-import { Auth } from "../auth/auth.js";
 import fetch from "node-fetch";
-import { Lexcodes } from "../types.js";
-import { getDefaultWinProperties } from "./common.js";
-import { error } from "../util/lexicon.js";
+import type { mstoken, windowProperties } from "../types.js";
+import { createAuthLink } from "../advance.js";
+import { LoginError } from "../error.js";
 var firefox = false;
 
 var start: string;
@@ -39,7 +38,7 @@ switch (os.type()) {
               '"C:\\Windows\\System32\\reg.exe" query "' +
                 locW +
                 compatibleW[i2] +
-                '"',
+                '"'
             ).toString();
             if (!out.startsWith("ERROR")) {
               out = out
@@ -113,11 +112,11 @@ switch (os.type()) {
 }
 
 function browserLoop(
-  auth: Auth,
+  token: mstoken,
   port: string,
-  browser: ChildProcessWithoutNullStreams,
+  browser: ChildProcessWithoutNullStreams
 ) {
-  return new Promise((resolve, error: (e: Lexcodes) => void) => {
+  return new Promise((resolve, reject: (e: LoginError) => void) => {
     const call = () => {
       try {
         clearInterval(f3);
@@ -139,12 +138,15 @@ function browserLoop(
         .then((out) => {
           for (var i = 0; i < out.length; i++) {
             const loc = out[i].url;
-            if (loc && loc.startsWith(auth.token.redirect)) {
+            if (loc && loc.startsWith(token.redirect)) {
               const urlParams = new URLSearchParams(
-                loc.substr(loc.indexOf("?") + 1),
+                loc.substr(loc.indexOf("?") + 1)
               ).get("code");
               if (urlParams) resolve(urlParams);
-              else error("error.gui.closed");
+              else
+                reject(
+                  new LoginError("error.gui.closed", "GUI closed by user")
+                );
               call();
             }
           }
@@ -152,19 +154,19 @@ function browserLoop(
         .catch((err) => {
           call();
           console.error("[msmc]: " + err);
-          error("error.gui.closed");
+          reject(new LoginError("error.gui.closed", "GUI closed by user"));
         });
     }, 500);
   });
 }
 
-export default (auth: Auth, Windowproperties = getDefaultWinProperties()) => {
+export default async (token: mstoken, Windowproperties: windowProperties) => {
   const cmd = Windowproperties.browserCMD ? Windowproperties.browserCMD : start;
   if (!cmd) {
-    error("error.gui.raw.noBrowser");
+    throw new Error("error.gui.raw.noBrowser");
   }
   console.log('[MSMC]: Using "' + cmd + '"');
-  var redirect = auth.createLink();
+  var redirect = createAuthLink(token);
   return new Promise((resolve, error) => {
     var browser: ChildProcessWithoutNullStreams;
     if (firefox || Windowproperties.firefox) {
@@ -207,7 +209,7 @@ export default (auth: Auth, Windowproperties = getDefaultWinProperties()) => {
         const n = data.indexOf(":") + 1;
         const port = data.substring(n, data.indexOf("/"));
         console.log("[MSMC]: Debug hook => http://127.0.0.1:" + port);
-        browserLoop(auth, port, browser).then(resolve).catch(error);
+        browserLoop(token, port, browser).then(resolve).catch(error);
       }
     };
     if (!Windowproperties.suppress) {
