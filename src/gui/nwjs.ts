@@ -1,26 +1,26 @@
-import { Auth } from "../auth/auth.js";
-import { Lexcodes } from "../types.js";
-import { getDefaultWinProperties } from "./common.js";
+import { createAuthLink } from "../advance.js";
+import { LoginError } from "../error.js";
+import type { mstoken, windowProperties } from "../types.js";
 
-export default (auth: Auth, Windowproperties = getDefaultWinProperties()) => {
-  return new Promise((resolve, rejects: (e: Lexcodes) => void) => {
-    var redirect = auth.createLink();
+export default async (token: mstoken, Windowproperties: windowProperties) => {
+  return new Promise((resolve, rejects: (e: LoginError) => void) => {
+    var redirect = createAuthLink(token);
     //@ts-ignore
     nw.Window.open(redirect, Windowproperties, function (new_win) {
       new_win.on("close", function () {
-        rejects("error.gui.closed");
+        rejects(new LoginError("error.gui.closed", "GUI closed by user"));
         new_win.close(true);
       });
       new_win.on("loaded", function () {
         const loc = new_win.window.location.href;
-        if (loc.startsWith(auth.token.redirect)) {
+        if (loc.startsWith(token.redirect)) {
           const urlParams = new URLSearchParams(
-            loc.substr(loc.indexOf("?") + 1),
+            loc.substr(loc.indexOf("?") + 1)
           ).get("code");
           if (urlParams) {
             resolve(urlParams);
           } else {
-            rejects("error.gui.closed");
+            rejects(new LoginError("error.gui.closed", "GUI closed by user"));
           }
           try {
             new_win.close(true);

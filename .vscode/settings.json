@@ -16,5 +16,7 @@
     "xuid",
     "yuid"
   ],
-  "files.eol": "\n"
+  "files.eol": "\n",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
 }

@@ -1,14 +1,9 @@
 //@ts-nocheck
+import { createAuthLink } from "../advance.js";
+import { LoginError } from "../error.js";
+import type { mstoken, windowProperties } from "../types.js";
 
-import { Auth } from "../auth/auth.js";
-
-import { getDefaultWinProperties } from "./common.js";
-import type { Lexcodes } from "../types.js";
-
-export default async (
-  auth: Auth,
-  Windowproperties = getDefaultWinProperties(),
-) => {
+export default async (token: mstoken, Windowproperties: windowProperties) => {
   let mainWindow;
   try {
     const { BrowserWindow } = await import(
@@ -25,8 +20,8 @@ export default async (
     mainWindow = new BrowserWindow(Windowproperties);
     console.log("[MSMC]: Using fallback dynamic require for electron");
   }
-  return await new Promise((resolve, reject: (e: Lexcodes) => void) => {
-    var redirect = auth.createLink();
+  return await new Promise((resolve, reject: (e: LoginError) => void) => {
+    var redirect = createAuthLink(token);
 
     mainWindow.setMenu(null);
     mainWindow.loadURL(redirect);
@@ -34,14 +29,14 @@ export default async (
     var loading = false;
     mainWindow.on("close", () => {
       if (!loading) {
-        reject("error.gui.closed");
+        reject(new LoginError("error.gui.closed", "GUI closed by user"));
       }
     });
     contents.on("did-finish-load", () => {
       const loc = contents.getURL();
-      if (loc.startsWith(auth.token.redirect)) {
+      if (loc.startsWith(token.redirect)) {
         const urlParams = new URLSearchParams(
-          loc.substr(loc.indexOf("?") + 1),
+          loc.substr(loc.indexOf("?") + 1)
         ).get("code");
         if (urlParams) {
           resolve(urlParams);

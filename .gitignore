@@ -2,3 +2,5 @@ dist
 types
 node_modules
 bin
+
+src_old
