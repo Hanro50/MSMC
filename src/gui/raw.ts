@@ -8,7 +8,6 @@ import {
   execSync as exec,
   ChildProcessWithoutNullStreams,
 } from "child_process";
-import fetch from "node-fetch";
 import type { mstoken, windowProperties } from "../types.js";
 import { createAuthLink } from "../advance.js";
 import { LoginError } from "../error.js";
